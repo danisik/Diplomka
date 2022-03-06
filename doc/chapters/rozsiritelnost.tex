@@ -1,0 +1,38 @@
+%CHAPTER
+\chapter{Rozšiřitelnost modulu}
+Modul je naimplementovaný tak, aby byl snadno rozšiřitelný o~nové funkce. Zadání bakalářské práce sice splněno bylo, ale v~blízké budoucnosti mohou být požadavky na modul změněny. Jako příklad lze uvést potřebu změnit typy hodnotících formulářových prvků, například změna výběrových tlačítek na zaškrtávající tlačítka, změnu typu fontu ze základního na speciální, který není přítomen v~modulu, a mnoho dalšího. V~této kapitole jsou popsány 3 možné návrhy na rozšíření modulu, především generátoru.
+
+%SECTION
+\section{Podpora zbylých formulářových prvků}
+V~modulu jsou momentálně podporovány dva formulářové prvky, a to textové pole a výběrové tlačítko. Pro přidání podpory jakéhokoliv formulářového prvku je potřeba splnit několik implementačních kroků. Na ukázku bude uvedeno vytvoření podpory pro prvek zaškrtávající tlačítko.
+\par
+Nejprve je potřeba vytvořit nový výčtový typ s~názvem \textbf{CheckboxInfo}. Jeho instancemi bude poté možné vytvořit nové hodnotící parametry. Tyto instance budou definovány jednoznačným identifikátorem, názvem a popiskem. Dále se vytvoří metoda \textit{getConstants}, která bude mít jako návratovou hodnotu pole všech hodnotících parametrů. Důležité při vytváření je nadefinovat konstanty reprezentující název prvku při jeho vytváření pomocí TCPDF metod. Pro zaškrtávající tlačítka bude název například \textit{checkbox} a \textit{checkboxes} (použito při ukládání hodnot u~parsování).
+\par
+Pro generování kódu reprezentující určitý formulářový prvek je potřeba vytvořit novou metodu ve třídě \textbf{CheckboxInfo}. Tato metoda bude mít za úkol vložit do výsledného PDF jeden formulářový prvek daného typu, pomocí kterého bude -- v~našem případě -- vykresleno zaškrtávající tlačítko v~dokumentu. Tento formulářový prvek bude vložen jako text \uv{checkbox} (lze použít i pro skupinu, záleží na programátorovi) a bude doplněn o~identifikátor určující počet již vytvořených skupin zaškrtávajících tlačítek. Tento identifikátor je vhodné vytvořit na začátku třídy \textbf{CheckboxInfo}.
+\par
+Při parsování je potřeba přidat tento typ do podporovaných prvků v~nově implementované metodě \textit{extractElement}, viz\ref{lst:extraction_function}, kde se při kontrole typu přidá nový příkaz \textit{else if}.
+\par
+Po parsování je potřeba vytvořit nové pole, do kterého se uloží extrahované hodnoty spolu s~novým polem, které bude obsahovat data roztříděná na základě jména hodnotícího parametru. Pole extrahovaných hodnot se následně roztřídí a nevalidní hodnoty se uloží do společného pole nevalidních prvků (pouze u~povinných prvků). Pokud bude zvoleno kritérium povinný prvek/nepovinný prvek, je nutno tyto parametry zkontrolovat nad rámec běžné kontroly. Při nevyplnění nebo nezvolení hodnoty hodnotícího parametru nebude tento parametr reprezentován v~poli všech prvků daného typu formulářového prvku a při ukládání hodnoty do databáze nebude stávající hodnota přepsána. Pokud bude jeden z~povinných prvků nevalidní, je potřeba zjistit který a přidat ho do chybového hlášení pro uživatele.
+\par
+Pokud jsou všechny povinné hodnoty extrahovány a uloženy, jsou následně zaneseny do databáze.
+
+%SECTION
+\section{Změna fontu}
+V~celém dokumentu jsou využity dva typy fontů -- hlavní font \textit{Helvetica} pro veškerý netučný text, zatímco font \textit{Times New Roman} pro veškeré tučné písmo.
+\par
+Při případné změně fontu pro celý dokument je potřeba změnit rodinu fontů ve třídě \textbf{Elements}. Mezi podporované základní fonty u~knihovny TCPDF patří \textit{courier} (Courier), \textit{helvetica} (Helvetica), \textit{times} (Times New Roman), \textit{symbol} (Symbol) a \textit{zapfdingbats} (Symbol). Také lze použít i fonty, které nepatří mezi základní a jsou již obsaženy v~knihovně TCPDF. Mezi tyto fonty patří například \textit{freeserif}. Pro změnu normálního nebo tučného písma je potřeba přepsat hodnotu proměnné \textit{\$normal\_font} definující font využitý pro normální písmo, zatímco \textit{\$bold\_font\_tcpdf} definuje typ fontu pro tučné písmo. Nachází se zde i proměnná \textit{\$bold\_font\_html}, kterou je nutné přepsat taktéž při změně fontu pro tučné písmo.
+\par
+V~případě, že je potřeba využít fonty třetích stran, které nejsou přidány v~knihovně TCPDF, je nutné je definovat. To se provede pomocí metody \textit{addTTFfont} viz  \ref{lst:font_define}.
+\begin{lstlisting}[caption = {Nový font vložený do knihovny TCPDF}, label = {lst:font_define}, captionpos=b]
+$pdf->addTTFfont('/path-to-font/font.ttf', 'TrueTypeUnicode', '', 32);
+\end{lstlisting}
+Před zavoláním metody je potřeba získat knihovnu definující vzhled a velikost jednotlivých znaků daného fontu ve standardu \textit{TrueType} (koncovka \textbf{.ttf}). Cesta k~souboru bude použita jako první parametr metody.
+
+%SECTION
+\section{Načtení nově přidaných dat z~konfiguračního souboru}
+Konfigurační soubor \textit{configuration.xml} obsahuje data, která se mohou častěji měnit v~průběhu hodnocení bez nutnosti přepisovat zdrojový kód modulu. Pro přidání nového záznamu je nutné dodržovat stanovený postup:
+\begin{enumerate}
+	\item Vytvoření nového elementu a přiřazení textu.
+	\item Vytvoření nové proměnné ve třídě \textit{ConfigurationData}.
+	\item Načtení dat pomocí XML readeru implementovaného v~PHP. Při získávání dat elementu je nutné dodržovat styl \textit{\$reader->nazev\_elementu}. 
+\end{enumerate}
