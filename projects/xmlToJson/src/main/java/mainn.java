@@ -52,7 +52,7 @@ public class mainn {
         //convertAnglie();
 
         System.out.println("\n\nIsrael");
-        //convertIsrael();
+        convertIsrael();
 
         System.out.println("\n\nLitva");
         //convertLitva();
@@ -65,7 +65,7 @@ public class mainn {
 
         System.out.println("\n\nŠpanělsko");
         // TODO
-        convertSpanelsko();
+        //convertSpanelsko();
 
         System.out.println("\n\nKanada");
         //convertCanada();

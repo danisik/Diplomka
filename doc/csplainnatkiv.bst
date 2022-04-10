@@ -325,13 +325,6 @@ FUNCTION {format.url}
   if$
 }
 
-FUNCTION {format.ftp}
-{ url empty$
-	{ "" }
-	{ new.block "<ftp: \url{" url * "}>" *}
-	if$
-}
-
 FUNCTION {format.doi}
 { doi empty$
     { "" }
@@ -792,32 +785,6 @@ FUNCTION {online} %  CHANGE mudrd8mz 2005-10-12 addign new item type
   note output
   new.sentence
   format.url output
-  fin.entry
-}
-
-FUNCTION {onlineftp}
-{ output.bibitem
-  format.authors output
-  new.block
-  format.btitle " [online]" * output
-  new.sentence
-  publisher missing$
-    'skip$
-    { publisher output }
-  if$
-  year missing$
-    'skip$
-    { format.date "year" output.check }
-  if$
-  new.sentence
-  cited missing$
-    'skip$
-    { "[cit.~" cited * "]" * output }
-  if$
-  new.sentence
-  note output
-  new.sentence
-  format.ftp output
   fin.entry
 }
 

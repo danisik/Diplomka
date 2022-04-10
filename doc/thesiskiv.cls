@@ -160,7 +160,7 @@
  \titlepagetown{Plzeň}
  \declarationtown{Plzni}
  \def\KIV@declarationname{Prohlášení}
- \def\KIV@declarationtext{Prohlašuji, že jsem \KIV@thesistype\ práci vypracoval\ifdeclarationfemale{a}\fi\ samostatně a výhradně s použitím citovaných pramenů. \par V diplomové práci jsou použity názvy programových produktů, firem apod., které mohou být ochrannými známkami nebo registrovanými ochrannými známkami příslušných vlastníků.}
+ \def\KIV@declarationtext{Prohlašuji, že jsem \KIV@thesistype\ práci vypracoval\ifdeclarationfemale{a}\fi\ samostatně a výhradně s~použitím citovaných pramenů.\par V diplomové práci jsou použity názvy programových produktů, firem apod., které mohou být ochrannými známkami nebo registrovanými ochrannými známkami příslušných vlastníků.}
  \def\KIV@declarationfoot{V \KIV@declarationtown\ dne\ }
  \def\KIV@thanksname{Poděkování}
  \def\KIV@thankstext{Děkuji panu Doc. Ing. Daliboru Fialovi, Ph.D. za ochotu při vedení diplomové práce a rady s jejím vypracováním.}
