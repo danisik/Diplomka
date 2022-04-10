@@ -1,0 +1,110 @@
+version: '3.7'
+
+services:  
+  elasticsearch:
+    image: elasticsearch:7.17.0
+    container_name: elasticsearch
+    restart: always
+    env_file:
+      - .env
+    ports:
+      - 9200:9200
+    environment:
+      discovery.type: ${ES_DISCOVERY_TYPE}
+      xpack.security.enabled: ${ES_SECURITY_ENABLED}
+      http.cors.enabled: ${ES_CORS_ENABLED}
+      http.cors.allow-origin: ${ES_CORS_ORIGIN}
+      http.cors.allow-headers: ${ES_CORS_HEADERS}
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    cap_add:
+      - IPC_LOCK   
+      
+  elasticvue:
+    image: cars10/elasticvue:0.39.0
+    restart: always
+    container_name: elasticvue
+    ports:
+      - 8080:8080
+
+  mongo-setup:
+    container_name: mongo-setup
+    image: mongo:5.0.6
+    restart: on-failure
+    networks:
+      default:
+    volumes:
+      - ./init/mongo_init.sh:/mongo_init.sh
+    entrypoint: [ "/mongo_init.sh" ]
+    depends_on:
+      - mongo
+      
+  mongo:
+    image: mongo:5.0.6
+    restart: always
+    container_name: mongo
+    ports:
+      - 27017:27017
+    env_file:
+      - .env
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+    command: [ "/usr/bin/mongod", "--bind_ip_all", "--replSet", "${MONGO_REPLICA_SET_NAME}" ]
+    
+  mongo-express:
+    image: mongo-express:0.54.0
+    container_name: mongo-express
+    restart: always
+    env_file:
+      - .env
+    ports:
+      - 8081:8081
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+      ME_CONFIG_MONGODB_ADMINPASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+      ME_CONFIG_MONGODB_URL: ${MONGO_URL}  
+  
+  mongo_connector:
+    image: yeasy/mongo-connector:latest
+    restart: always
+    container_name: mongo-connector
+    env_file:
+      - .env
+    links:
+      - elasticsearch:elasticsearch
+    environment:
+      MONGO: ${MONGO_CON_HOST}
+      MONGO_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+      MONGO_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+      
+  mysql:
+    image: mysql:8.0.16
+    container_name: mysql
+    restart: always
+    env_file:
+      - .env    
+    ports:
+      - 6033:3306
+    command: --init-file /mysql_init.sql
+    volumes:
+        - ./init/mysql_init.sql:/mysql_init.sql
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}    
+      
+  phpmyadmin:
+    image: phpmyadmin:5.1.3
+    container_name: phpmyadmin
+    restart: always
+    env_file:
+      - .env
+    ports:
+      - 8082:80
+    links:
+      - mysql
+    environment:
+      PMA_HOST: ${PMA_HOST}
+      PMA_PORT: ${PMA_PORT}
+      PMA_ARBITRARY: ${PMA_ARBITRARY}      
