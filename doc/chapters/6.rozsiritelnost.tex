@@ -1,8 +1,30 @@
 %CHAPTER
 \chapter{Rozšiřitelnost modulu}
-\section{1}
-přidání nových zdrojů - automaticky vykuchat a přidat jak do Mongo, tak i do Mysql
-\section{2}
-Postahovat ČR data a pomocí crawleru vyzjistit autora / instituci (protože známe ID patentu, tak můžeme vyhledávat v národní databázi, kde autoři jsou)
-\section{3}
-Automatické stahování dat z již ověřených zdrojů - kontrola zda přibyl nový ZIP, pokud ano tak stáhnout, rozbalit - následně získat patent ID a zkontrolovat duplicitní záznam - zahodit / případně nahradit existující kvůli novým změnám
+Zadání diplomové práce sice splněno bylo, ale v blízké budoucnosti mohou být požadavky na modul změněny. Jako příklad lze uvést podporu přidávání nových patentů do databází, zjištění autorů pro české patenty, automatické stahování dat z již ověřených patentových zdrojů. V této kapitole jsou popsány 3 možné návrhy na rozšíření modulu ohledně importu dat do již existujících databází.
+
+\section{Přidávání nových patentů}
+Cílem tohoto rožšíření by bylo automatické přidávání patentů z datových souborů jak do MySQL databáze, tak i do Mongo.
+
+Rozšíření by se dalo realizovat jako aplikace ve vyšším programovacím jazyku (např. Java, C), kdy vstupem do aplikace by byl soubor v datovém formátu JSON/XML/CSV a jiné. Vstupní soubor by se následně:
+\begin{itemize}
+\item převedl na JSON řetězec (v případě že soubor není ve formátu JSON) a vložil do Mongo databáze
+\item rozparsoval a extrahovali by se všechny atributy, které se ukládají v MySQL databázi (viz mysql kapitola \todo{TODO})
+\end{itemize}
+
+Jelikož je dost časté, že každý národní zdroj dat používá odlišnou strukturu patentu, tak bude potřeba aplikaci neustále upravovat (ať už v rámci přidávání nových zdrojů, nebo v případě změny struktury patentu u již podporovaných zdrojů).
+
+Jako další velký problém lze zmínit extrakci atributů patentu ze souborů. Tím, že různé patentové soubory mají odlišnou strukturu, to znamená hloubku zanoření specifických elementů, jiné názvy elementů, tak bude obtížné naimplementovat řešení extrakce pro všechny soubory. Tento problém by se dal řešit tak, že se vytvoří soubory se slovníkama, které by obsahovali názvy elementů pro daný atribut. Slovníky by se následně použily při extrakci.
+
+\section{Zjišťování autorů pro české patenty}
+Český národní patentový úřad poskytuje data o českých patentech, které ale neobsahují autora ani instituci. Pro zjištění autora nebo instituce, která patent registrovala, je nutné použít oficiální vyhledávač. Cílem tohoto rozšíření by bylo vytvořit aplikaci ve vyšším programovacím jazyku, která se pro všechny české patenty bude snažit najít jejich autory za pomoci využití prohledávačů webů (web crawler). Postupů řešení může být mnoho:
+\begin{itemize}
+\item Zjišťování autorů by se provedlo pro všechny existující české patenty v databázi. Z MySQL databáze se zjistí všechny ID patentů pro české patenty, které se následně použijí jako vstup pro web crawler.
+\item Zjišťování autorů by se provedlo pro patent/y uložené v souboru, kdy aplikace by pro všechny patenty v souboru zjistila autory a následně je dopsala do příslušnýho elementu patentu v daném souboru.
+\item Stejný postup jako předchozí s tím rozdílem, že po zjištění autora se patent rovnou přidá do MySQL i Mongo databáze.
+\end{itemize}
+
+\section{Automatické stahování dat z ověřených zdrojů}
+Aplikace, která si načte soubor s uloženýma ověřenýma zdrojema (např. XML), kdy by bylo definováno: název země, URL stránky kde se stahuje (např. https://isdv.upv.cz/webapp/webapp.pubsrv.seznam?purl=opendata/pt), html element obsahující soubor ke stažení (např. a href="/doc/opendata/pt/OpenData....") a poslední stažený soubor. Aplikace by projela všechny stránky, pokusila by se stáhnout nejnovější soubor (ten co se neshoduje s tím uloženým v xml) a uložit ho do specifický složky. Pokud je ke stažení novější, updatuje se XML.
+
+Tohle všechny by bylo automatický pomocí např. Jenkinsu, který by jednou za čas spustil tuhle appku + by mohl informovat emailem o buildu + výsledku, že tolik se updatnulo atd.
+%Automatické stahování dat z již ověřených zdrojů - kontrola zda přibyl nový ZIP, pokud ano tak stáhnout, rozbalit - následně získat patent ID a zkontrolovat duplicitní záznam - zahodit / případně nahradit existující kvůli novým změnám
