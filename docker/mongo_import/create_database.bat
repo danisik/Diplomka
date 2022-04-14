@@ -4,4 +4,4 @@ IF NOT EXIST create_database.js (
 	exit /b 1
 )
 
-mongo --host localhost:27017 < create_database.js
+"mongo/mongo.exe" --host localhost:27017 < create_database.js

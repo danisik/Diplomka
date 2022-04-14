@@ -4,4 +4,4 @@ IF NOT EXIST %1 (
 	exit /b 1
 )
 
-mongoimport --db patents --collection patents --file %1
+start mongo_dbtools/bin/mongoimport.exe --db patents --collection patents --file %1
