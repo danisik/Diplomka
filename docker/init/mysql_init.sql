@@ -2,39 +2,40 @@ create database if not exists patents;
 use patents;
 create table if not exists patents(
 	id int not null auto_increment,
-	patent_id int not null,
-	title varchar(1000) not null,
+	patent_id varchar(20) not null,
+	title varchar(300) not null,
 	patent_date date not null,
-	kind varchar(10),
-	country varchar(100) not null,	
+	kind varchar(1),
+	country varchar(2) not null,	
 	primary key(id)
 	);
 create table if not exists classification(
 	id int not null auto_increment,
 	id_patent int not null,
-	section varchar(10),
-	class varchar(10),		
+	section varchar(1),
+	class varchar(2),		
+	subclass varchar(1),
 	primary key(id),
 	foreign key (id_patent) references patents(id)
 	);
 create table if not exists languages(
 	id int not null auto_increment,
 	id_patent int not null,
-	language varchar(10),
+	language varchar(2),
 	primary key(id),
 	foreign key (id_patent) references patents(id)
 	);
 create table if not exists inventors(
 	id int not null auto_increment,
 	id_patent int not null,
-	inventor varchar(10),
+	inventor varchar(50),
 	primary key(id),
 	foreign key (id_patent) references patents(id)
 	);
 create table if not exists applicants(
 	id int not null auto_increment,
 	id_patent int not null,
-	applicant varchar(10),
+	applicant varchar(50),
 	primary key(id),
 	foreign key (id_patent) references patents(id)
 	);
