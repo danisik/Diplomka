@@ -68,13 +68,20 @@ public class mainclass {
         //convertLitva();
 
         System.out.println("\n\nPeru");
+        // HOTOVO
         //convertPeru();
 
-        System.out.println("\n\nRusko");
-        //convertRusko();
+        System.out.println("\n\nPortugalsko");
+        // HOTOVO
+        //convertPortugal();
+
+        System.out.println("\n\nItálie");
+        // TODO: italii až nakonec
+        //convertItaly();
 
         System.out.println("\n\nŠpanělsko");
-        //convertSpanelsko();
+        // HOTOVO
+        convertSpanelsko();
 
         System.out.println("\n\nKanada");
         //convertCanada();
@@ -82,14 +89,282 @@ public class mainclass {
         System.out.println("\n\nFrancie");
         //convertFrancie();
 
+        System.out.println("\n\nRusko");
+        //convertRusko();
+
         closeConnection();
     }
 
-    private static void convertRusko() throws FileNotFoundException {
+    private static void removeDuplicates() {
 
-        MongoClient mongoClient = new MongoClient(new MongoClientURI("mongodb://localhost:27017"));
-        DB database = mongoClient.getDB("patents");
-        DBCollection collection = database.getCollection("patents");
+    }
+
+    private static void convertItaly() throws FileNotFoundException {
+
+        PreparedStatement preparedStmt = null;
+        List<ItalyPatent> patents = new ArrayList<>();
+
+        try {
+
+            // patent_id ; title ; date ; kind ; country; language    -  patents
+            // id_patent ; section ; class ; subclass    - classification
+            // id_patent ; inventor     - inventors
+
+            // Get patents
+            preparedStmt = conn.prepareStatement("select * from sapebinich_patent");
+            ResultSet set = preparedStmt.executeQuery();
+
+            while (set.next()) {
+
+                ItalyPatent patent = new ItalyPatent();
+                // Patents
+                patent.setId(set.getLong(1));
+                patent.setCountry(set.getString(5));
+                patent.setPatentId(patent.getCountry() + set.getString(7));
+                patent.setKind(set.getString(8).substring(0, 1));
+                patent.setDate(set.getString(9));
+                patent.setLanguage("-");
+
+                // Inventors
+                patent.setInventor(set.getString(10));
+
+                patents.add(patent);
+            }
+
+            System.out.println("patents created");
+
+            for (ItalyPatent patent : patents) {
+
+                // Get patent title
+                preparedStmt = conn.prepareStatement("select title from sapebinich_patent_title where id_patent = ?");
+                preparedStmt.setLong(1, patent.getId());
+
+                set = preparedStmt.executeQuery();
+
+                if(set.next()) {
+
+                    patent.setTitle(set.getString(1));
+                }
+
+                // Get classifications ids
+                List<Long> ipcrs = new ArrayList<>();
+                preparedStmt = conn.prepareStatement("select id_ipcr from sapebinich_patent_ipcr where id_patent = ?");
+                preparedStmt.setLong(1, patent.getId());
+
+                set = preparedStmt.executeQuery();
+
+                while(set.next()) {
+
+                    ipcrs.add(set.getLong(1));
+                }
+
+                // Get classifications
+                for (Long ipcr : ipcrs) {
+
+                    preparedStmt = conn.prepareStatement("select * from sapebinich_ipcr where id_ipcr = ?");
+                    preparedStmt.setLong(1, ipcr);
+
+                    set = preparedStmt.executeQuery();
+
+                    while(set.next()) {
+
+                        patent.addSection(set.getString(2));
+                        patent.addSclass(set.getString(3));
+                        patent.addSubclass(set.getString(4));
+                    }
+                }
+            }
+
+            // patents filled.
+
+            for (ItalyPatent patent : patents) {
+
+                try {
+                    SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+                    java.util.Date utilDate = format.parse(patent.getDate());
+                    java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime());
+
+                    // Insert patent
+                    preparedStmt = conn.prepareStatement("insert into patents(patent_id, title, patent_date, kind, country, language) values (?, ?, ?, ?, ?, ?)");
+                    preparedStmt.setString(1, patent.getPatentId());
+                    preparedStmt.setString(2, patent.getTitle());
+                    preparedStmt.setDate(3, sqlDate);
+                    preparedStmt.setString(4, patent.getKind());
+                    preparedStmt.setString(5, patent.getCountry());
+                    preparedStmt.setString(6, patent.getLanguage());
+                    preparedStmt.execute();
+
+                    Long patentId = 0L;
+                    preparedStmt = conn.prepareStatement("select last_insert_id()");
+                    ResultSet rSet = preparedStmt.executeQuery();
+
+                    while (rSet.next()) {
+
+                        patentId = rSet.getLong(1);
+                    }
+
+                    // Insert classification
+                    for (int i = 0; i < patent.getSections().size(); i++) {
+
+                        preparedStmt = conn.prepareStatement("insert into classification(id_patent, section, class, subclass) values (?, ?, ?, ?)");
+                        preparedStmt.setLong(1, patentId);
+                        preparedStmt.setString(2, patent.getSections().get(i));
+                        preparedStmt.setString(3, patent.getsClasses().get(i));
+                        preparedStmt.setString(4, patent.getSubclasses().get(i));
+                        preparedStmt.execute();
+                    }
+
+                    // Insert author
+                    preparedStmt = conn.prepareStatement("insert into inventors(id_patent, inventor) values (?, ?)");
+                    preparedStmt.setLong(1, patentId);
+                    preparedStmt.setString(2, patent.getInventor());
+                    preparedStmt.execute();
+                } catch (Exception e) {
+
+                    e.printStackTrace();
+                }
+            }
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+        }
+    }
+
+    private static void convertPortugal() throws FileNotFoundException {
+        String name = "";
+        try {
+
+            // Instantiate the Factory
+            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance("com.sun.org.apache.xerces.internal.jaxp.DocumentBuilderFactoryImpl", ClassLoader.getSystemClassLoader());
+
+            // optional, but recommended
+            // process XML securely, avoid attacks like XML External Entities (XXE)
+            dbf.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+            // Disable external DTDs as well
+            dbf.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+
+            // parse XML file
+            DocumentBuilder db = dbf.newDocumentBuilder();
+            Document doc = db.parse("D:\\PATENTY\\2.Data\\Portugalsko\\Portugal_Patentes.xml");
+            doc.getDocumentElement().normalize();
+
+            PreparedStatement preparedStmt = null;
+
+            List<String> patentIDs = new ArrayList<>();
+
+            NodeList entries = doc.getElementsByTagName("entry");
+            for (int i = 0; i < entries.getLength(); i++) {
+
+                Element entry = (Element) entries.item(i);
+                Element content = (Element) entry.getElementsByTagName("content").item(0);
+
+                Element properties = (Element) content.getElementsByTagName("m:properties").item(0);
+
+                // Patents
+                String country = "PT";
+                String sPatentId = country + properties.getElementsByTagName("d:numero").item(0).getTextContent();
+                String title = properties.getElementsByTagName("d:titulo").item(0).getTextContent();
+                String date = properties.getElementsByTagName("d:data").item(0).getTextContent();
+                String kind = "-";
+                String language = "PT";
+
+                SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+                java.util.Date utilDate = format.parse(date);
+                java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime());
+
+                if (patentIDs.contains(sPatentId)) continue;
+                patentIDs.add(sPatentId);
+
+                preparedStmt = conn.prepareStatement("insert into patents(patent_id, title, patent_date, kind, country, language) values (?, ?, ?, ?, ?, ?)");
+                preparedStmt.setString(1, sPatentId);
+                preparedStmt.setString(2, title);
+                preparedStmt.setDate(3, sqlDate);
+                preparedStmt.setString(4, kind);
+                preparedStmt.setString(5, country);
+                preparedStmt.setString(6, language);
+                preparedStmt.execute();
+
+                Long patentId = 0L;
+                preparedStmt = conn.prepareStatement("select last_insert_id()");
+                ResultSet rSet = preparedStmt.executeQuery();
+
+                while (rSet.next()) {
+
+                    patentId = rSet.getLong(1);
+                }
+
+                // Classification
+                String classification = properties.getElementsByTagName("d:classificacaoipc").item(0).getTextContent();
+                classification = classification.replaceAll("\\[", "").replaceAll("\\]", "");
+                String[] array = classification.split(",");
+
+                List<String> list = new ArrayList<>();
+
+                for (int j = 0; j < array.length; j++) {
+
+                    String singleClas = array[j];
+
+                    while (singleClas.charAt(0) == ' ') singleClas = singleClas.substring(1);
+
+                    String section = singleClas.substring(0, 1);
+                    String sClass = singleClas.substring(1, 3);
+                    String subclass = singleClas.substring(3, 4);
+                    String full = section + sClass + subclass;
+
+                    if (list.contains(full)) continue;
+                    list.add(full);
+
+                    preparedStmt = conn.prepareStatement("insert into classification(id_patent, section, class, subclass) values (?, ?, ?, ?)");
+                    preparedStmt.setLong(1, patentId);
+                    preparedStmt.setString(2, section);
+                    preparedStmt.setString(3, sClass);
+                    preparedStmt.setString(4, subclass);
+                    preparedStmt.execute();
+                }
+
+                // Inventor
+                String inventors = properties.getElementsByTagName("d:requerentes").item(0).getTextContent();
+                inventors = inventors.replaceAll("\\[", "").replaceAll("\\]", "");
+                String[] arrayInventors = inventors.split(",");
+
+                for (int j = 0; j < arrayInventors.length; j++) {
+
+                    String inventor = arrayInventors[j];
+
+                    while (inventor.charAt(0) == ' ') inventor = inventor.substring(1);
+
+                    if (j + 1 < arrayInventors.length) {
+
+                        while (arrayInventors[j+1].charAt(0) == ' ') arrayInventors[j+1] = arrayInventors[j+1].substring(1);
+                        if (arrayInventors[j+1].equals("S.A.") ||
+                                arrayInventors[j+1].equals("LDA.") ||
+                                arrayInventors[j+1].equals("S.L.") ||
+                                arrayInventors[j+1].equals("S.L.U.") ||
+                                arrayInventors[j+1].equals("LDª.") ||
+                                arrayInventors[j+1].equals("SA") ||
+                                arrayInventors[j+1].equals("S.R.L.")
+                        ) {
+
+                            inventor += ", " + arrayInventors[j+1];
+                            j++;
+                        }
+                    }
+
+                    preparedStmt = conn.prepareStatement("insert into inventors(id_patent, inventor) values (?, ?)");
+                    preparedStmt.setLong(1, patentId);
+                    preparedStmt.setString(2, inventor);
+                    preparedStmt.execute();
+                }
+            }
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+        }
+    }
+
+    private static void convertRusko() throws FileNotFoundException {
 
         long start = System.currentTimeMillis();
 
@@ -166,7 +441,7 @@ public class mainclass {
                         duplicates++;
                     } else {
 
-                        if (date.equals("") || date.startsWith("20")) {
+                        if (date.startsWith("20")) {
 
                             if (author.equals("") || title.equals("")) {
                                 testt++;
@@ -174,46 +449,60 @@ public class mainclass {
                             else {
                                 set.add(id);
 
-                                StringBuilder sb = new StringBuilder();
-                                sb.append("{\n");
-
-                                int fix = headers.size() > s.length ? 1 : 0;
-
-                                for (int i = 0; i < headers.size(); i++) {
-
-                                    if (fix == 1 && i > 20) {
-
-                                        String text = s[i - fix];
-                                        text = text.replaceAll("\"", "");
-                                        text = text.replaceAll("\\r\\n", "");
-
-                                        sb.append("\"" + headers.get(i) + "\": " + "\"" + text + "\"");
-                                    }
-                                    else {
-
-                                        String text = s[i];
-                                        text = text.replaceAll("\"", "");
-                                        text = text.replaceAll("\\r\\n", "");
-
-                                        sb.append("\"" + headers.get(i) + "\": " + "\"" + text + "\"");
-                                    }
-
-                                    if (i < (headers.size() - 1)) {
-
-                                        sb.append(",\n");
-                                    }
-                                }
-
-                                sb.append("\n}");
-
-                                String jsonString = sb.toString();
-
                                 try {
-                                    DBObject dbObject = (DBObject) JSON.parse(jsonString);
-                                    collection.insert(dbObject);
+
+                                    PreparedStatement preparedStmt = null;
+                                    // TODO:
+
+                                    // patent_id ; title ; date ; kind ; country; language    -  patents
+                                    // id_patent ; inventor     - inventors
+
+                                    // Patents
+                                    String country = "RU";
+                                    id = "RU" + s[0];
+                                    title = s[10];
+                                    date = s[1];
+                                    String kind = "-";
+                                    String language = "RU";
+
+                                    if (title.length() > 300) title = title.substring(0, 300);
+
+                                    SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd", Locale.US);
+                                    java.util.Date utilDate = format.parse(date);
+                                    java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime());
+
+                                    // Patents
+                                    preparedStmt = conn.prepareStatement("insert into patents(patent_id, title, patent_date, kind, country, language) values (?, ?, ?, ?, ?, ?)");
+                                    preparedStmt.setString(1, id);
+                                    preparedStmt.setString(2, title);
+                                    preparedStmt.setDate(3, sqlDate);
+                                    preparedStmt.setString(4, kind);
+                                    preparedStmt.setString(5, country);
+                                    preparedStmt.setString(6, language);
+                                    preparedStmt.execute();
+
+                                    Long patentId = 0L;
+                                    preparedStmt = conn.prepareStatement("select last_insert_id()");
+                                    ResultSet rSet = preparedStmt.executeQuery();
+
+                                    while (rSet.next()) {
+
+                                        patentId = rSet.getLong(1);
+                                    }
+
+                                    // Inventors
+                                    author = s[4];
+
+                                    if (author.length() > 100) author = author.substring(0, 100);
+
+                                    preparedStmt = conn.prepareStatement("insert into inventors(id_patent, inventor) values (?, ?)");
+                                    preparedStmt.setLong(1, patentId);
+                                    preparedStmt.setString(2, author);
+                                    preparedStmt.execute();
                                 }
                                 catch (Exception e) {
-                                    System.out.println("kokot");
+
+                                    e.printStackTrace();
                                 }
                             }
                         }
@@ -256,14 +545,10 @@ public class mainclass {
             List<String> columns = new ArrayList<>();
             Map<Long, List<String>> values = new HashMap();
 
+            List<String> patentIdss = new ArrayList<>();
+
             boolean skipFirstRow = false;
             boolean secondRow = false;
-
-            MongoClient mongoClient = new MongoClient(new MongoClientURI("mongodb://localhost:27017"));
-            DB database = mongoClient.getDB("patents");
-            DBCollection collection = database.getCollection("test");
-
-            StringBuilder json = new StringBuilder("{\"Cases\": [\n");
 
             long index = 0;
 
@@ -343,32 +628,159 @@ public class mainclass {
                 }
             }
 
-            for (long j = 0; j < values.size(); j++) {
+            // patent_id ; title ; date ; kind ; country    -  patents
+            // id_patent ; section ; class ; subclass    - classification
+            // id_patent ; language     - languages
+            // id_patent ; inventor     - inventors
+            // id_patent ; applicant    - applicants
 
-                List<String> vals = values.get(j);
-                json.append("{");
-                for (int i = 0; i < columns.size(); i++) {
+            PreparedStatement preparedStmt = null;
+            for (Long key : values.keySet()) {
 
-                    try {
-                        json.append("\"").append(columns.get(i)).append("\": \"").append(vals.get(i)).append("\"");
+                // Patents
+                String sPatentId = "PE";
+                String title = "";
+                String date = "";
+                String kind = "-";
+                String country = "PE";
+
+                // Classification
+                List<String> section = new ArrayList<>();
+                List<String> sClass = new ArrayList<>();
+                List<String> subclass = new ArrayList<>();
+
+                // Inventors
+                List<String> iNames = new ArrayList<>();
+
+                List<String> listValues = values.get(key);
+
+                for (int k = 0; k < listValues.size(); k++) {
+
+                    String columnName = columns.get(k);
+
+                    if (columnName.equals("")) {
+
                     }
-                    catch
-                    (Exception e) {
 
+                    // Patents
+                    if (columnName.equals("N° EXPEDIENTE")) {
+
+                        String expediente = listValues.get(k);
+                        expediente = expediente.split("-")[0];
+
+                        int ind = 0;
+                        for (int l = 0; l < expediente.length(); l++) {
+
+                            if (expediente.charAt(l) == '0') continue;
+                            else ind = l;
+                            break;
+                        }
+
+                        sPatentId += expediente.substring(ind);
                     }
-                    if (i < columns.size() - 1) {
 
-                        json.append(",\n");
+                    if (columnName.equals("TITULAR")) {
+
+                        title = listValues.get(k);
+                        if (title.length() > 300) title = title.substring(0, 300);
+                    }
+
+                    if (columnName.equals("FECHA DE INICIO")) {
+
+                        date = listValues.get(k);
+                    }
+
+                    // Classification
+                    if (columnName.equals("CLASIFICACIÓN")) {
+
+                        String classString = listValues.get(k);
+                        String[] classifications = classString.split(";");
+
+                        List<String> listClass = new ArrayList<>();
+
+                        for (int l = 0; l < classifications.length; l++) {
+
+                            String classification = classifications[l];
+                            if (classification.contains("-") || classification.length() < 1) continue;
+
+                            if (classification.charAt(0) == ' ') classification = classification.substring(1);
+
+                            String full = classification.substring(0, 1) + classification.substring(1, 3) + classification.substring(3, 4);
+
+                            if (listClass.contains(full)) continue;;
+                            listClass.add(full);
+
+                            section.add(classification.substring(0, 1));
+                            sClass.add(classification.substring(1, 3));
+                            subclass.add(classification.substring(3, 4));
+                        }
+                    }
+
+                    // Inventors
+                    if (columnName.equals("SOLICITANTE")) {
+
+                        String[] names = listValues.get(k).split(";");
+
+                        for (int l = 0; l < names.length; l++) {
+
+                            String iNamee = names[l];
+                            if (iNamee.charAt(0) == ' ') iNamee = iNamee.substring(1);
+                            if (iNamee.length() < 2) continue;
+                            iNames.add(iNamee);
+                        }
+
                     }
                 }
-                json.append("\n},\n");
+
+                if (patentIdss.contains(sPatentId)) continue;
+                patentIdss.add(sPatentId);
+
+                SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy", Locale.US);
+                java.util.Date utilDate = format.parse(date);
+                java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime());
+
+                // Patents
+                preparedStmt = conn.prepareStatement("insert into patents(patent_id, title, patent_date, kind, country, language) values (?, ?, ?, ?, ?, ?)");
+                preparedStmt.setString(1, sPatentId);
+                preparedStmt.setString(2, title);
+                preparedStmt.setDate(3, sqlDate);
+                preparedStmt.setString(4, kind);
+                preparedStmt.setString(5, country);
+                preparedStmt.setString(6, "ES");
+                preparedStmt.execute();
+
+                Long patentId = 0L;
+                preparedStmt = conn.prepareStatement("select last_insert_id()");
+                ResultSet rSet = preparedStmt.executeQuery();
+
+                while (rSet.next()) {
+
+                    patentId = rSet.getLong(1);
+                }
+
+                // Classifications
+                for (int ll = 0; ll < section.size(); ll++) {
+
+                    preparedStmt = conn.prepareStatement("insert into classification(id_patent, section, class, subclass) values (?, ?, ?, ?)");
+                    preparedStmt.setLong(1, patentId);
+                    preparedStmt.setString(2, section.get(ll));
+                    preparedStmt.setString(3, sClass.get(ll));
+                    preparedStmt.setString(4, subclass.get(ll));
+                    preparedStmt.execute();
+                }
+
+                // Inventors
+                for (int ll = 0; ll < iNames.size(); ll++) {
+
+                    String inventor = iNames.get(ll);
+
+                    if (inventor.length() > 100) inventor = inventor.substring(0, 100);
+                    preparedStmt = conn.prepareStatement("insert into inventors(id_patent, inventor) values (?, ?)");
+                    preparedStmt.setLong(1, patentId);
+                    preparedStmt.setString(2, inventor);
+                    preparedStmt.execute();
+                }
             }
-
-            json.append("\n]}");
-
-            String jsonString = json.toString();
-            DBObject dbObject = (DBObject) JSON.parse(jsonString);
-            collection.insert(dbObject);
         }
         catch(Exception e)
         {
@@ -405,10 +817,12 @@ public class mainclass {
 
                 for (File file : filess) {
 
+                    PreparedStatement preparedStmt = null;
+
                     // Old structure
                     if (file.isFile()) {
 
-                        // TODO: count xmls
+
                         // CA-BFT-2064388-20190113.xml
                         String filename = file.getName();
                         filename = filename.replace("CA-BFT-", "");
@@ -454,20 +868,127 @@ public class mainclass {
                             String newXmlContentString = "";
 
                             try {
-                                StringWriter sw = new StringWriter();
-                                Transformer t = TransformerFactory.newInstance().newTransformer();
-                                t.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
-                                t.setOutputProperty(OutputKeys.INDENT, "yes");
-                                t.transform(new DOMSource(doc), new StreamResult(sw));
 
-                                newXmlContentString = sw.toString();
 
-                                // Convert xml to json.
-                                JSONObject json = XML.toJSONObject(newXmlContentString);
-                                String jsonString = json.toString(4);
 
-                                DBObject dbObject = (DBObject) JSON.parse(jsonString);
-                                collection.insert(dbObject);
+                                // patent_id ; title ; date ; kind ; country    -  patents
+                                // id_patent ; section ; class ; subclass    - classification
+                                // id_patent ; language     - languages
+                                // id_patent ; inventor     - inventors
+                                // id_patent ; applicant    - applicants
+
+                                Element elBiblio = (Element) doc.getElementsByTagName("ca-bibliographic-data").item(0);
+
+                                // Patents
+                                String language = elBiblio.getElementsByTagName("language-of-filing").item(0).getTextContent().toUpperCase();
+                                String country = el.getElementsByTagName("country").item(0).getTextContent();
+                                String sPatentId = country + el.getElementsByTagName("doc-number").item(0).getTextContent();
+                                String title = "";
+                                String date = el.getElementsByTagName("date").item(0).getTextContent();
+                                String kind = el.getElementsByTagName("kind").item(0).getTextContent();
+
+                                NodeList titles = elBiblio.getElementsByTagName("invention-title");
+
+                                for (int l = 0; l < titles.getLength(); l++) {
+
+                                    Element elTitle = (Element) titles.item(l);
+                                    if (elTitle.getAttribute("lang").equalsIgnoreCase(language)){
+
+                                        title = elTitle.getTextContent();
+                                        break;
+                                    }
+                                }
+                                if (title.length() > 300) title = title.substring(0, 300);
+
+                                SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd", Locale.US);
+                                java.util.Date utilDate = format.parse(date);
+                                java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime());
+
+                                preparedStmt = conn.prepareStatement("insert into patents(patent_id, title, patent_date, kind, country, language) values (?, ?, ?, ?, ?, ?)");
+                                preparedStmt.setString(1, sPatentId);
+                                preparedStmt.setString(2, title);
+                                preparedStmt.setDate(3, sqlDate);
+                                preparedStmt.setString(4, kind);
+                                preparedStmt.setString(5, country);
+                                preparedStmt.setString(6, language);
+                                preparedStmt.execute();
+
+                                Long patentId = 0L;
+                                preparedStmt = conn.prepareStatement("select last_insert_id()");
+                                ResultSet rSet = preparedStmt.executeQuery();
+
+                                while (rSet.next()) {
+
+                                    patentId = rSet.getLong(1);
+                                }
+
+                                // Classification
+                                Element classIpcr = (Element) elBiblio.getElementsByTagName("classifications-ipcr").item(0);
+                                NodeList classIpcrs = classIpcr.getElementsByTagName("classification-ipcr");
+
+                                List<String> listClass = new ArrayList<>();
+
+                                for (int l = 0; l < classIpcrs.getLength(); l++) {
+
+                                    Element cIpcr = (Element) classIpcrs.item(l);
+
+                                    String section = cIpcr.getElementsByTagName("section").item(0).getTextContent();
+                                    String sClass = cIpcr.getElementsByTagName("class").item(0).getTextContent();
+                                    String subclass = cIpcr.getElementsByTagName("subclass").item(0).getTextContent();
+
+                                    String full = section + sClass + subclass;
+
+                                    if (listClass.contains(full)) continue;
+                                    listClass.add(full);
+
+                                    preparedStmt = conn.prepareStatement("insert into classification(id_patent, section, class, subclass) values (?, ?, ?, ?)");
+                                    preparedStmt.setLong(1, patentId);
+                                    preparedStmt.setString(2, section);
+                                    preparedStmt.setString(3, sClass);
+                                    preparedStmt.setString(4, subclass);
+                                    preparedStmt.execute();
+                                }
+
+                                // Inventors
+                                Element elOffice = (Element) elBiblio.getElementsByTagName("ca-office-specific-bib-data").item(0);
+                                Element parties = (Element) elOffice.getElementsByTagName("ca-parties").item(0);
+                                Element elInventors = (Element) parties.getElementsByTagName("inventors").item(0);
+                                NodeList inventors = elInventors.getElementsByTagName("inventor");
+
+                                for (int l = 0; l < inventors.getLength(); l++) {
+
+                                    Element inventor = (Element) inventors.item(l);
+                                    Element addressbook = (Element) inventor.getElementsByTagName("addressbook").item(0);
+
+                                    String name = addressbook.getElementsByTagName("name").item(0).getTextContent();
+
+                                    if (name.length() > 100) name = name.substring(0, 100);
+
+                                    preparedStmt = conn.prepareStatement("insert into inventors(id_patent, inventor) values (?, ?)");
+                                    preparedStmt.setLong(1, patentId);
+                                    preparedStmt.setString(2, name);
+                                    preparedStmt.execute();
+                                }
+
+                                // Applicants
+                                Element elApplicants = (Element) parties.getElementsByTagName("applicants").item(0);
+                                NodeList applicants = elApplicants.getElementsByTagName("applicant");
+
+                                for (int l = 0; l < applicants.getLength(); l++) {
+
+                                    Element applicant = (Element) applicants.item(l);
+                                    Element addressbook = (Element) applicant.getElementsByTagName("addressbook").item(0);
+
+                                    String name = addressbook.getElementsByTagName("name").item(0).getTextContent();
+
+                                    if (name.length() > 100) name = name.substring(0, 100);
+
+                                    preparedStmt = conn.prepareStatement("insert into applicants(id_patent, applicant) values (?, ?)");
+                                    preparedStmt.setLong(1, patentId);
+                                    preparedStmt.setString(2, name);
+                                    preparedStmt.execute();
+                                }
+
                             } catch (Exception e) {
 
                                 exceptions.add(e);
@@ -482,7 +1003,6 @@ public class mainclass {
 
                         for (File xml : xmls) {
 
-                            // TODO: count xmls
                             // CA02611743-20200108.xml
                             String filename = xml.getName();
                             filename = filename.replace("CA", "");
@@ -529,20 +1049,116 @@ public class mainclass {
 
                                 try {
 
-                                    StringWriter sw = new StringWriter();
-                                    Transformer t = TransformerFactory.newInstance().newTransformer();
-                                    t.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
-                                    t.setOutputProperty(OutputKeys.INDENT, "yes");
-                                    t.transform(new DOMSource(doc), new StreamResult(sw));
+                                    Element elBiblio = (Element) doc.getElementsByTagName("ca-bibliographic-data").item(0);
 
-                                    newXmlContentString = sw.toString();
+                                    // Patents
+                                    String language = elBiblio.getElementsByTagName("language-of-filing").item(0).getTextContent().toUpperCase();
+                                    String country = el.getElementsByTagName("country").item(0).getTextContent();
+                                    String sPatentId = country + el.getElementsByTagName("doc-number").item(0).getTextContent();
+                                    String title = "";
+                                    String date = el.getElementsByTagName("date").item(0).getTextContent();
+                                    String kind = el.getElementsByTagName("kind").item(0).getTextContent();
 
-                                    // Convert xml to json.
-                                    JSONObject json = XML.toJSONObject(newXmlContentString);
-                                    String jsonString = json.toString(4);
+                                    NodeList titles = elBiblio.getElementsByTagName("invention-title");
 
-                                    DBObject dbObject = (DBObject) JSON.parse(jsonString);
-                                    collection.insert(dbObject);
+                                    for (int l = 0; l < titles.getLength(); l++) {
+
+                                        Element elTitle = (Element) titles.item(l);
+                                        if (elTitle.getAttribute("lang").equalsIgnoreCase(language)){
+
+                                            title = elTitle.getTextContent();
+                                            break;
+                                        }
+                                    }
+                                    if (title.length() > 300) title = title.substring(0, 300);
+
+                                    SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd", Locale.US);
+                                    java.util.Date utilDate = format.parse(date);
+                                    java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime());
+
+                                    preparedStmt = conn.prepareStatement("insert into patents(patent_id, title, patent_date, kind, country, language) values (?, ?, ?, ?, ?, ?)");
+                                    preparedStmt.setString(1, sPatentId);
+                                    preparedStmt.setString(2, title);
+                                    preparedStmt.setDate(3, sqlDate);
+                                    preparedStmt.setString(4, kind);
+                                    preparedStmt.setString(5, country);
+                                    preparedStmt.setString(6, language);
+                                    preparedStmt.execute();
+
+                                    Long patentId = 0L;
+                                    preparedStmt = conn.prepareStatement("select last_insert_id()");
+                                    ResultSet rSet = preparedStmt.executeQuery();
+
+                                    while (rSet.next()) {
+
+                                        patentId = rSet.getLong(1);
+                                    }
+
+                                    // Classification
+                                    Element classIpcr = (Element) elBiblio.getElementsByTagName("classifications-ipcr").item(0);
+                                    NodeList classIpcrs = classIpcr.getElementsByTagName("classification-ipcr");
+
+                                    List<String> listClass = new ArrayList<>();
+
+                                    for (int l = 0; l < classIpcrs.getLength(); l++) {
+
+                                        Element cIpcr = (Element) classIpcrs.item(l);
+
+                                        String section = cIpcr.getElementsByTagName("section").item(0).getTextContent();
+                                        String sClass = cIpcr.getElementsByTagName("class").item(0).getTextContent();
+                                        String subclass = cIpcr.getElementsByTagName("subclass").item(0).getTextContent();
+                                        String full = section + sClass + subclass;
+
+                                        if (listClass.contains(full)) continue;
+                                        listClass.add(full);
+
+                                        preparedStmt = conn.prepareStatement("insert into classification(id_patent, section, class, subclass) values (?, ?, ?, ?)");
+                                        preparedStmt.setLong(1, patentId);
+                                        preparedStmt.setString(2, section);
+                                        preparedStmt.setString(3, sClass);
+                                        preparedStmt.setString(4, subclass);
+                                        preparedStmt.execute();
+                                    }
+
+                                    // Inventors
+                                    Element elOffice = (Element) elBiblio.getElementsByTagName("ca-office-specific-bib-data").item(0);
+                                    Element parties = (Element) elOffice.getElementsByTagName("ca-parties").item(0);
+                                    Element elInventors = (Element) parties.getElementsByTagName("inventors").item(0);
+                                    NodeList inventors = elInventors.getElementsByTagName("inventor");
+
+                                    for (int l = 0; l < inventors.getLength(); l++) {
+
+                                        Element inventor = (Element) inventors.item(l);
+                                        Element addressbook = (Element) inventor.getElementsByTagName("addressbook").item(0);
+
+                                        String name = addressbook.getElementsByTagName("name").item(0).getTextContent();
+
+                                        if (name.length() > 100) name = name.substring(0, 100);
+
+                                        preparedStmt = conn.prepareStatement("insert into inventors(id_patent, inventor) values (?, ?)");
+                                        preparedStmt.setLong(1, patentId);
+                                        preparedStmt.setString(2, name);
+                                        preparedStmt.execute();
+                                    }
+
+                                    // Applicants
+                                    Element elApplicants = (Element) parties.getElementsByTagName("applicants").item(0);
+                                    NodeList applicants = elApplicants.getElementsByTagName("applicant");
+
+                                    for (int l = 0; l < applicants.getLength(); l++) {
+
+                                        Element applicant = (Element) applicants.item(l);
+                                        Element addressbook = (Element) applicant.getElementsByTagName("addressbook").item(0);
+
+                                        String name = addressbook.getElementsByTagName("name").item(0).getTextContent();
+                                        if (name.length() > 100) name = name.substring(0, 100);
+
+                                        preparedStmt = conn.prepareStatement("insert into applicants(id_patent, applicant) values (?, ?)");
+                                        preparedStmt.setLong(1, patentId);
+                                        preparedStmt.setString(2, name);
+                                        preparedStmt.execute();
+                                    }
+
                                 } catch (Exception e) {
 
                                     exceptions.add(e);
@@ -588,10 +1204,6 @@ public class mainclass {
         File israelDir = new File(inputFolder + "Francie\\patents");
         File[] years = israelDir.listFiles();
 
-        MongoClient mongoClient = new MongoClient(new MongoClientURI("mongodb://localhost:27017"));
-        DB database = mongoClient.getDB("patents");
-        DBCollection collection = database.getCollection("patents");
-
         List<Exception> exceptions = new ArrayList<>();
 
         for (File f : years) {
@@ -635,7 +1247,6 @@ public class mainclass {
 
                                     } else {
 
-                                        // TODO
                                         // Instantiate the Factory
                                         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance("com.sun.org.apache.xerces.internal.jaxp.DocumentBuilderFactoryImpl", ClassLoader.getSystemClassLoader());
 
@@ -668,21 +1279,155 @@ public class mainclass {
 
                                             set.add(filename);
 
+                                            // 2017
                                             String newXmlContentString = "";
+                                            PreparedStatement preparedStmt = null;
 
                                             try {
-                                                StringWriter sw = new StringWriter();
-                                                Transformer t = TransformerFactory.newInstance().newTransformer();
-                                                t.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
-                                                t.setOutputProperty(OutputKeys.INDENT, "yes");
-                                                t.transform(new DOMSource(doc), new StreamResult(sw));
 
-                                                newXmlContentString = sw.toString();
-                                                JSONObject json = XML.toJSONObject(newXmlContentString);
-                                                String jsonString = json.toString(4);
+                                                // patent_id ; title ; date ; kind ; country    -  patents
+                                                // id_patent ; section ; class ; subclass    - classification
+                                                // id_patent ; language     - languages
+                                                // id_patent ; inventor     - inventors
+                                                // id_patent ; applicant    - applicants
 
-                                                DBObject dbObject = (DBObject) JSON.parse(jsonString);
-                                                collection.insert(dbObject);
+                                                Element elBiblio = (Element) doc.getElementsByTagName("fr-bibliographic-data").item(0);
+
+                                                // Patents
+                                                String country = el.getElementsByTagName("country").item(0).getTextContent();
+                                                String title = elBiblio.getElementsByTagName("invention-title").item(0).getTextContent();
+                                                String sPatentId = country + el.getElementsByTagName("doc-number").item(0).getTextContent();
+                                                String date = el.getElementsByTagName("date").item(0).getTextContent();
+                                                String kind = el.getElementsByTagName("kind").item(0).getTextContent().substring(0, 1);
+                                                String language = "FR";
+
+                                                if (title == null || title.equals("")) continue;
+
+                                                if (title.length() > 300) title = title.substring(0, 300);
+
+                                                SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd", Locale.US);
+                                                java.util.Date utilDate = format.parse(date);
+                                                java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime());
+
+                                                preparedStmt = conn.prepareStatement("insert into patents(patent_id, title, patent_date, kind, country, language) values (?, ?, ?, ?, ?, ?)");
+                                                preparedStmt.setString(1, sPatentId);
+                                                preparedStmt.setString(2, title);
+                                                preparedStmt.setDate(3, sqlDate);
+                                                preparedStmt.setString(4, kind);
+                                                preparedStmt.setString(5, country);
+                                                preparedStmt.setString(6, language);
+                                                preparedStmt.execute();
+
+                                                Long patentId = 0L;
+                                                preparedStmt = conn.prepareStatement("select last_insert_id()");
+                                                ResultSet rSet = preparedStmt.executeQuery();
+
+                                                while (rSet.next()) {
+
+                                                    patentId = rSet.getLong(1);
+                                                }
+
+                                                // Classification
+                                                Element elClass = (Element) elBiblio.getElementsByTagName("classification-ipc").item(0);
+                                                NodeList list = elClass.getElementsByTagName("further-classification");
+
+                                                List<String> lists = new ArrayList<>();
+
+                                                Element mainNot = (Element) elClass.getElementsByTagName("main-classification").item(0);
+
+                                                if (mainNot != null) {
+
+                                                    String full = mainNot.getTextContent();
+                                                    full = full.substring(0, 4);
+
+                                                    if (lists.contains(full)) continue;
+                                                    lists.add(full);
+
+                                                    String section = full.substring(0, 1);
+                                                    String sClass = full.substring(1, 3);
+                                                    String subclass = full.substring(3, 4);
+
+                                                    preparedStmt = conn.prepareStatement("insert into classification(id_patent, section, class, subclass) values (?, ?, ?, ?)");
+                                                    preparedStmt.setLong(1, patentId);
+                                                    preparedStmt.setString(2, section);
+                                                    preparedStmt.setString(3, sClass);
+                                                    preparedStmt.setString(4, subclass);
+                                                    preparedStmt.execute();
+                                                }
+
+                                                for (int l = 0; l < list.getLength(); l++) {
+
+                                                    Element elClassS = (Element) list.item(0);
+                                                    String full = elClassS.getTextContent();
+                                                    full = full.substring(0, 4);
+
+                                                    if (lists.contains(full)) continue;
+                                                    lists.add(full);
+
+                                                    String section = full.substring(0, 1);
+                                                    String sClass = full.substring(1, 3);
+                                                    String subclass = full.substring(3, 4);
+
+                                                    preparedStmt = conn.prepareStatement("insert into classification(id_patent, section, class, subclass) values (?, ?, ?, ?)");
+                                                    preparedStmt.setLong(1, patentId);
+                                                    preparedStmt.setString(2, section);
+                                                    preparedStmt.setString(3, sClass);
+                                                    preparedStmt.setString(4, subclass);
+                                                    preparedStmt.execute();
+                                                }
+
+
+                                                // Inventors
+                                                Element elParties = (Element) elBiblio.getElementsByTagName("parties").item(0);
+                                                Element elInventors = (Element) elParties.getElementsByTagName("inventors").item(0);
+                                                NodeList inventors = elInventors.getElementsByTagName("inventor");
+
+                                                for (int l = 0; l < inventors.getLength(); l++) {
+
+                                                    Element inventor = (Element) inventors.item(l);
+                                                    Element addressbook = (Element) inventor.getElementsByTagName("addressbook").item(0);
+
+                                                    if (addressbook.getElementsByTagName("last-name").item(0) == null) continue;
+                                                    if (addressbook.getElementsByTagName("first-name").item(0) == null) continue;
+
+                                                    String lastName = addressbook.getElementsByTagName("last-name").item(0).getTextContent();
+                                                    String firstName = addressbook.getElementsByTagName("first-name").item(0).getTextContent();
+
+                                                    String name = lastName + " " + firstName;
+
+                                                    if (name.length() > 100) name = name.substring(0, 100);
+
+                                                    preparedStmt = conn.prepareStatement("insert into inventors(id_patent, inventor) values (?, ?)");
+                                                    preparedStmt.setLong(1, patentId);
+                                                    preparedStmt.setString(2, name);
+                                                    preparedStmt.execute();
+                                                }
+
+                                                // Applicants
+                                                Element elApplicants = (Element) elParties.getElementsByTagName("applicants").item(0);
+                                                NodeList applicants = elApplicants.getElementsByTagName("applicant");
+
+                                                for (int l = 0; l < applicants.getLength(); l++) {
+
+                                                    Element applicant = (Element) applicants.item(l);
+                                                    Element addressbook = (Element) applicant.getElementsByTagName("addressbook").item(0);
+
+                                                    if (addressbook.getElementsByTagName("last-name").item(0) == null) continue;
+                                                    if (addressbook.getElementsByTagName("first-name").item(0) == null) continue;
+
+                                                    String lastName = addressbook.getElementsByTagName("last-name").item(0).getTextContent();
+                                                    String firstName = addressbook.getElementsByTagName("first-name").item(0).getTextContent();
+
+                                                    String name = lastName + " " + firstName;
+
+                                                    if (name.length() > 100) name = name.substring(0, 100);
+
+                                                    preparedStmt = conn.prepareStatement("insert into applicants(id_patent, applicant) values (?, ?)");
+                                                    preparedStmt.setLong(1, patentId);
+                                                    preparedStmt.setString(2, name);
+                                                    preparedStmt.execute();
+                                                }
+
                                             } catch (Exception e) {
 
                                                 exceptions.add(e);
@@ -722,7 +1467,7 @@ public class mainclass {
 
                                             } else {
 
-                                                // TODO
+
                                                 // Instantiate the Factory
                                                 DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance("com.sun.org.apache.xerces.internal.jaxp.DocumentBuilderFactoryImpl", ClassLoader.getSystemClassLoader());
 
@@ -755,25 +1500,123 @@ public class mainclass {
 
                                                     set.add(filename);
 
+                                                    // EP + CCP
                                                     String newXmlContentString = "";
+                                                    PreparedStatement preparedStmt = null;
 
                                                     try {
-                                                        StringWriter sw = new StringWriter();
-                                                        Transformer t = TransformerFactory.newInstance().newTransformer();
-                                                        t.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
-                                                        t.setOutputProperty(OutputKeys.INDENT, "yes");
-                                                        t.transform(new DOMSource(doc), new StreamResult(sw));
+                                                        // patent_id ; title ; date ; kind ; country    -  patents
+                                                        // id_patent ; section ; class ; subclass    - classification
+                                                        // id_patent ; language     - languages
+                                                        // id_patent ; inventor     - inventors
+                                                        // id_patent ; applicant    - applicants
 
-                                                        newXmlContentString = sw.toString();
-                                                        // Convert xml to json.
-                                                        JSONObject json = XML.toJSONObject(newXmlContentString);
-                                                        String jsonString = json.toString(4);
+                                                        Element elBiblio = (Element) doc.getElementsByTagName("fr-bibliographic-data").item(0);
+                                                        Element elPubliData = (Element) elBiblio.getElementsByTagName("fr-publication-data").item(0);
+                                                        Element elPubliRef = (Element) elPubliData.getElementsByTagName("fr-publication-reference").item(0);
+                                                        Element elPubliDocId = (Element) elPubliRef.getElementsByTagName("document-id").item(0);
 
-                                                        DBObject dbObject = (DBObject) JSON.parse(jsonString);
-                                                        collection.insert(dbObject);
+                                                        // Patents
+                                                        String country = elPubliDocId.getElementsByTagName("country").item(0).getTextContent();
+                                                        String sPatentId = country + elPubliDocId.getElementsByTagName("doc-number").item(0).getTextContent();
+
+                                                        Element elKind = (Element) elPubliDocId.getElementsByTagName("kind").item(0);
+                                                        String kind = "-";
+                                                        if (elKind != null) kind = elKind.getTextContent().substring(0, 1);
+
+                                                        Element elDate = (Element) elPubliDocId.getElementsByTagName("date").item(0);
+                                                        String date = "";
+                                                        if (elDate != null) date = elDate.getTextContent();
+
+                                                        if (date.equals("")) continue;
+
+                                                        String title = elBiblio.getElementsByTagName("invention-title").item(0).getTextContent();
+
+                                                        if (title == null || title.equals("")) continue;
+
+                                                        if (title.length() > 300) title = title.substring(0, 300);
+
+                                                        SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd", Locale.US);
+                                                        java.util.Date utilDate = format.parse(date);
+                                                        java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime());
+
+                                                        String language = elBiblio.getAttribute("lang").toUpperCase();
+
+                                                        preparedStmt = conn.prepareStatement("insert into patents(patent_id, title, patent_date, kind, country, language) values (?, ?, ?, ?, ?, ?)");
+                                                        preparedStmt.setString(1, sPatentId);
+                                                        preparedStmt.setString(2, title);
+                                                        preparedStmt.setDate(3, sqlDate);
+                                                        preparedStmt.setString(4, kind);
+                                                        preparedStmt.setString(5, country);
+                                                        preparedStmt.setString(6, language);
+                                                        preparedStmt.execute();
+
+                                                        Long patentId = 0L;
+                                                        preparedStmt = conn.prepareStatement("select last_insert_id()");
+                                                        ResultSet rSet = preparedStmt.executeQuery();
+
+                                                        while (rSet.next()) {
+
+                                                            patentId = rSet.getLong(1);
+                                                        }
+
+                                                        // Inventors
+                                                        Element elParties = (Element) elBiblio.getElementsByTagName("parties").item(0);
+                                                        Element elInventors = (Element) elBiblio.getElementsByTagName("fr-owners").item(0);
+                                                        NodeList inventors = elInventors.getElementsByTagName("fr-owner");
+
+                                                        for (int l = 0; l < inventors.getLength(); l++) {
+
+                                                            Element inventor = (Element) inventors.item(l);
+                                                            Element addressbook = (Element) inventor.getElementsByTagName("addressbook").item(0);
+
+                                                            if (addressbook.getElementsByTagName("last-name").item(0) == null) continue;
+                                                            if (addressbook.getElementsByTagName("first-name").item(0) == null) continue;
+
+                                                            String lastName = addressbook.getElementsByTagName("last-name").item(0).getTextContent();
+                                                            String firstName = addressbook.getElementsByTagName("first-name").item(0).getTextContent();
+
+                                                            String name = lastName;
+                                                            if (firstName.length() > 0) name += " " + firstName;
+
+                                                            if (name.length() > 100) name = name.substring(0, 100);
+
+                                                            preparedStmt = conn.prepareStatement("insert into inventors(id_patent, inventor) values (?, ?)");
+                                                            preparedStmt.setLong(1, patentId);
+                                                            preparedStmt.setString(2, name);
+                                                            preparedStmt.execute();
+                                                        }
+
+                                                        // Applicants
+                                                        Element elApplicants = (Element) elParties.getElementsByTagName("applicants").item(0);
+                                                        NodeList applicants = elApplicants.getElementsByTagName("applicant");
+
+                                                        for (int l = 0; l < applicants.getLength(); l++) {
+
+                                                            Element applicant = (Element) applicants.item(l);
+                                                            Element addressbook = (Element) applicant.getElementsByTagName("addressbook").item(0);
+
+                                                            if (addressbook.getElementsByTagName("last-name").item(0) == null) continue;
+                                                            if (addressbook.getElementsByTagName("first-name").item(0) == null) continue;
+
+                                                            String lastName = addressbook.getElementsByTagName("last-name").item(0).getTextContent();
+                                                            String firstName = addressbook.getElementsByTagName("first-name").item(0).getTextContent();
+
+                                                            String name = lastName;
+                                                            if (firstName.length() > 0) name += " " + firstName;
+
+                                                            if (name.length() > 100) name = name.substring(0, 100);
+
+                                                            preparedStmt = conn.prepareStatement("insert into applicants(id_patent, applicant) values (?, ?)");
+                                                            preparedStmt.setLong(1, patentId);
+                                                            preparedStmt.setString(2, name);
+                                                            preparedStmt.execute();
+                                                        }
+
                                                     } catch (Exception e) {
 
                                                         exceptions.add(e);
+                                                        e.printStackTrace();
                                                     }
                                                 } catch (Exception e) {
                                                     System.out.println(xml.getAbsolutePath());
@@ -795,7 +1638,7 @@ public class mainclass {
 
                                         } else {
 
-                                            // TODO
+
 
                                             // Instantiate the Factory
                                             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance("com.sun.org.apache.xerces.internal.jaxp.DocumentBuilderFactoryImpl", ClassLoader.getSystemClassLoader());
@@ -829,25 +1672,149 @@ public class mainclass {
 
                                                 set.add(filename);
 
+                                                // 2021
                                                 String newXmlContentString = "";
+                                                PreparedStatement preparedStmt = null;
 
                                                 try {
-                                                    StringWriter sw = new StringWriter();
-                                                    Transformer t = TransformerFactory.newInstance().newTransformer();
-                                                    t.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
-                                                    t.setOutputProperty(OutputKeys.INDENT, "yes");
-                                                    t.transform(new DOMSource(doc), new StreamResult(sw));
 
-                                                    newXmlContentString = sw.toString();
-                                                    // Convert xml to json.
-                                                    JSONObject json = XML.toJSONObject(newXmlContentString);
-                                                    String jsonString = json.toString(4);
+                                                    // patent_id ; title ; date ; kind ; country    -  patents
+                                                    // id_patent ; section ; class ; subclass    - classification
+                                                    // id_patent ; language     - languages
+                                                    // id_patent ; inventor     - inventors
+                                                    // id_patent ; applicant    - applicants
 
-                                                    DBObject dbObject = (DBObject) JSON.parse(jsonString);
-                                                    collection.insert(dbObject);
+                                                    Element elBiblio = (Element) doc.getElementsByTagName("fr-bibliographic-data").item(0);
+
+                                                    // Patents
+                                                    String country = el.getElementsByTagName("country").item(0).getTextContent();
+                                                    String title = elBiblio.getElementsByTagName("invention-title").item(0).getTextContent();
+                                                    String sPatentId = country + el.getElementsByTagName("doc-number").item(0).getTextContent();
+                                                    String date = el.getElementsByTagName("date").item(0).getTextContent();
+                                                    String kind = el.getElementsByTagName("kind").item(0).getTextContent().substring(0, 1);
+
+                                                    if (title == null || title.equals("")) continue;
+
+                                                    if (title.length() > 300) title = title.substring(0, 300);
+
+                                                    SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd", Locale.US);
+                                                    java.util.Date utilDate = format.parse(date);
+                                                    java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime());
+
+                                                    String language = "FR";
+
+                                                    preparedStmt = conn.prepareStatement("insert into patents(patent_id, title, patent_date, kind, country, language) values (?, ?, ?, ?, ?, ?)");
+                                                    preparedStmt.setString(1, sPatentId);
+                                                    preparedStmt.setString(2, title);
+                                                    preparedStmt.setDate(3, sqlDate);
+                                                    preparedStmt.setString(4, kind);
+                                                    preparedStmt.setString(5, country);
+                                                    preparedStmt.setString(6, language);
+                                                    preparedStmt.execute();
+
+                                                    Long patentId = 0L;
+                                                    preparedStmt = conn.prepareStatement("select last_insert_id()");
+                                                    ResultSet rSet = preparedStmt.executeQuery();
+
+                                                    while (rSet.next()) {
+
+                                                        patentId = rSet.getLong(1);
+                                                    }
+
+                                                    // Classification
+                                                    Element elClass = (Element) elBiblio.getElementsByTagName("classifications-ipcr").item(0);
+                                                    NodeList list = elClass.getElementsByTagName("classification-ipcr");
+
+                                                    List<String> lists = new ArrayList<>();
+
+                                                    for (int l = 0; l < list.getLength(); l++) {
+
+                                                        Element elClassS = (Element) list.item(0);
+                                                        Element text = (Element) elClassS.getElementsByTagName("text").item(0);
+
+                                                        String full = text.getTextContent();
+                                                        full = full.substring(0, 4);
+
+                                                        if (lists.contains(full)) continue;
+                                                        lists.add(full);
+
+                                                        String section = full.substring(0, 1);
+                                                        String sClass = full.substring(1, 3);
+                                                        String subclass = full.substring(3, 4);
+
+                                                        preparedStmt = conn.prepareStatement("insert into classification(id_patent, section, class, subclass) values (?, ?, ?, ?)");
+                                                        preparedStmt.setLong(1, patentId);
+                                                        preparedStmt.setString(2, section);
+                                                        preparedStmt.setString(3, sClass);
+                                                        preparedStmt.setString(4, subclass);
+                                                        preparedStmt.execute();
+                                                    }
+
+                                                    // Inventors
+                                                    Element elParties = (Element) elBiblio.getElementsByTagName("parties").item(0);
+                                                    Element elInventors = (Element) elParties.getElementsByTagName("inventors").item(0);
+
+                                                    if (elInventors != null) {
+                                                        NodeList inventors = elInventors.getElementsByTagName("inventor");
+
+                                                        for (int l = 0; l < inventors.getLength(); l++) {
+
+                                                            Element inventor = (Element) inventors.item(l);
+                                                            Element addressbook = (Element) inventor.getElementsByTagName("addressbook").item(0);
+
+                                                            if (addressbook.getElementsByTagName("last-name").item(0) == null)
+                                                                continue;
+                                                            if (addressbook.getElementsByTagName("first-name").item(0) == null)
+                                                                continue;
+
+                                                            String lastName = addressbook.getElementsByTagName("last-name").item(0).getTextContent();
+                                                            String firstName = addressbook.getElementsByTagName("first-name").item(0).getTextContent();
+
+                                                            String name = lastName + " " + firstName;
+
+                                                            if (name.length() > 100) name = name.substring(0, 100);
+
+                                                            preparedStmt = conn.prepareStatement("insert into inventors(id_patent, inventor) values (?, ?)");
+                                                            preparedStmt.setLong(1, patentId);
+                                                            preparedStmt.setString(2, name);
+                                                            preparedStmt.execute();
+                                                        }
+                                                    }
+
+                                                    // Applicants
+                                                    Element elApplicants = (Element) elParties.getElementsByTagName("applicants").item(0);
+
+                                                    if (elApplicants != null) {
+                                                        NodeList applicants = elApplicants.getElementsByTagName("applicant");
+
+                                                        for (int l = 0; l < applicants.getLength(); l++) {
+
+                                                            Element applicant = (Element) applicants.item(l);
+                                                            Element addressbook = (Element) applicant.getElementsByTagName("addressbook").item(0);
+
+                                                            if (addressbook.getElementsByTagName("last-name").item(0) == null)
+                                                                continue;
+                                                            if (addressbook.getElementsByTagName("first-name").item(0) == null)
+                                                                continue;
+
+                                                            String lastName = addressbook.getElementsByTagName("last-name").item(0).getTextContent();
+                                                            String firstName = addressbook.getElementsByTagName("first-name").item(0).getTextContent();
+
+                                                            String name = lastName + " " + firstName;
+
+                                                            if (name.length() > 100) name = name.substring(0, 100);
+
+                                                            preparedStmt = conn.prepareStatement("insert into applicants(id_patent, applicant) values (?, ?)");
+                                                            preparedStmt.setLong(1, patentId);
+                                                            preparedStmt.setString(2, name);
+                                                            preparedStmt.execute();
+                                                        }
+                                                    }
+
                                                 } catch (Exception e) {
 
                                                     exceptions.add(e);
+                                                    e.printStackTrace();
                                                 }
                                             } catch (Exception e) {
                                                 System.out.println(allFile.getAbsolutePath());
@@ -899,10 +1866,6 @@ public class mainclass {
 
         File israelDir = new File(inputFolder + "Spanelsko");
         File[] years = israelDir.listFiles();
-
-        MongoClient mongoClient = new MongoClient(new MongoClientURI("mongodb://localhost:27017"));
-        DB database = mongoClient.getDB("patents");
-        DBCollection collection = database.getCollection("patents");
 
         List<Exception> exceptions = new ArrayList<>();
 
@@ -985,6 +1948,7 @@ public class mainclass {
                             Node documentId = doc.getElementsByTagName("document-id").item(0);
                             Element el = (Element) documentId;
                             String dateString = "";
+                            String dateDate = "";
 
                             try {
                                 dateString = el.getElementsByTagName("date").item(0).getTextContent();
@@ -997,8 +1961,11 @@ public class mainclass {
                                 }
                             }
 
+                            if (dateString.length() == 0) continue;
+
                             if (dateString.length() > 0) {
 
+                                dateDate = dateString;
                                 dateString = dateString.substring(dateString.lastIndexOf(".") + 1);
                             }
 
@@ -1012,23 +1979,207 @@ public class mainclass {
                             String newXmlContentString = "";
 
                             try {
-                                StringWriter sw = new StringWriter();
-                                Transformer t = TransformerFactory.newInstance().newTransformer();
-                                t.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
-                                t.setOutputProperty(OutputKeys.INDENT, "yes");
-                                t.transform(new DOMSource(doc), new StreamResult(sw));
 
-                                newXmlContentString = sw.toString();
+                                PreparedStatement preparedStmt = null;
 
-                                // Convert xml to json.
-                                JSONObject json = XML.toJSONObject(newXmlContentString);
-                                String jsonString = json.toString(4);
+                                // patent_id ; title ; date ; kind ; country    -  patents
+                                // id_patent ; section ; class ; subclass    - classification
+                                // id_patent ; language     - languages
+                                // id_patent ; inventor     - inventors
+                                // id_patent ; applicant    - applicants
 
-                                DBObject dbObject = (DBObject) JSON.parse(jsonString);
-                                collection.insert(dbObject);
-                            } catch (Exception e) {
+                                // Patents
+                                String sPatentId = el.getElementsByTagName("doc-number").item(0).getTextContent();
+                                String title = "";
+                                String date = dateDate;
+                                String kind = "-";
+                                String country = el.getElementsByTagName("country").item(0).getTextContent();;
 
-                                exceptions.add(e);
+                                NodeList titles = doc.getElementsByTagName("invention-title");
+                                for (int i = 0; i < titles.getLength(); i++) {
+
+                                    Element elTitle = (Element) titles.item(i);
+                                    if (elTitle.getAttribute("lang").equalsIgnoreCase("es")) {
+                                        title = elTitle.getTextContent();
+                                    }
+                                }
+
+                                if (title.length() > 300) title = title.substring(0, 300);
+
+                                SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy", Locale.US);
+                                java.util.Date utilDate = format.parse(date);
+                                java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime());
+
+                                String language = "ES";
+
+                                preparedStmt = conn.prepareStatement("insert into patents(patent_id, title, patent_date, kind, country, language) values (?, ?, ?, ?, ?, ?)");
+                                preparedStmt.setString(1, sPatentId);
+                                preparedStmt.setString(2, title);
+                                preparedStmt.setDate(3, sqlDate);
+                                preparedStmt.setString(4, kind);
+                                preparedStmt.setString(5, country);
+                                preparedStmt.setString(6, language);
+                                preparedStmt.execute();
+
+                                Long patentId = 0L;
+                                preparedStmt = conn.prepareStatement("select last_insert_id()");
+                                ResultSet rSet = preparedStmt.executeQuery();
+
+                                while (rSet.next()) {
+
+                                    patentId = rSet.getLong(1);
+                                }
+
+                                // Classification
+                                String section = "";
+                                String sClass = "";
+                                String subclass = "";
+
+                                Element elPatent =(Element) doc.getElementsByTagName("patent").item(0);
+                                if (elPatent == null ) elPatent = (Element) doc.getElementsByTagName("Patent").item(0);
+                                Element elIet = (Element) elPatent.getElementsByTagName("iet").item(0);
+                                if (elIet != null) {
+                                    Element classifications = (Element) elIet.getElementsByTagName("classifications").item(0);
+
+                                    if (classifications != null && classifications.getAttribute("level").equals("basic")) {
+
+                                        Element clasIpc = (Element) classifications.getElementsByTagName("classification1").item(0);
+
+                                        if (clasIpc == null) continue;
+                                        String sClassif = clasIpc.getTextContent();
+
+                                        String[] array = sClassif.split(",");
+
+                                        List<String> listClass = new ArrayList<>();
+
+                                        for (int l = 0; l < array.length; l++) {
+
+                                            String sCl = array[l];
+
+                                            if (sCl.length() < 1) continue;
+                                            if (sCl.charAt(0) == ' ') sCl = sCl.substring(1);
+
+                                            section = sCl.substring(0, 1);
+                                            sClass = sCl.substring(1, 3);
+                                            subclass = sCl.substring(3, 4);
+
+                                            String full = section + sClass + subclass;
+                                            if (listClass.contains(full)) continue;
+                                            listClass.add(full);
+
+                                            preparedStmt = conn.prepareStatement("insert into classification(id_patent, section, class, subclass) values (?, ?, ?, ?)");
+                                            preparedStmt.setLong(1, patentId);
+                                            preparedStmt.setString(2, section);
+                                            preparedStmt.setString(3, sClass);
+                                            preparedStmt.setString(4, subclass);
+                                            preparedStmt.execute();
+                                        }
+
+                                    } else if (classifications != null && classifications.getAttribute("level").equals("advanced")) {
+
+                                        NodeList nodeList = classifications.getElementsByTagName("classificationipc");
+
+                                        for (int l = 0; l < nodeList.getLength(); l++) {
+
+                                            Element clasIpc = (Element) nodeList.item(l);
+                                            Element symbols = (Element) clasIpc.getElementsByTagName("classsymbols").item(0);
+                                            if (symbols == null) continue;
+                                            String sSymbols = symbols.getTextContent();
+
+                                            section = sSymbols.substring(0, 1);
+                                            sClass = sSymbols.substring(1, 3);
+                                            subclass = sSymbols.substring(3, 4);
+
+                                            preparedStmt = conn.prepareStatement("insert into classification(id_patent, section, class, subclass) values (?, ?, ?, ?)");
+                                            preparedStmt.setLong(1, patentId);
+                                            preparedStmt.setString(2, section);
+                                            preparedStmt.setString(3, sClass);
+                                            preparedStmt.setString(4, subclass);
+                                            preparedStmt.execute();
+                                        }
+
+                                    } else {
+                                    }
+                                }
+
+
+                                // Inventors
+                                Element parties = (Element) elPatent.getElementsByTagName("parties").item(0);
+                                Element elInventors = (Element) parties.getElementsByTagName("inventors").item(0);
+
+                                boolean inventorAdded = false;
+
+                                if (elInventors != null) {
+
+                                    NodeList lApplicants = elInventors.getElementsByTagName("inventor");
+
+                                    for (int k = 0; k < lApplicants.getLength(); k++) {
+
+                                        Element elApplicant = (Element) lApplicants.item(k);
+                                        Element addressbook = (Element) elApplicant.getElementsByTagName("addressbook").item(0);
+                                        Element lastName = (Element) addressbook.getElementsByTagName("last-name").item(0);
+                                        Element firstName = (Element) addressbook.getElementsByTagName("first-name").item(0);
+
+                                        if (lastName == null || firstName == null) continue;
+
+                                        String name = lastName.getTextContent();
+                                        name += " " + firstName.getTextContent();;
+
+                                            if (name.length() > 100) {
+                                                name = name.substring(0, 100);
+                                            }
+
+                                            preparedStmt = conn.prepareStatement("insert into inventors(id_patent, inventor) values (?, ?)");
+                                            preparedStmt.setLong(1, patentId);
+                                            preparedStmt.setString(2, name);
+                                            preparedStmt.execute();
+                                    }
+                                }
+
+                                // Applicants
+                                Element elApplicants = (Element) parties.getElementsByTagName("applicants").item(0);
+
+                                if (elApplicants != null) {
+
+                                    NodeList lApplicants = elApplicants.getElementsByTagName("applicant");
+
+                                    for (int k = 0; k < lApplicants.getLength(); k++) {
+
+                                        Element elApplicant = (Element) lApplicants.item(k);
+                                        Element addressbook = (Element) elApplicant.getElementsByTagName("addressbook").item(0);
+                                        Element lastName = (Element) addressbook.getElementsByTagName("last-name").item(0);
+                                        Element firstName = (Element) addressbook.getElementsByTagName("first-name").item(0);
+
+                                        if (lastName == null || firstName == null) continue;
+
+                                        String name = addressbook.getElementsByTagName("last-name").item(0).getTextContent();
+                                        name += " " + addressbook.getElementsByTagName("first-name").item(0).getTextContent();;
+
+                                        if (name.length() > 100) {
+                                            name = name.substring(0, 100);
+                                        }
+
+                                        preparedStmt = conn.prepareStatement("insert into applicants(id_patent, applicant) values (?, ?)");
+                                        preparedStmt.setLong(1, patentId);
+                                        preparedStmt.setString(2, name);
+                                        preparedStmt.execute();
+                                    }
+                                }
+
+                            } catch (SQLException e) {
+
+                                if (e.getMessage().contains("Duplicate entry")) {
+
+                                    
+                                } else {
+                                    e.printStackTrace();
+                                    exit(1);
+                                }
+                            }
+                            catch (Exception e) {
+
+                                e.printStackTrace();
+                                exit(1);
                             }
                         } catch (Exception en) {
                             test++;
@@ -1179,12 +2330,14 @@ public class mainclass {
 
                                                 Element inventionTitle = (Element) inventionTitles.item(k);
 
-                                                if (inventionTitle.getAttribute("lang").equals("en")) {
+                                                if (inventionTitle.getAttribute("lang").equalsIgnoreCase("en")) {
 
                                                     title = inventionTitle.getTextContent();
                                                     break;
                                                 }
                                             }
+
+                                            if (title.length() > 300) title = title.substring(0, 300);
 
                                             String kind = elPatent.getAttribute("kind");
                                             String country = "LT";
@@ -1193,12 +2346,15 @@ public class mainclass {
                                             java.util.Date utilDate = format.parse(date);
                                             java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime());
 
-                                            preparedStmt = conn.prepareStatement("insert into patents(patent_id, title, patent_date, kind, country) values (?, ?, ?, ?, ?)");
+                                            String language = elBiblio.getElementsByTagName("language-of-publication").item(0).getTextContent().toUpperCase();
+
+                                            preparedStmt = conn.prepareStatement("insert into patents(patent_id, title, patent_date, kind, country, language) values (?, ?, ?, ?, ?, ?)");
                                             preparedStmt.setString(1, strPatentId);
                                             preparedStmt.setString(2, title);
                                             preparedStmt.setDate(3, sqlDate);
                                             preparedStmt.setString(4, kind);
                                             preparedStmt.setString(5, country);
+                                            preparedStmt.setString(6, language);
                                             preparedStmt.execute();
 
                                             Long patentId = 0L;
@@ -1240,12 +2396,6 @@ public class mainclass {
                                                 }
                                             }
 
-                                            // Languages
-                                            String language = elBiblio.getElementsByTagName("language-of-publication").item(0).getTextContent();
-                                            preparedStmt = conn.prepareStatement("insert into languages(id_patent, language) values (?, ?)");
-                                            preparedStmt.setLong(1, patentId);
-                                            preparedStmt.setString(2, language);
-                                            preparedStmt.execute();
 
                                             // Inventors
                                             Element parties = (Element) elBiblio.getElementsByTagName("parties").item(0);
@@ -1268,8 +2418,8 @@ public class mainclass {
 
                                                         String name = addressbook.getElementsByTagName("orgname").item(0).getTextContent();
 
-                                                        if (name.length() > 50) {
-                                                            name = name.substring(0, 50);
+                                                        if (name.length() > 100) {
+                                                            name = name.substring(0, 100);
                                                         }
 
                                                         preparedStmt = conn.prepareStatement("insert into inventors(id_patent, inventor) values (?, ?)");
@@ -1302,8 +2452,8 @@ public class mainclass {
 
                                                             String name = address.getElementsByTagName("country").item(0).getTextContent();
 
-                                                            if (name.length() > 50) {
-                                                                name = name.substring(0, 50);
+                                                            if (name.length() > 100) {
+                                                                name = name.substring(0, 100);
                                                             }
 
                                                             preparedStmt = conn.prepareStatement("insert into inventors(id_patent, inventor) values (?, ?)");
@@ -1448,12 +2598,14 @@ public class mainclass {
 
                                             Element inventionTitle = (Element) inventionTitles.item(k);
 
-                                            if (inventionTitle.getAttribute("lang").equals("en")) {
+                                            if (inventionTitle.getAttribute("lang").equalsIgnoreCase("en")) {
 
                                                 title = inventionTitle.getTextContent();
                                                 break;
                                             }
                                         }
+
+                                        if (title.length() > 300) title = title.substring(0, 300);
 
                                         String kind = elPatent.getAttribute("kind");
                                         String country = "IL";
@@ -1462,12 +2614,15 @@ public class mainclass {
                                         java.util.Date utilDate = format.parse(date);
                                         java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime());
 
-                                        preparedStmt = conn.prepareStatement("insert into patents(patent_id, title, patent_date, kind, country) values (?, ?, ?, ?, ?)");
+                                        String language = elBiblio.getElementsByTagName("language-of-publication").item(0).getTextContent().toUpperCase();
+
+                                        preparedStmt = conn.prepareStatement("insert into patents(patent_id, title, patent_date, kind, country, language) values (?, ?, ?, ?, ?, ?)");
                                         preparedStmt.setString(1, strPatentId);
                                         preparedStmt.setString(2, title);
                                         preparedStmt.setDate(3, sqlDate);
                                         preparedStmt.setString(4, kind);
                                         preparedStmt.setString(5, country);
+                                        preparedStmt.setString(6, language);
                                         preparedStmt.execute();
 
                                         Long patentId = 0L;
@@ -1478,13 +2633,6 @@ public class mainclass {
 
                                             patentId = rSet.getLong(1);
                                         }
-
-                                        // Languages
-                                        String language = elBiblio.getElementsByTagName("language-of-publication").item(0).getTextContent();
-                                        preparedStmt = conn.prepareStatement("insert into languages(id_patent, language) values (?, ?)");
-                                        preparedStmt.setLong(1, patentId);
-                                        preparedStmt.setString(2, language);
-                                        preparedStmt.execute();
 
                                         // Inventors
                                         Element parties = (Element) elBiblio.getElementsByTagName("parties").item(0);
@@ -1505,8 +2653,8 @@ public class mainclass {
 
                                                     String name = addressbook.getElementsByTagName("name").item(0).getTextContent();
 
-                                                    if (name.length() > 50) {
-                                                        name = name.substring(0, 50);
+                                                    if (name.length() > 100) {
+                                                        name = name.substring(0, 100);
                                                     }
 
                                                     preparedStmt = conn.prepareStatement("insert into inventors(id_patent, inventor) values (?, ?)");
@@ -1656,12 +2804,17 @@ public class mainclass {
                                         java.util.Date utilDate = format.parse(date);
                                         java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime());
 
-                                        preparedStmt = conn.prepareStatement("insert into patents(patent_id, title, patent_date, kind, country) values (?, ?, ?, ?, ?)");
+                                        String language = "EN";
+
+                                        if (title.length() > 300) title = title.substring(0, 300);
+
+                                        preparedStmt = conn.prepareStatement("insert into patents(patent_id, title, patent_date, kind, country, language) values (?, ?, ?, ?, ?, ?)");
                                         preparedStmt.setString(1, publicationNo);
                                         preparedStmt.setString(2, title);
                                         preparedStmt.setDate(3, sqlDate);
                                         preparedStmt.setString(4, kind);
                                         preparedStmt.setString(5, country);
+                                        preparedStmt.setString(6, language);
                                         preparedStmt.execute();
 
                                         Long patentId = 0L;
@@ -1702,13 +2855,6 @@ public class mainclass {
                                             }
                                         }
 
-                                        // Languages
-                                        String language = "EN";
-                                        preparedStmt = conn.prepareStatement("insert into languages(id_patent, language) values (?, ?)");
-                                        preparedStmt.setLong(1, patentId);
-                                        preparedStmt.setString(2, language);
-                                        preparedStmt.execute();
-
                                         // Inventors
                                         Element elInventors = (Element) caseEl.getElementsByTagName("Inventors").item(0);
 
@@ -1728,8 +2874,8 @@ public class mainclass {
                                                     name += " " + firstName;
                                                 }
 
-                                                if (name.length() > 50) {
-                                                    name = name.substring(0, 50);
+                                                if (name.length() > 100) {
+                                                    name = name.substring(0, 100);
                                                 }
 
                                                 preparedStmt = conn.prepareStatement("insert into inventors(id_patent, inventor) values (?, ?)");
@@ -1758,8 +2904,8 @@ public class mainclass {
                                                     name += " " + firstName;
                                                 }
 
-                                                if (name.length() > 50) {
-                                                    name = name.substring(0, 50);
+                                                if (name.length() > 100) {
+                                                    name = name.substring(0, 100);
                                                 }
 
                                                 preparedStmt = conn.prepareStatement("insert into applicants(id_patent, applicant) values (?, ?)");
