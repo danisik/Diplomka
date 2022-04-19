@@ -6,8 +6,10 @@ create table if not exists patents(
 	title varchar(300) not null,
 	patent_date date not null,
 	kind varchar(1),
-	country varchar(2) not null,	
-	primary key(id)
+	country varchar(2) not null,
+    language varchar(2),
+	primary key(id),
+	unique (patent_id)
 	);
 create table if not exists classification(
 	id int not null auto_increment,
@@ -18,24 +20,17 @@ create table if not exists classification(
 	primary key(id),
 	foreign key (id_patent) references patents(id)
 	);
-create table if not exists languages(
-	id int not null auto_increment,
-	id_patent int not null,
-	language varchar(2),
-	primary key(id),
-	foreign key (id_patent) references patents(id)
-	);
 create table if not exists inventors(
 	id int not null auto_increment,
 	id_patent int not null,
-	inventor varchar(50),
+	inventor varchar(100),
 	primary key(id),
 	foreign key (id_patent) references patents(id)
 	);
 create table if not exists applicants(
 	id int not null auto_increment,
 	id_patent int not null,
-	applicant varchar(50),
+	applicant varchar(100),
 	primary key(id),
 	foreign key (id_patent) references patents(id)
 	);
