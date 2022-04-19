@@ -24,6 +24,7 @@ Jako další velký problém lze zmínit extrakci atributů patentu ze souborů.
 \end{itemize}
 
 \section{Automatické stahování dat z ověřených zdrojů}
+\todo{todo}
 Aplikace, která si načte soubor s uloženýma ověřenýma zdrojema (např. XML), kdy by bylo definováno: název země, URL stránky kde se stahuje (např. https://isdv.upv.cz/webapp/webapp.pubsrv.seznam?purl=opendata/pt), html element obsahující soubor ke stažení (např. a href="/doc/opendata/pt/OpenData....") a poslední stažený soubor. Aplikace by projela všechny stránky, pokusila by se stáhnout nejnovější soubor (ten co se neshoduje s tím uloženým v xml) a uložit ho do specifický složky. Pokud je ke stažení novější, updatuje se XML.
 
 Tohle všechny by bylo automatický pomocí např. Jenkinsu, který by jednou za čas spustil tuhle appku + by mohl informovat emailem o buildu + výsledku, že tolik se updatnulo atd.

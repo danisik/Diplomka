@@ -90,7 +90,7 @@ public class mainclass {
         //convertFrancie();
 
         System.out.println("\n\nRusko");
-        //convertRusko();
+        convertRusko();
 
         closeConnection();
     }
