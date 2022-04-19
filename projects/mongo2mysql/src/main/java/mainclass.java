@@ -81,7 +81,7 @@ public class mainclass {
 
         System.out.println("\n\nŠpanělsko");
         // HOTOVO
-        convertSpanelsko();
+        //convertSpanelsko();
 
         System.out.println("\n\nKanada");
         //convertCanada();
@@ -499,10 +499,20 @@ public class mainclass {
                                     preparedStmt.setLong(1, patentId);
                                     preparedStmt.setString(2, author);
                                     preparedStmt.execute();
+                                }catch (SQLException e) {
+
+                                    if (e.getMessage().contains("Duplicate entry")) {
+
+
+                                    } else {
+                                        e.printStackTrace();
+                                        exit(1);
+                                    }
                                 }
                                 catch (Exception e) {
 
                                     e.printStackTrace();
+                                    exit(1);
                                 }
                             }
                         }
@@ -798,10 +808,6 @@ public class mainclass {
         File israelDir = new File(inputFolder + "Kanada");
         File[] years = israelDir.listFiles();
 
-        MongoClient mongoClient = new MongoClient(new MongoClientURI("mongodb://localhost:27017"));
-        DB database = mongoClient.getDB("patents");
-        DBCollection collection = database.getCollection("patents");
-
         List<Exception> exceptions = new ArrayList<>();
 
         for (int monn = years.length - 1; monn >= 0; monn-- ) {
@@ -989,10 +995,21 @@ public class mainclass {
                                     preparedStmt.execute();
                                 }
 
-                            } catch (Exception e) {
+                            } catch (SQLException e) {
 
-                                exceptions.add(e);
+                                if (e.getMessage().contains("Duplicate entry")) {
+
+
+                                } else {
+                                    e.printStackTrace();
+                                    exit(1);
+                                }
+                            }
+                            catch (Exception e) {
+
+
                                 e.printStackTrace();
+                                exit(1);
                             }
                         }
                     }
@@ -1159,10 +1176,22 @@ public class mainclass {
                                         preparedStmt.execute();
                                     }
 
-                                } catch (Exception e) {
+                                }
+                                catch (SQLException e) {
 
-                                    exceptions.add(e);
+                                    if (e.getMessage().contains("Duplicate entry")) {
+
+
+                                    } else {
+                                        e.printStackTrace();
+                                        exit(1);
+                                    }
+                                }
+                                catch (Exception e) {
+
+
                                     e.printStackTrace();
+                                    exit(1);
                                 }
                             }
                         }
@@ -1428,9 +1457,19 @@ public class mainclass {
                                                     preparedStmt.execute();
                                                 }
 
-                                            } catch (Exception e) {
+                                            } catch (SQLException e) {
 
-                                                exceptions.add(e);
+                                                if (e.getMessage().contains("Duplicate entry")) {
+
+
+                                                } else {
+                                                    e.printStackTrace();
+                                                    exit(1);
+                                                }
+                                            }catch (Exception e) {
+
+                                                e.printStackTrace();
+                                                exit(1);
                                             }
                                         } catch (Exception e) {
                                             System.out.println(xml.getAbsolutePath());
@@ -1613,10 +1652,19 @@ public class mainclass {
                                                             preparedStmt.execute();
                                                         }
 
-                                                    } catch (Exception e) {
+                                                    } catch (SQLException e) {
 
-                                                        exceptions.add(e);
+                                                        if (e.getMessage().contains("Duplicate entry")) {
+
+
+                                                        } else {
+                                                            e.printStackTrace();
+                                                            exit(1);
+                                                        }
+                                                    }catch (Exception e) {
+
                                                         e.printStackTrace();
+                                                        exit(1);
                                                     }
                                                 } catch (Exception e) {
                                                     System.out.println(xml.getAbsolutePath());
@@ -1811,10 +1859,19 @@ public class mainclass {
                                                         }
                                                     }
 
-                                                } catch (Exception e) {
+                                                } catch (SQLException e) {
 
-                                                    exceptions.add(e);
+                                                    if (e.getMessage().contains("Duplicate entry")) {
+
+
+                                                    } else {
+                                                        e.printStackTrace();
+                                                        exit(1);
+                                                    }
+                                                }catch (Exception e) {
+
                                                     e.printStackTrace();
+                                                    exit(1);
                                                 }
                                             } catch (Exception e) {
                                                 System.out.println(allFile.getAbsolutePath());
@@ -2170,7 +2227,7 @@ public class mainclass {
 
                                 if (e.getMessage().contains("Duplicate entry")) {
 
-                                    
+
                                 } else {
                                     e.printStackTrace();
                                     exit(1);
