@@ -2,7 +2,7 @@
 \chapter{Rozšiřitelnost modulu}
 Zadání diplomové práce sice splněno bylo, ale v blízké budoucnosti mohou být požadavky na modul změněny. Jako příklad lze uvést podporu přidávání nových patentů do databází, zjištění autorů pro české patenty, automatické stahování dat z již ověřených patentových zdrojů. V této kapitole jsou popsány 3 možné návrhy na rozšíření modulu ohledně importu dat do již existujících databází.
 
-\section{Přidávání nových patentů}
+\section{Přidávání nových patentů} \label{sec:new_patenty}
 Cílem tohoto rožšíření by bylo automatické přidávání patentů z datových souborů jak do MySQL databáze, tak i do Mongo.
 
 Rozšíření by se dalo realizovat jako aplikace ve vyšším programovacím jazyku (např. Java, C), kdy vstupem do aplikace by byl soubor v datovém formátu JSON/XML/CSV a jiné. Vstupní soubor by se následně:
@@ -24,8 +24,18 @@ Jako další velký problém lze zmínit extrakci atributů patentu ze souborů.
 \end{itemize}
 
 \section{Automatické stahování dat z ověřených zdrojů}
-\todo{todo}
-Aplikace, která si načte soubor s uloženýma ověřenýma zdrojema (např. XML), kdy by bylo definováno: název země, URL stránky kde se stahuje (např. https://isdv.upv.cz/webapp/webapp.pubsrv.seznam?purl=opendata/pt), html element obsahující soubor ke stažení (např. a href="/doc/opendata/pt/OpenData....") a poslední stažený soubor. Aplikace by projela všechny stránky, pokusila by se stáhnout nejnovější soubor (ten co se neshoduje s tím uloženým v xml) a uložit ho do specifický složky. Pokud je ke stažení novější, updatuje se XML.
-
-Tohle všechny by bylo automatický pomocí např. Jenkinsu, který by jednou za čas spustil tuhle appku + by mohl informovat emailem o buildu + výsledku, že tolik se updatnulo atd.
-%Automatické stahování dat z již ověřených zdrojů - kontrola zda přibyl nový ZIP, pokud ano tak stáhnout, rozbalit - následně získat patent ID a zkontrolovat duplicitní záznam - zahodit / případně nahradit existující kvůli novým změnám
+Cílem tohoto rozšíření by bylo automatické stahování dat (případně i jejich parsování) z ověřených zdrojů. Ověřené zdroje by byly uloženy například v XML souboru, kdy každý zdroj by měl tyto položky:
+\begin{itemize}
+\item \textbf{Název země}
+\item \textbf{URL} - URL zdroje dat, na které lze stáhnout data.
+\item \textbf{XPath} -  XPath výraz, pomocí kterého lze ze stránky vyfiltrovat a získat odkazy ke stažení dat\newline (např. \textit{/html/body//a[contains(@href,'example')]/@href})
+\item \textbf{Poslední verze} - Název / číslo poslední stažené verze.
+\end{itemize}
+XML soubor by byl následně zpracován pomocí aplikace (např. Java, C\#), která by následně pro každý zdroj dat provedla následující kroky:
+\begin{enumerate}
+\item Získání seznamu odkazů na zdroje dat.
+\item Stažení všech zdrojů dat, jejichž verze je větší než aktuálně uložená verze v XML.
+\item V tomto bodě se dá naimplementovat cokoliv - např. lze uložená data extrahovat ze ZIP souborů, importovat patenty do databází (viz kapitola č. \ref{sec:new_patenty}), pouze notifikace o stažení několika nových souborů z daty a mnoho dalšího.
+\item Aktualizace verze v XML souboru.
+\end{enumerate}
+Automatizace stahování dat by spočívala ve spouštění aplikace pro stahování dat v pravidelných intervalech (např. každé druhé úterý v 17:00). Jako příklad lze uvést použití pipeline na Jenkins serveru, který bude spouštět z lokálního uložiště spustitelnou aplikaci v daný čas (pomocí CRON). Po vykonání celého procesu může Jenkins poslat email o stavu posledního spuštění (zda se spuštění povedlo, kolik souborů byl schopen stáhnout pro jaké země, ...). Samozřejmě bohatě postačí i použití plánovače v OS.

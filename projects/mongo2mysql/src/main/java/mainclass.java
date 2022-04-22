@@ -913,7 +913,7 @@ public class mainclass {
                                 String kind = "";
 
                                 if (el.getElementsByTagName("kind") == null || el.getElementsByTagName("kind").item(0) == null) continue;
-                                else kind = el.getElementsByTagName("kind").item(0).getTextContent();
+                                else kind = el.getElementsByTagName("kind").item(0).getTextContent().substring(0, 1);
 
                                 NodeList titles = elBiblio.getElementsByTagName("invention-title");
 
@@ -1157,7 +1157,7 @@ public class mainclass {
                                     String kind = "";
 
                                     if (el.getElementsByTagName("kind") == null || el.getElementsByTagName("kind").item(0) == null) continue;
-                                    else kind = el.getElementsByTagName("kind").item(0).getTextContent();
+                                    else kind = el.getElementsByTagName("kind").item(0).getTextContent().substring(0, 1);
 
                                     NodeList titles = elBiblio.getElementsByTagName("invention-title");
 
