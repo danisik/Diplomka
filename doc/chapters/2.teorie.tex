@@ -89,8 +89,6 @@ Objektově-orientovaná databáze je založena na objektově-orientovaném progr
 	\caption{Ukázka objektově-orientované databáze}
 	\label{fig:db_img_oo}
 	\end{figure}
-\subsection{NoSQL databáze}
-\todo{todo}
 \subsection{Cloud databáze}
 Cloudová databáze je kolekce dat, strukturovaných nebo nestrukturovaných, která se nachází na soukromé, veřejné nebo hybridní platformě cloud computingu. Stejně jako ostatní cloudové aplikace, cloudové databáze nabízejí flexibilitu a škálovatelnost spolu s vysokou dostupností. Existují dva typy modelů: tradiční a databázový jako služba (DBaaS). Typické příklady jsou: Amazon Web Service, Simtech, Google Cloud Platform. Ukázku cloud databáze lze vidět na obrázku č. \ref{fig:db_img_cloud}.
 	\begin{figure}[H]
@@ -107,16 +105,26 @@ Distribuovaná databáze je skupina vzájemně propojených databází (dvě a v
 	\caption{Ukázka distribuované databáze}
 	\label{fig:db_img_distributed}
 	\end{figure}
+\subsection{NoSQL databáze}
+NoSQL je široká kategorie databází, které nepoužívají SQL jako svůj primární jazyk pro přístup k datům. Tyto typy databází jsou také někdy označovány jako nerelační databáze. V NoSQL databázích se pracuje s nestrukturovanými a polostrukturovanými sadami distribuovaných dat. Jednou z výhod je, že vývojáři mohou provádět změny databáze za běhu, aniž by to ovlivnilo aplikace, které databázi používají.
+\subsection{Databáze Klíč-Hodnota}
+Databáze klíč-hodnota poskytuje nejjednodušší možný datový model. Data jsou uložená jako pár klíč - hodnota ve slovníku / mapě, kdy klíč je indexem. Hodnota může být například celé číslo, řetězec, struktura JSON nebo pole. Typické příklady jsou: Redis, Riak, Oracle NoSQL Database. Ukázku databáze klíč-hodnota lze vidět na obrázku č. \ref{fig:db_img_keyvalue}.
+	\begin{figure}[H]
+	\centering
+	\includegraphics[width=10cm]{img/databaze/keyvalue_db}
+	\caption{Ukázka databáze klíč-hodnota.}
+	\label{fig:db_img_keyvalue}
+	\end{figure}
 \subsection{Grafová databáze}
 Grafová databáze je typem NoSQL databáze, která je založená na teorii grafů. Data jsou reprezentována jako uzly, hrany zase reprezentují vztahy mezi daty. Graf lze procházet podél určitých typů hran nebo přes celý graf. Procházení spojení nebo relací je velmi rychlé, protože vztahy mezi uzly se nepočítají v době dotazu, ale jsou v databázi trvalé. Typické příklady jsou: Neo4j, OrientDB, Microsoft Azure CosmosDB. Ukázku grafové databáze lze vidět na obrázku č. \ref{fig:db_img_graph}.
 	\begin{figure}[H]
 	\centering
-	\includegraphics[width=10cm]{img/databaze/graph_db}
+	\includegraphics[width=8cm]{img/databaze/graph_db}
 	\caption{Ukázka grafové databáze}
 	\label{fig:db_img_graph}
 	\end{figure}
 \subsection{Dokumentová databáze}
-Databáze dokumentů jsou navržené pro ukládání, načítání a správu informací orientovaných na dokumenty. Dokumenty jsou obvykle uloženy ve formátu XML, JSON, BSON. 
+Databáze dokumentů jsou typem NoSQL databáze a  jsou navržené pro ukládání, načítání a správu informací orientovaných na dokumenty. Dokumenty jsou obvykle uloženy ve formátu XML, JSON, BSON. 
 Typické příklady jsou: MongoDB, Amazon DocumentDB, Apache CouchDB. Ukázku dokumentové databáze lze vidět na obrázku č. \ref{fig:db_img_document}.
 	\begin{figure}[H]
 	\centering
@@ -128,16 +136,10 @@ Typické příklady jsou: MongoDB, Amazon DocumentDB, Apache CouchDB. Ukázku do
 Hierarchická databáze používají k ukládání dat model nadřazený-podřízený, který představuje data ve stromové podobě. Vztah mezi záznamy je jeden k mnoha. To znamená, že jeden nadřazený uzel může mít mnoho podřízených, zatímco podřízený má vždy pouze jednoho nadřízeného.Typické příklady jsou: IBM Information Management System (IMS), RDM Mobile, Registry ve windows. Ukázku hierarchické databáze lze vidět na obrázku č. \ref{fig:db_img_hierarchical}.
 	\begin{figure}[H]
 	\centering
-	\includegraphics[width=11cm]{img/databaze/hierarchical_db}
+	\includegraphics[width=9cm]{img/databaze/hierarchical_db}
 	\caption{Ukázka hierarchické databáze}
 	\label{fig:db_img_hierarchical}
 	\end{figure}
-
-\section{Dostupné databáze}
-\subsection{MySQL}
-\subsection{PostgreSQL}
-\cite{TopTenDatabases}Topten\newline
-\cite{indeedDBLanguage}\newline
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %\chapter{Docker}
