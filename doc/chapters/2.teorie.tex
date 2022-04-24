@@ -14,10 +14,12 @@ základní informace + uložiště dat + info o zdrojích (patentové úřady at
 \chapter{Databáze}
 
 Databáze je organizovaná kolekce strukturovaných informací nebo dat, která jsou typicky ukládána elektronicky v počítačovém systému. Data / informace lze nazvat jako fakta vztahující se k libovolnému uvažovanému objektu. Typický příklad objektu je člověk, jehož fakta jsou: jméno, věk, výška, váha a mnoho dalších \cite{guru99Database}.\newline
-\indent Pro správu dat v databázi a její řízení je potřeba komplexní software, který se nazývá \textbf{Systém Řízení Báze Dat} (SŘBD, anglicky DBMS). SŘBD slouží jako interface mezi samotnou databází a koncovým uživatelem (může být i program), umožňující jak vytěžování a aktualizaci dat, tak i možnosti nastavení záloh a jiných administrativních operací \cite{OracleDB}.
+
+\section{Systém řízení báze dat}
+Pro správu dat v databázi a její řízení je potřeba komplexní software, který se nazývá \textbf{Systém Řízení Báze Dat} (SŘBD, anglicky DBMS). SŘBD slouží jako interface mezi samotnou databází a koncovým uživatelem (může být i program), umožňující jak vytěžování a aktualizaci dat, tak i možnosti nastavení záloh a jiných administrativních operací \cite{OracleDB}. V dnešním světe existuje několik různých DBMS (například Relační DBMS, Objektově-orientované DBMS).
 \begin{figure}[h!]
 \centering
-\includegraphics[width=10cm]{img/dbms}
+\includegraphics[width=10cm]{img/databaze/dbms}
 \caption{Systém řízení báze dat}
 \label{fig:dbms}
 \end{figure}
@@ -33,7 +35,7 @@ Všechny databáze sestávají z pěti základních komponent, nehledě na použ
 \end{itemize}
 
 \section{Jazyky} \label{sec:jazyky}
-Databázové jazyky, jinak známé jako dotazovací jazyky, jsou klasifikací programovacích jazyků, které se používají k definování a přístupu k databázím. Pomocí těchto jazyků dokáže uživatel získávat nebo spravovat data v databázích. V dnešní době se jazyky (např. SQL) mohou skládat ze čtyř podjazyků, kdy každý slouží k jinému účelu v rámci vykonávání příkazů \cite{indeedDBLanguage, begginersBookDBLanguage}:
+Databázové jazyky, jinak známé jako dotazovací jazyky, jsou klasifikací programovacích jazyků, které se používají k definování a přístupu k databázím. Pomocí těchto jazyků dokáže uživatel získávat nebo spravovat data v databázích. V dnešní době se jazyky (například SQL) mohou skládat ze čtyř podjazyků, kdy každý slouží k jinému účelu v rámci vykonávání příkazů \cite{indeedDBLanguage, begginersBookDBLanguage}:
 \begin{itemize}
 \item \textbf{Data definition language} (DDL) - DDL umí vytvářet jednotlivé komponenty databázového schématu (tabulky, soubory, indexy, ...), které tvoří strukturu reprezentující organizaci dat v databázi. Dostupné příkazy pro jazyk DDL:
 	\begin{itemize}
@@ -41,7 +43,7 @@ Databázové jazyky, jinak známé jako dotazovací jazyky, jsou klasifikací pr
 	\item \textbf{ALTER} - Změna struktury objektu.
 	\item \textbf{DROP} - Smazání objektu.
 	\item \textbf{RENAME} - Změna názvu objektu.
-	\item \textbf{TRUNCATE} - Smazání podobjektů v objektu (např. záznamy v tabulce).
+	\item \textbf{TRUNCATE} - Smazání podobjektů v objektu (například záznamy v tabulce).
 	\end{itemize}
 \item \textbf{Data manipulation language} (DML) - DML slouží pro manipulaci s daty, které se nachází v již existující databázi. Dostupné příkazy pro jazyk DML:
 	\begin{itemize}
@@ -50,7 +52,7 @@ Databázové jazyky, jinak známé jako dotazovací jazyky, jsou klasifikací pr
 	\item \textbf{UPDATE} - Úprava existujícího záznamu v tabulce.
 	\item \textbf{DELETE} - Smazání záznamu z tabulky.
 	\end{itemize}
-\item \textbf{Data control language} (DCL) - Pomocí DCL lze kontrolovat přístupy a práva k datům, které jsou uloženy v databázi. Uživateli lze nastavit práva k jednotlivým DML příkazům nad tabulkama / procedurama (např. uživatel bude mít přístup pouze k příkazu SELECT nad tabulkou "TABULKA"). Dostupné příkazy pro jazyk DCL:
+\item \textbf{Data control language} (DCL) - Pomocí DCL lze kontrolovat přístupy a práva k datům, které jsou uloženy v databázi. Uživateli lze nastavit práva k jednotlivým DML příkazům nad tabulkama / procedurama (například uživatel bude mít přístup pouze k příkazu SELECT nad tabulkou "TABULKA"). Dostupné příkazy pro jazyk DCL:
 	\begin{itemize}
 	\item \textbf{GRANT} - Přidání práv uživateli nad danou tabulkou / procedurou. 
 	\item \textbf{REVOKE} - Odebrání práv uživateli nad danou tabulkou / procedurou.
@@ -62,19 +64,75 @@ Databázové jazyky, jinak známé jako dotazovací jazyky, jsou klasifikací pr
 	\item \textbf{ROLLBACK} - Vezme zpět veškerou práci v aktuální transakci. Lze se vrátit na začátek transakce nebo k SAVEPOINTu.
 	\item \textbf{SAVEPOINT} - Nastavení bodu v transakci, ke kterému se lze v budoucnu vrátit pomocí ROLLBACK.
 	\end{itemize}
-
-	\begin{figure}[h!]
+\end{itemize}
+	\begin{figure}[H]
 	\centering
-	\includegraphics[width=14cm]{img/tcl_savepoint}
+	\includegraphics[width=14cm]{img/databaze/tcl_savepoint}
 	\caption{Ukázka jedné transakce (bez commitu)}
 	\label{fig:tcl_savepoint}
 	\end{figure}
-\end{itemize}
-
 \section{Typy databází}
-Lehce popsat\todo{TODO}
-\subsection{Relační}
-\subsection{Objektově-orientovaná}
+V dnešním světě existuje mnoho různých typů databází. Výběr nejlepšího typu databáze pro konkrétní organizaci závisí na tom, jak organizace zamýšlí data používat. V této kapitole je vypsáno pouze pár typů, protože vznikají stále nové, méně známé typy databází, které jsou tvořeny pro specifické požadavky (například finanční, věděcké) \cite{matillionTypeDB, OracleDB}.
+\subsection{Relační databáze}
+Název relační databáze pochází ze způsobu, jakým jsou data uložena, a to ve více souvisejících tabulkách. Data v tabulkách jsou uložena v řádcích a sloupcích. Relační databáze jsou velice spolehlivé a podporují všechny čtyři žádoucí vlastnosti databázových transakcí - ACID (Atomicita, Konzistence, Izolovanost, Trvalost). Pro co nejefektivěnjší využití tohoto typu databáze je potřeba ukládat pouze dobře strukturovaná data, pro částečně strukturovaná či nestrukturovaná data je vhodné použít například grafové nebo dokumentově založené databáze. Typické relační databáze jsou například: Microsoft SQL Server, Oracle Database, MySQL. Ukázku relační databáze lze vidět na obrázku č. \ref{fig:db_img_relational}.
+	\begin{figure}[H]
+	\centering
+	\includegraphics[width=14cm]{img/databaze/relational_db}
+	\caption{Ukázka relační databáze}
+	\label{fig:db_img_relational}
+	\end{figure}
+\subsection{Objektově-orientovaná databáze}
+Objektově-orientovaná databáze je založena na objektově-orientovaném programování, kdy data a všechny jejich atributy a metody jsou svázány dohromady jako objekt. Stejně jako relační databáze, i objektově-orientované databáze odpovídají standardům ACID. Typické příklady jsou například: ObjectStore, Cache, ConceptBase. Ukázku objektově-orientované databáze lze vidět na obrázku č. \ref{fig:db_img_oo}.
+	\begin{figure}[H]
+	\centering
+	\includegraphics[width=12cm]{img/databaze/oo_db}
+	\caption{Ukázka objektově-orientované databáze}
+	\label{fig:db_img_oo}
+	\end{figure}
+\subsection{NoSQL databáze}
+\todo{todo}
+\subsection{Cloud databáze}
+Cloudová databáze je kolekce dat, strukturovaných nebo nestrukturovaných, která se nachází na soukromé, veřejné nebo hybridní platformě cloud computingu. Stejně jako ostatní cloudové aplikace, cloudové databáze nabízejí flexibilitu a škálovatelnost spolu s vysokou dostupností. Existují dva typy modelů: tradiční a databázový jako služba (DBaaS). Typické příklady jsou: Amazon Web Service, Simtech, Google Cloud Platform. Ukázku cloud databáze lze vidět na obrázku č. \ref{fig:db_img_cloud}.
+	\begin{figure}[H]
+	\centering
+	\includegraphics[width=15cm]{img/databaze/cloud_db}
+	\caption{Ukázka cloud databáze - databáze jako služba}
+	\label{fig:db_img_cloud}
+	\end{figure}
+\subsection{Distribuovaná databáze}
+Distribuovaná databáze je skupina vzájemně propojených databází (dvě a více), které jsou fyzicky rozloženy na různých místech, která jsou spravována systémem správy distribuovaných databází (DBMS). V tomto typu systému nejsou data uložena na jednom místě. Při spuštění dotazu se pomocí kolektivní sady webů napříč různými datovými centry spolupracuje na zodpovězení otázky. Typické příklady jsou: Apache Ignite, AWS SimpleDB, FoundationDB. Ukázku distribuované databáze lze vidět na obrázku č. \ref{fig:db_img_distributed}.
+	\begin{figure}[H]
+	\centering
+	\includegraphics[width=13cm]{img/databaze/distributed_db}
+	\caption{Ukázka distribuované databáze}
+	\label{fig:db_img_distributed}
+	\end{figure}
+\subsection{Grafová databáze}
+Grafová databáze je typem NoSQL databáze, která je založená na teorii grafů. Data jsou reprezentována jako uzly, hrany zase reprezentují vztahy mezi daty. Graf lze procházet podél určitých typů hran nebo přes celý graf. Procházení spojení nebo relací je velmi rychlé, protože vztahy mezi uzly se nepočítají v době dotazu, ale jsou v databázi trvalé. Typické příklady jsou: Neo4j, OrientDB, Microsoft Azure CosmosDB. Ukázku grafové databáze lze vidět na obrázku č. \ref{fig:db_img_graph}.
+	\begin{figure}[H]
+	\centering
+	\includegraphics[width=10cm]{img/databaze/graph_db}
+	\caption{Ukázka grafové databáze}
+	\label{fig:db_img_graph}
+	\end{figure}
+\subsection{Dokumentová databáze}
+Databáze dokumentů jsou navržené pro ukládání, načítání a správu informací orientovaných na dokumenty. Dokumenty jsou obvykle uloženy ve formátu XML, JSON, BSON. 
+Typické příklady jsou: MongoDB, Amazon DocumentDB, Apache CouchDB. Ukázku dokumentové databáze lze vidět na obrázku č. \ref{fig:db_img_document}.
+	\begin{figure}[H]
+	\centering
+	\includegraphics[width=11cm]{img/databaze/document_db}
+	\caption{Ukázka dokumentově orientované databáze}
+	\label{fig:db_img_document}
+	\end{figure}
+\subsection{Hierarchická databáze}
+Hierarchická databáze používají k ukládání dat model nadřazený-podřízený, který představuje data ve stromové podobě. Vztah mezi záznamy je jeden k mnoha. To znamená, že jeden nadřazený uzel může mít mnoho podřízených, zatímco podřízený má vždy pouze jednoho nadřízeného.Typické příklady jsou: IBM Information Management System (IMS), RDM Mobile, Registry ve windows. Ukázku hierarchické databáze lze vidět na obrázku č. \ref{fig:db_img_hierarchical}.
+	\begin{figure}[H]
+	\centering
+	\includegraphics[width=11cm]{img/databaze/hierarchical_db}
+	\caption{Ukázka hierarchické databáze}
+	\label{fig:db_img_hierarchical}
+	\end{figure}
+
 \section{Dostupné databáze}
 \subsection{MySQL}
 \subsection{PostgreSQL}
