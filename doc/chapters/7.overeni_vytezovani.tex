@@ -7,17 +7,18 @@ Napsat referenční stroj na kterém se testovalo - CPU, RAM, ...\todo{todo}
 \section{Mongo + ElasticSearch}
 \section{MySQL}
 Pro MySQL bylo připraveno 10 scénářů, které testují všechny vytvořené tabulky v databázi. Každý scénář obsahuje textový popis, SQL příkaz, rychlost vykonání příkazu a ukázku výsledků.
+\todo{vypsat počet hodnot v tabulkách}
 
 \subsection{Scénář č.1}
 \textbf{Textový popis}: Deset nejčastěji patentujících institucí v Izraeli v roce 2015.
 \newline
 \textbf{SQL}: 
 \begin{lstlisting}[label = {lst:elements_a}]
-select count(*), inventors.inventor from inventors left outer join patents on inventors.id_patent = patents.id where YEAR(patents.patent_date) = 2015 and patents.patent_id like '%IL%' group by inventors.inventor order by count(*) desc LIMIT 10;
+select count(*), count(*) * 100.0 / ((select count(*) from inventors) * 1.0) as percentage, inventors.inventor from inventors left outer join patents on inventors.id_patent = patents.id where YEAR(patents.patent_date) = 2015 and patents.patent_id like '%IL%' group by inventors.inventor order by count(*) desc, percentage desc LIMIT 10;
 \end{lstlisting}
 \textbf{Rychlost vykonání dotazu}: \todo{TODO}
 \newline
-\textbf{Výsledek dotazu}:
+\textbf{Výsledek dotazu}:\todo{TODO}
 \begin{figure}[H]
 \centering
 \includegraphics[width=7cm]{img/scenare/scenar_1}
@@ -31,7 +32,7 @@ select count(*), inventors.inventor from inventors left outer join patents on in
 \newline
 \textbf{SQL}: 
 \begin{lstlisting}[label = {lst:elements_a}]
-select count(*), classification.section from classification left outer join patents on patents.id = classification.id_patent where YEAR(patents.patent_date) >= 2010 and patents.patent_id like '%CA%' group by classification.section order by count(*) asc LIMIT 5;
+select count(*), count(*) * 100.0 / ((select count(*) from classification) * 1.0) as percentage, classification.section from classification left outer join patents on patents.id = classification.id_patent where YEAR(patents.patent_date) >= 2010 and patents.patent_id like '%CA%' group by classification.section order by count(*) asc, percentage asc LIMIT 5;
 \end{lstlisting}
 \textbf{Rychlost vykonání dotazu}: \todo{TODO}
 \newline
@@ -46,13 +47,13 @@ select count(*), classification.section from classification left outer join pate
 \subsection{Scénář č.3}
 \textbf{Textový popis}: Dvacet nejčastějších klasifikací patentů za rok 2008 ve Španělsku.
 \newline
-\textbf{SQL}: 
+\textbf{SQL}:
 \begin{lstlisting}[label = {lst:elements_a}]
-select count(*), classification.section, classification.class, classification.subclass from classification left outer join patents on patents.id = classification.id_patent where YEAR(patents.patent_date) = 2008 and patents.patent_id LIKE '%ES%' group by classification.section, classification.class, classification.subclass order by count(*) desc LIMIT 20;
+select count(*), count(*) * 100.0 / ((select count(*) from classification) * 1.0) as percentage, classification.section, classification.class, classification.subclass from classification left outer join patents on patents.id = classification.id_patent where YEAR(patents.patent_date) = 2008 and patents.patent_id LIKE '%ES%' group by classification.section, classification.class, classification.subclass order by count(*) desc, percentage desc LIMIT 20;
 \end{lstlisting}
 \textbf{Rychlost vykonání dotazu}: \todo{TODO}
 \newline
-\textbf{Výsledek dotazu}:
+\textbf{Výsledek dotazu}:\todo{TODO}
 \begin{figure}[H]
 \centering
 \includegraphics[width=7cm]{img/scenare/scenar_3}
@@ -60,12 +61,12 @@ select count(*), classification.section, classification.class, classification.su
 \label{fig:scenar3}
 \end{figure}
 
-\subsection{Scénář č.4}
+\subsection{Scénář č.4} 
 \textbf{Textový popis}: Deset autorů s největším počtem patentů ze všech zemí.
 \newline
-\textbf{SQL}: 
+\textbf{SQL}: \todo{divnej dotaz}
 \begin{lstlisting}[label = {lst:elements_a}]
-select count(*), inventors.inventor from inventors left outer join patents on patents.id = inventors.id_patent group by inventors.inventor order by count(*) desc LIMIT 10;
+select count(*), count(*) * 100.0 / ((select count(*) from inventors) * 1.0) as percentage, inventors.inventor from inventors left outer join patents on patents.id = inventors.id_patent group by inventors.inventor order by count(*) desc, percentage desc LIMIT 10;
 \end{lstlisting}
 \textbf{Rychlost vykonání dotazu}: \todo{TODO}
 \newline
@@ -82,7 +83,7 @@ select count(*), inventors.inventor from inventors left outer join patents on pa
 \newline
 \textbf{SQL}: 
 \begin{lstlisting}[label = {lst:elements_a}]
-select count(*), patents.language from patents where patents.language not like '%-%' group by patents.language order by count(*) asc LIMIT 5;
+select count(*), count(*) * 100.0 / ((select count(*) from patents) * 1.0) as percentage, patents.language from patents where patents.language not like '%-%' group by patents.language order by count(*) asc, percentage asc LIMIT 5;
 \end{lstlisting}
 \textbf{Rychlost vykonání dotazu}: \todo{TODO}
 \newline
@@ -99,7 +100,7 @@ select count(*), patents.language from patents where patents.language not like '
 \newline
 \textbf{SQL}: 
 \begin{lstlisting}[label = {lst:elements_a}]
-select count(distinct classification.section), inventors.inventor from inventors left outer join classification on classification.id_patent = inventors.id_patent where section is not null group by inventors.inventor order by count(distinct classification.section) desc LIMIT 10;
+select count(distinct classification.section), count(*) * 100.0 / ((select count(*) from inventors) * 1.0) as percentage, inventors.inventor from inventors left outer join classification on classification.id_patent = inventors.id_patent where section is not null group by inventors.inventor order by count(distinct classification.section) desc, percentage desc LIMIT 10;
 \end{lstlisting}
 \textbf{Rychlost vykonání dotazu}: \todo{TODO}
 \newline
@@ -116,7 +117,7 @@ select count(distinct classification.section), inventors.inventor from inventors
 \newline
 \textbf{SQL}: 
 \begin{lstlisting}[label = {lst:elements_a}]
-select count(*), patents.country from patents where YEAR(patents.patent_date) >= 2018 group by patents.country order by count(*) desc LIMIT 5;
+select count(*), count(*) * 100.0 / ((select count(*) from patents) * 1.0) as percentage, patents.country from patents where YEAR(patents.patent_date) >= 2018 group by patents.country order by count(*) desc, percentage desc LIMIT 5;
 \end{lstlisting}
 \textbf{Rychlost vykonání dotazu}: \todo{TODO}
 \newline
@@ -133,7 +134,7 @@ select count(*), patents.country from patents where YEAR(patents.patent_date) >=
 \newline
 \textbf{SQL}: 
 \begin{lstlisting}[label = {lst:elements_a}]
-select count(*), patents.language from patents where patents.patent_id like '%FR%' group by patents.language order by count(*) desc;
+select count(*), count(*) * 100.0 / ((select count(*) from patents) * 1.0) as percentage, patents.language from patents where patents.patent_id like '%FR%' group by patents.language order by count(*) desc, percentage desc;
 \end{lstlisting}
 \textbf{Rychlost vykonání dotazu}: \todo{TODO}
 \newline
@@ -150,11 +151,11 @@ select count(*), patents.language from patents where patents.patent_id like '%FR
 \newline
 \textbf{SQL}: 
 \begin{lstlisting}[label = {lst:elements_a}]
-select count(*), inventors.inventor from inventors left outer join patents on patents.id = inventors.id_patent left outer join classification on classification.id_patent = patents.id where classification.section like '%D%' and patents.patent_id like '%GB%' and YEAR(patents.patent_date) = 2013 group by inventors.inventor order by count(*) desc LIMIT 15;
+select count(*), count(*) * 100.0 / ((select count(*) from inventors) * 1.0) as percentage, inventors.inventor from inventors left outer join patents on patents.id = inventors.id_patent left outer join classification on classification.id_patent = patents.id where classification.section like '%D%' and patents.patent_id like '%GB%' and YEAR(patents.patent_date) = 2013 group by inventors.inventor order by count(*) desc, percentage desc LIMIT 15;
 \end{lstlisting}
 \textbf{Rychlost vykonání dotazu}: \todo{TODO}
 \newline
-\textbf{Výsledek dotazu}:
+\textbf{Výsledek dotazu}:\todo{TODO}
 \begin{figure}[H]
 \centering
 \includegraphics[width=7cm]{img/scenare/scenar_9}

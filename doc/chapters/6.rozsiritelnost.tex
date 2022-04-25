@@ -5,9 +5,9 @@ Zadání diplomové práce sice splněno bylo, ale v blízké budoucnosti mohou 
 \section{Přidávání nových patentů} \label{sec:new_patenty}
 Cílem tohoto rožšíření by bylo automatické přidávání patentů z datových souborů jak do MySQL databáze, tak i do Mongo.
 
-Rozšíření by se dalo realizovat jako aplikace ve vyšším programovacím jazyku (např. Java, C), kdy vstupem do aplikace by byl soubor v datovém formátu JSON/XML/CSV a jiné. Vstupní soubor by se následně:
+Rozšíření by se dalo realizovat jako aplikace ve vyšším programovacím jazyku (např. Java, C), kdy vstupem do aplikace by byl soubor v datovém formátu \gls{JSON}/\gls{XML}/\gls{CSV} a jiné. Vstupní soubor by se následně:
 \begin{itemize}
-\item převedl na JSON řetězec (v případě že soubor není ve formátu JSON) a vložil do Mongo databáze
+\item převedl na \gls{JSON} řetězec (v případě že soubor není ve formátu \gls{JSON}) a vložil do Mongo databáze
 \item rozparsoval a extrahovali by se všechny atributy, které se ukládají v MySQL databázi (viz mysql kapitola \todo{TODO})
 \end{itemize}
 
@@ -18,24 +18,24 @@ Jako další velký problém lze zmínit extrakci atributů patentu ze souborů.
 \section{Zjišťování autorů pro české patenty}
 Český národní patentový úřad poskytuje data o českých patentech, které ale neobsahují autora ani instituci. Pro zjištění autora nebo instituce, která patent registrovala, je nutné použít oficiální vyhledávač. Cílem tohoto rozšíření by bylo vytvořit aplikaci ve vyšším programovacím jazyku, která se pro všechny české patenty bude snažit najít jejich autory za pomoci využití prohledávačů webů (web crawler). Postupů řešení může být mnoho:
 \begin{itemize}
-\item Zjišťování autorů by se provedlo pro všechny existující české patenty v databázi. Z MySQL databáze se zjistí všechny ID patentů pro české patenty, které se následně použijí jako vstup pro web crawler.
+\item Zjišťování autorů by se provedlo pro všechny existující české patenty v databázi. Z MySQL databáze se zjistí všechny identifikátory pro české patenty, které se následně použijí jako vstup pro web crawler.
 \item Zjišťování autorů by se provedlo pro patent/y uložené v souboru, kdy aplikace by pro všechny patenty v souboru zjistila autory a následně je dopsala do příslušnýho elementu patentu v daném souboru.
 \item Stejný postup jako předchozí s tím rozdílem, že po zjištění autora se patent rovnou přidá do MySQL i Mongo databáze.
 \end{itemize}
 
 \section{Automatické stahování dat z ověřených zdrojů}
-Cílem tohoto rozšíření by bylo automatické stahování dat (případně i jejich parsování) z ověřených zdrojů. Ověřené zdroje by byly uloženy například v XML souboru, kdy každý zdroj by měl tyto položky:
+Cílem tohoto rozšíření by bylo automatické stahování dat (případně i jejich parsování) z ověřených zdrojů. Ověřené zdroje by byly uloženy například v \gls{XML} souboru, kdy každý zdroj by měl tyto položky:
 \begin{itemize}
 \item \textbf{Název země}
-\item \textbf{URL} - URL zdroje dat, na které lze stáhnout data.
+\item \textbf{\gls{URL}} - \gls{URL} zdroje dat, na které lze stáhnout data.
 \item \textbf{XPath} -  XPath výraz, pomocí kterého lze ze stránky vyfiltrovat a získat odkazy ke stažení dat\newline (např. \textit{/html/body//a[contains(@href,'example')]/@href})
 \item \textbf{Poslední verze} - Název / číslo poslední stažené verze.
 \end{itemize}
-XML soubor by byl následně zpracován pomocí aplikace (např. Java, C\#), která by následně pro každý zdroj dat provedla následující kroky:
+\gls{XML} soubor by byl následně zpracován pomocí aplikace (např. Java, C\#), která by následně pro každý zdroj dat provedla následující kroky:
 \begin{enumerate}
 \item Získání seznamu odkazů na zdroje dat.
-\item Stažení všech zdrojů dat, jejichž verze je větší než aktuálně uložená verze v XML.
+\item Stažení všech zdrojů dat, jejichž verze je větší než aktuálně uložená verze v \gls{XML}.
 \item V tomto bodě se dá naimplementovat cokoliv - např. lze uložená data extrahovat ze ZIP souborů, importovat patenty do databází (viz kapitola č. \ref{sec:new_patenty}), pouze notifikace o stažení několika nových souborů z daty a mnoho dalšího.
-\item Aktualizace verze v XML souboru.
+\item Aktualizace verze v \gls{XML} souboru.
 \end{enumerate}
-Automatizace stahování dat by spočívala ve spouštění aplikace pro stahování dat v pravidelných intervalech (např. každé druhé úterý v 17:00). Jako příklad lze uvést použití pipeline na Jenkins serveru, který bude spouštět z lokálního uložiště spustitelnou aplikaci v daný čas (pomocí CRON). Po vykonání celého procesu může Jenkins poslat email o stavu posledního spuštění (zda se spuštění povedlo, kolik souborů byl schopen stáhnout pro jaké země, ...). Samozřejmě bohatě postačí i použití plánovače v OS.
+Automatizace stahování dat by spočívala ve spouštění aplikace pro stahování dat v pravidelných intervalech (např. každé druhé úterý v 17:00). Jako příklad lze uvést použití pipeline na Jenkins serveru, který bude spouštět z lokálního uložiště spustitelnou aplikaci v daný čas (pomocí CRON). Po vykonání celého procesu může Jenkins poslat email o stavu posledního spuštění (zda se spuštění povedlo, kolik souborů byl schopen stáhnout pro jaké země, ...). Samozřejmě bohatě postačí i použití plánovače v operačním systému.

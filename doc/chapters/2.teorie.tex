@@ -13,10 +13,10 @@ základní informace + uložiště dat + info o zdrojích (patentové úřady at
 %CHAPTER
 \chapter{Databáze}
 
-Databáze je organizovaná kolekce strukturovaných informací nebo dat, která jsou typicky ukládána elektronicky v počítačovém systému. Data / informace lze nazvat jako fakta vztahující se k libovolnému uvažovanému objektu. Typický příklad objektu je člověk, jehož fakta jsou: jméno, věk, výška, váha a mnoho dalších \cite{guru99Database}.\newline
+Termín databáze označuje organizovanou kolekci strukturovaných informací nebo dat, která jsou typicky ukládána elektronicky v počítačovém systému. Data / informace lze nazvat jako fakta vztahující se k libovolnému uvažovanému objektu. Typický příklad objektu je člověk, jehož fakta jsou: jméno, věk, výška, váha a mnoho dalších \cite{guru99Database}.\newline
 
 \section{Systém řízení báze dat}
-Pro správu dat v databázi a její řízení je potřeba komplexní software, který se nazývá \textbf{Systém Řízení Báze Dat} (SŘBD, anglicky DBMS). SŘBD slouží jako interface mezi samotnou databází a koncovým uživatelem (může být i program), umožňující jak vytěžování a aktualizaci dat, tak i možnosti nastavení záloh a jiných administrativních operací \cite{OracleDB}. V dnešním světe existuje několik různých DBMS (například Relační DBMS, Objektově-orientované DBMS).
+Pro správu dat v databázi a její řízení je potřeba komplexní software, který se nazývá \textbf{Systém Řízení Báze Dat} (SŘBD, anglicky \gls{DBMS}). SŘBD slouží jako interface mezi samotnou databází a koncovým uživatelem (může být i program), umožňující jak vytěžování a aktualizaci dat, tak i možnosti nastavení záloh a jiných administrativních operací \cite{OracleDB}. V dnešním světe existuje několik různých \gls{DBMS} (například Relační \gls{DBMS}, Objektově-orientované \gls{DBMS}).
 \begin{figure}[h!]
 \centering
 \includegraphics[width=10cm]{img/databaze/dbms}
@@ -35,7 +35,7 @@ Všechny databáze sestávají z pěti základních komponent, nehledě na použ
 \end{itemize}
 
 \section{Jazyky} \label{sec:jazyky}
-Databázové jazyky, jinak známé jako dotazovací jazyky, jsou klasifikací programovacích jazyků, které se používají k definování a přístupu k databázím. Pomocí těchto jazyků dokáže uživatel získávat nebo spravovat data v databázích. V dnešní době se jazyky (například SQL) mohou skládat ze čtyř podjazyků, kdy každý slouží k jinému účelu v rámci vykonávání příkazů \cite{indeedDBLanguage, begginersBookDBLanguage}:
+Databázové jazyky, jinak známé jako dotazovací jazyky, jsou klasifikací programovacích jazyků, které se používají k definování a přístupu k databázím. Pomocí těchto jazyků dokáže uživatel získávat nebo spravovat data v databázích. V dnešní době se jazyky (například \gls{SQL}) mohou skládat ze čtyř podjazyků, kdy každý slouží k jinému účelu v rámci vykonávání příkazů \cite{indeedDBLanguage, begginersBookDBLanguage}:
 \begin{itemize}
 \item \textbf{Data definition language} (DDL) - DDL umí vytvářet jednotlivé komponenty databázového schématu (tabulky, soubory, indexy, ...), které tvoří strukturu reprezentující organizaci dat v databázi. Dostupné příkazy pro jazyk DDL:
 	\begin{itemize}
@@ -74,7 +74,7 @@ Databázové jazyky, jinak známé jako dotazovací jazyky, jsou klasifikací pr
 \section{Typy databází}
 V dnešním světě existuje mnoho různých typů databází. Výběr nejlepšího typu databáze pro konkrétní organizaci závisí na tom, jak organizace zamýšlí data používat. V této kapitole je vypsáno pouze pár typů, protože vznikají stále nové, méně známé typy databází, které jsou tvořeny pro specifické požadavky (například finanční, věděcké) \cite{matillionTypeDB, OracleDB}.
 \subsection{Relační databáze}
-Název relační databáze pochází ze způsobu, jakým jsou data uložena, a to ve více souvisejících tabulkách. Data v tabulkách jsou uložena v řádcích a sloupcích. Relační databáze jsou velice spolehlivé a podporují všechny čtyři žádoucí vlastnosti databázových transakcí - ACID (Atomicita, Konzistence, Izolovanost, Trvalost). Pro co nejefektivěnjší využití tohoto typu databáze je potřeba ukládat pouze dobře strukturovaná data, pro částečně strukturovaná či nestrukturovaná data je vhodné použít například grafové nebo dokumentově založené databáze. Typické relační databáze jsou například: Microsoft SQL Server, Oracle Database, MySQL. Ukázku relační databáze lze vidět na obrázku č. \ref{fig:db_img_relational}.
+Název relační databáze pochází ze způsobu, jakým jsou data uložena, a to ve více souvisejících tabulkách. Data v tabulkách jsou uložena v řádcích a sloupcích. Relační databáze jsou velice spolehlivé a podporují všechny čtyři žádoucí vlastnosti databázových transakcí \gls{ACID}. Pro co nejefektivěnjší využití tohoto typu databáze je potřeba ukládat pouze dobře strukturovaná data, pro částečně strukturovaná či nestrukturovaná data je vhodné použít například grafové nebo dokumentově založené databáze. Typické relační databáze jsou například: Microsoft SQL Server, Oracle Database, MySQL. Ukázku relační databáze lze vidět na obrázku č. \ref{fig:db_img_relational}.
 	\begin{figure}[H]
 	\centering
 	\includegraphics[width=14cm]{img/databaze/relational_db}
@@ -82,7 +82,7 @@ Název relační databáze pochází ze způsobu, jakým jsou data uložena, a t
 	\label{fig:db_img_relational}
 	\end{figure}
 \subsection{Objektově-orientovaná databáze}
-Objektově-orientovaná databáze je založena na objektově-orientovaném programování, kdy data a všechny jejich atributy a metody jsou svázány dohromady jako objekt. Stejně jako relační databáze, i objektově-orientované databáze odpovídají standardům ACID. Typické příklady jsou například: ObjectStore, Cache, ConceptBase. Ukázku objektově-orientované databáze lze vidět na obrázku č. \ref{fig:db_img_oo}.
+Objektově-orientovaná databáze je založena na objektově-orientovaném programování, kdy data a všechny jejich atributy a metody jsou svázány dohromady jako objekt. Stejně jako relační databáze, i objektově-orientované databáze odpovídají standardům \gls{ACID}. Typické příklady jsou například: ObjectStore, Cache, ConceptBase. Ukázku objektově-orientované databáze lze vidět na obrázku č. \ref{fig:db_img_oo}.
 	\begin{figure}[H]
 	\centering
 	\includegraphics[width=12cm]{img/databaze/oo_db}
@@ -98,7 +98,7 @@ Cloudová databáze je kolekce dat, strukturovaných nebo nestrukturovaných, kt
 	\label{fig:db_img_cloud}
 	\end{figure}
 \subsection{Distribuovaná databáze}
-Distribuovaná databáze je skupina vzájemně propojených databází (dvě a více), které jsou fyzicky rozloženy na různých místech, která jsou spravována systémem správy distribuovaných databází (DBMS). V tomto typu systému nejsou data uložena na jednom místě. Při spuštění dotazu se pomocí kolektivní sady webů napříč různými datovými centry spolupracuje na zodpovězení otázky. Typické příklady jsou: Apache Ignite, AWS SimpleDB, FoundationDB. Ukázku distribuované databáze lze vidět na obrázku č. \ref{fig:db_img_distributed}.
+Distribuovaná databáze je skupina vzájemně propojených databází (dvě a více), které jsou fyzicky rozloženy na různých místech, která jsou spravována systémem správy distribuovaných databází (\gls{DBMS}). V tomto typu systému nejsou data uložena na jednom místě. Při spuštění dotazu se pomocí kolektivní sady webů napříč různými datovými centry spolupracuje na zodpovězení otázky. Typické příklady jsou: Apache Ignite, AWS SimpleDB, FoundationDB. Ukázku distribuované databáze lze vidět na obrázku č. \ref{fig:db_img_distributed}.
 	\begin{figure}[H]
 	\centering
 	\includegraphics[width=13cm]{img/databaze/distributed_db}
@@ -106,9 +106,9 @@ Distribuovaná databáze je skupina vzájemně propojených databází (dvě a v
 	\label{fig:db_img_distributed}
 	\end{figure}
 \subsection{NoSQL databáze}
-NoSQL je široká kategorie databází, které nepoužívají SQL jako svůj primární jazyk pro přístup k datům. Tyto typy databází jsou také někdy označovány jako nerelační databáze. V NoSQL databázích se pracuje s nestrukturovanými a polostrukturovanými sadami distribuovaných dat. Jednou z výhod je, že vývojáři mohou provádět změny databáze za běhu, aniž by to ovlivnilo aplikace, které databázi používají.
+NoSQL je široká kategorie databází, které nepoužívají \gls{SQL} jako svůj primární jazyk pro přístup k datům. Tyto typy databází jsou také někdy označovány jako nerelační databáze. V NoSQL databázích se pracuje s nestrukturovanými a polostrukturovanými sadami distribuovaných dat. Jednou z výhod je, že vývojáři mohou provádět změny databáze za běhu, aniž by to ovlivnilo aplikace, které databázi používají.
 \subsection{Databáze Klíč-Hodnota}
-Databáze klíč-hodnota poskytuje nejjednodušší možný datový model. Data jsou uložená jako pár klíč - hodnota ve slovníku / mapě, kdy klíč je indexem. Hodnota může být například celé číslo, řetězec, struktura JSON nebo pole. Typické příklady jsou: Redis, Riak, Oracle NoSQL Database. Ukázku databáze klíč-hodnota lze vidět na obrázku č. \ref{fig:db_img_keyvalue}.
+Databáze klíč-hodnota poskytuje nejjednodušší možný datový model. Data jsou uložená jako pár klíč - hodnota ve slovníku / mapě, kdy klíč je indexem. Hodnota může být například celé číslo, řetězec, struktura \gls{JSON} nebo pole. Typické příklady jsou: Redis, Riak, Oracle NoSQL Database. Ukázku databáze klíč-hodnota lze vidět na obrázku č. \ref{fig:db_img_keyvalue}.
 	\begin{figure}[H]
 	\centering
 	\includegraphics[width=10cm]{img/databaze/keyvalue_db}
@@ -124,7 +124,7 @@ Grafová databáze je typem NoSQL databáze, která je založená na teorii graf
 	\label{fig:db_img_graph}
 	\end{figure}
 \subsection{Dokumentová databáze}
-Databáze dokumentů jsou typem NoSQL databáze a  jsou navržené pro ukládání, načítání a správu informací orientovaných na dokumenty. Dokumenty jsou obvykle uloženy ve formátu XML, JSON, BSON. 
+Databáze dokumentů jsou typem NoSQL databáze a  jsou navržené pro ukládání, načítání a správu informací orientovaných na dokumenty. Dokumenty jsou obvykle uloženy ve formátu \gls{XML}, \gls{JSON}, \gls{BSON}. 
 Typické příklady jsou: MongoDB, Amazon DocumentDB, Apache CouchDB. Ukázku dokumentové databáze lze vidět na obrázku č. \ref{fig:db_img_document}.
 	\begin{figure}[H]
 	\centering

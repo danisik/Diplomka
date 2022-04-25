@@ -1,8 +1,27 @@
-\chapter{??? Výběr patentů + výběr databáze ???}
+\chapter{Návrh úložiště}
+
+%This section provides a general overview of the state of today’s bibliographic
+%databases and describes different types of bibliographical databases. First,
+%we take a look at publication databases and show some examples of how they
+%compare to each other. Next, we describe databases storing bibliographic
+%information about patent data and provide some concrete examples of these
+%data sources.
+
 Zdroje (které ano, které ne + proč) + udělat stejnou tabulku jak v excelu + zmínit stránku ze který jsem čerpal informace (wipo.int)\todo{todo}\newline
 Nezapomenout zmínit meze let, ve kterých se jednotlivé patenty z daných zemí nachází \todo{todo}
+
 \section{Výběr patentů}
+Při výběru patentů byly stanoveny tři podmínky, které museli být splněny:
+\begin{itemize}
+\item Dostupnost - patenty musí být dostupné z online stránek / databází bez poplatků.
+\item Datum - patentová přihláška nebo publikace patentu musí být podána alespoň v roce 2000, všechny ostatní patenty budou vyfiltrovány.
+\item Atributy - všechny patenty musí obsahovat povinné atributy (viz kapitola č. \ref{subsec:atributy}).
+\end{itemize}
+
 \subsection{Zdroje dat}
+V dnešním světě existuje několik desítek až stovek patentových zdrojů dat, od webových vyhledávačů v databázi až po plný export databáze s patenty. Velké organizace, jako například \gls{EPO}, \gls{WIPO}, \gls{USPTO}, udržují jedny z největších patentových databází (desítky až stovky milionů patentů), ve kterých lze vyhledávat velké množství informací zdarma za použití webových vyhledávačů na dané stránce organizace. Lze zde najít všechny typy patentů (přihlášky, publikace), národní patenty i patenty registrované například u \gls{EPO}. V případě exportu databází, \gls{USPTO} poskytuje plný export svých databází veřejnosti pro libovolné používání, zcela zdarma. Využití těchto zdrojů dat by bylo určitě skvělé, ale tyto zdroje byly nedávno použity a rozebrány v jiné diplomové práci, proto je vhodné se spíše zaměřit na národní zdroje dat patentů.
+\newline
+\indent Národní databáze patentů dané země obsahuje všechny národní patenty, některé dokonce i patenty z jiných zemí registrovaných u \gls{EPO}. 
 	\begin{table}[H]
 	\centering
 	\begin{tabular}{|>{\centering\arraybackslash}p{2.2cm}|>{\centering\arraybackslash}p{8cm}|>{\centering\arraybackslash}p{2cm}|} 
@@ -131,14 +150,14 @@ Nezapomenout zmínit meze let, ve kterých se jednotlivé patenty z daných zem�
 
 \newpage
 
-\subsection{Atributy}
+\subsection{Atributy}\label{subsec:atributy}
 \subsubsection{Povinné atributy}
 
 	\begin{table}[H]
 	\centering
 	\begin{tabular}{|>{\centering\arraybackslash}p{2.2cm}|>{\centering\arraybackslash}p{2cm}|>{\centering\arraybackslash}p{3cm}|>{\centering\arraybackslash}p{2cm}|>{\centering\arraybackslash}p{2.5cm}|} 
 	\hline
-	\textbf{Země}    & \textbf{Název patentu} & \textbf{Rok přihlášky / patentu} & \textbf{Autor} & \textbf{ID patentu}                \\ 
+	\textbf{Země}    & \textbf{Název patentu} & \textbf{Rok přihlášky / publikace} & \textbf{Autor} & \textbf{ID patentu}                \\ 
 	\hline
 	Kanada & x & x & x & x \\
 	\hline
@@ -260,3 +279,6 @@ Rovnou udělat kapitolu, ve který se aplikují všechny podmínky + se sepíše
 
 \section{Výběr databáze}
 \todo{todo}
+\subsection{Výběr typu databáze}
+\subsection{Výběr z existujících řešení}
+\subsection{Závěr průzkumu}

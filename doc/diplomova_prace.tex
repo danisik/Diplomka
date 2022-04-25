@@ -27,10 +27,10 @@
 % 
 % Texty abstraktů (anglicky, česky)
 %
-\abstracttexten{Creation of large-scale patent data repositories. The aim of the diploma thesis is to get acquainted with the available national sources of patent data and to create extensive local repositories of patent data enabling their effective searching and mining. The first part of the thesis thoroughly describes the types of patents, existing national sources and file formats in which patents are stored. Subsequently, the applicable technologies for searching and mining are described. The second part of the thesis is devoted to the selection of usable data and the implementation of selected technologies. Several queries and scenarios have been created to test efficient mining. The results of the testing are part of this work.
+\abstracttexten{Creation of large-scale patent data repositories. The aim of the diploma thesis is to get acquainted with the available sources of patent data and to create extensive local repositories of patent data enabling their effective searching and mining. The first part of the thesis thoroughly describes the types of patents, existing data sources and file formats in which patents are stored. Subsequently, the applicable technologies for searching and mining are described. The second part of the thesis is devoted to the selection of usable data and the implementation of selected technologies. Several queries and scenarios have been created to test efficient mining. The results of the testing are part of this work.
 }
 
-\abstracttextcz{Cílem diplomové práce je seznámit se s dostupnými národními zdroji dat o patentech a vytvořit rozsáhlá lokální úložiště patentových dat umožňující jejich efektivní prohledávání a vytěžování. První část práce důkladně popisuje typy patentů, existující národní zdroje a formáty souborů, ve kterých se patenty ukládají. Následně jsou popsány použitelné technologie pro prohledávání a vytěžování. Druhá část práce se věnuje výběru použitelných dat a implementaci vybraných technologií. Pro otestování efektivního vytěžování  bylo vytvořeno několik query a scénářů. Výsledky testování jsou součástí této práce.
+\abstracttextcz{Cílem diplomové práce je seznámit se s dostupnými zdroji dat o patentech a vytvořit rozsáhlá lokální úložiště patentových dat umožňující jejich efektivní prohledávání a vytěžování. První část práce důkladně popisuje typy patentů, existující zdroje dat a formáty souborů, ve kterých se patenty ukládají. Následně jsou popsány použitelné technologie pro prohledávání a vytěžování. Druhá část práce se věnuje výběru použitelných dat a implementaci vybraných technologií. Pro otestování efektivního vytěžování  bylo vytvořeno několik dotazů a scénářů. Výsledky testování jsou součástí této práce.
 }
 
 % Na titulní stranu a do textu prohlášení se automaticky vkládá 
@@ -85,6 +85,13 @@
 \usepackage{verbatim}
 \usepackage{fancyhdr}
 
+% Acronyms
+\usepackage[nomain, abbreviations, automake]{glossaries-extra}
+\makeglossaries
+\setabbreviationstyle{long-short}
+\setabbreviationstyle[acronym]{short}
+\input{acronyms.tex}
+
 \input{style/sql_style.tex}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -112,6 +119,14 @@
 \input{chapters/6.rozsiritelnost.tex}
 \input{chapters/7.overeni_vytezovani.tex}
 \input{chapters/8.zaver.tex}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Zkratky
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\printglossary[type=\acronymtype,title={Zkratky}]
  
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
