@@ -36,8 +36,8 @@ Všechny databáze sestávají z pěti základních komponent, nehledě na použ
 
 \section{Typy databází}
 V dnešním světě existuje mnoho různých typů databází. Výběr nejlepšího typu databáze pro konkrétní organizaci závisí na tom, jak organizace zamýšlí data používat. V této kapitole je vypsáno pouze pár typů, protože vznikají stále nové, méně známé typy databází, které jsou tvořeny pro specifické požadavky (například finanční, věděcké) \cite{matillionTypeDB, OracleDB}.
+
 \subsection{Relační databáze}
-\todo{Struktura ? Data model ? Výhody nevýhody ?}
 Název relační databáze pochází ze způsobu, jakým jsou data uložena, a to ve více souvisejících tabulkách. Data v tabulkách jsou uložena v řádcích a sloupcích. Relační databáze jsou velice spolehlivé a podporují všechny čtyři žádoucí vlastnosti databázových transakcí \gls{ACID}. Pro co nejefektivěnjší využití tohoto typu databáze je potřeba ukládat pouze dobře strukturovaná data, pro částečně strukturovaná či nestrukturovaná data je vhodné použít například grafové nebo dokumentově založené databáze. Typické relační databáze jsou například: Microsoft SQL Server, Oracle Database, MySQL, PostgreSQL. Ukázku relační databáze lze vidět na obrázku č. \ref{fig:db_img_relational}.
 	\begin{figure}[H]
 	\centering
@@ -45,8 +45,45 @@ Název relační databáze pochází ze způsobu, jakým jsou data uložena, a t
 	\caption{Ukázka relační databáze}
 	\label{fig:db_img_relational}
 	\end{figure}
+\subsubsection{Datový model}
+Relační datový model obsahuje několik fundamentálních konceptů. Koncepty lze vidět na obrázku č. \ref{fig:model_relational}.
+\begin{figure}[H]
+\centering
+\includegraphics[width=16cm]{img/databaze/data_model_relational}
+\caption{Koncepty relačního datového modelu.}
+\label{fig:model_relational}
+\end{figure}
+
+\indent První z konceptů se nazývá \textbf{Relace}, což je dvou-dimenzionální tabulka, která se používá pro ukládání kolekce datových elementů. Tabulka je tvořena řádky a sloupci, kde řádky reprezentují záznamy a sloupce reprezentují atributy.
+\newline
+\indent \textbf{Řádka} je další koncept relačního modelu, která pouze reprezentuje jeden záznam v tabulce.
+\newline
+\indent Další z konceptů je \textbf{Atribut}, který reprezentuje sloupec v tabulce, neboli vlastnosti jednotlivých řádků (například jméno, příjmení, věk, ...).
+\newline
+\indent Koncept \textbf{Doména atributů} slouží k definici vlastností pro každou hodnotu daného atributu. Pomocí domény lze určit, zda hodnoty daného atributu mohou být prázdné, budou dlouhé maximálně 50 znaků nebo například určit datový typ atributu (textová hodnota, číslo, ...).
+\newline
+\indent Další z konceptů je \textbf{Stupeň}, který pouze určuje počet atributů v dané relaci.
+\newline
+\indent \textbf{Kardinalita} určuje počet řádků / záznamů existujících v dané relaci.
+\newline
+\indent Koncept \textbf{Relační schéma} popisuje návrh a strukturu relace. Obsahuje názvy tabulek, jejich atributy a typy atributů. Relační schéma pro naší tabulku lze vidět na obrázku č. \ref{fig:schema_relation}.
+\begin{figure}[H]
+\centering
+\includegraphics[width=6cm]{img/databaze/schema_relation}
+\caption{Relační schéma pro tabulku na obrázku č. \ref{fig:model_relational}.}
+\label{fig:schema_relation}
+\end{figure}
+
+\indent \textbf{Relační instance} reprezentuje kolekci záznamů, které jsou uložené v tabulce v určitém čase.
+\newline
+\indent Poslední koncept \textbf{Relační klíč} je atribut / seznam atributů, které lze využít jako unikátní identifikátor jedné entity v tabulce, případně k určení vazby mezi dvěma relacema. Existuje šest typů relačních klíčů - kandidátní, super, složený, primární, cizí, sekundární / alternativní \cite{data_model_relation}.
+
+\subsubsection{Výhody}
+\todo{todo}
+\subsubsection{Nevýhody}
+\todo{todo}
+
 \subsection{Objektově-orientovaná databáze}
-\todo{Struktura ? Data model ? Výhody nevýhody ?}
 Objektově-orientovaná databáze je založena na objektově-orientovaném programování, kdy data a všechny jejich atributy a metody jsou svázány dohromady jako objekt. Stejně jako relační databáze, i objektově-orientované databáze odpovídají standardům \gls{ACID}. Typické příklady jsou například: ObjectStore, ConceptBase. Ukázku objektově-orientované databáze lze vidět na obrázku č. \ref{fig:db_img_oo}.
 	\begin{figure}[H]
 	\centering
@@ -54,11 +91,16 @@ Objektově-orientovaná databáze je založena na objektově-orientovaném progr
 	\caption{Ukázka objektově-orientované databáze}
 	\label{fig:db_img_oo}
 	\end{figure}
+\subsubsection{Datový model}
+\todo{todo}
+\subsubsection{Výhody}
+\todo{todo}
+\subsubsection{Nevýhody}
+\todo{todo}
+
 \subsection{NoSQL databáze}
-\todo{Struktura ? Data model ? Výhody nevýhody ?}
 NoSQL je široká kategorie databází, které nepoužívají \gls{SQL} jako svůj primární jazyk pro přístup k datům. Tyto typy databází jsou také někdy označovány jako nerelační databáze. V NoSQL databázích se pracuje s nestrukturovanými a polostrukturovanými sadami distribuovaných dat. Jednou z výhod je, že vývojáři mohou provádět změny databáze za běhu, aniž by to ovlivnilo aplikace, které databázi používají.
 \subsection{Databáze Klíč-Hodnota}
-\todo{Struktura ? Data model ? Výhody nevýhody ?}
 Databáze klíč-hodnota poskytuje nejjednodušší možný NoSQL datový model. Data jsou uložená jako pár klíč - hodnota ve slovníku / mapě, kdy klíč je indexem. Hodnota může být například celé číslo, řetězec, struktura \gls{JSON} nebo pole. Typické příklady jsou: Redis, Riak, LevelDB. Ukázku databáze klíč-hodnota lze vidět na obrázku č. \ref{fig:db_img_keyvalue}.
 	\begin{figure}[H]
 	\centering
@@ -66,8 +108,14 @@ Databáze klíč-hodnota poskytuje nejjednodušší možný NoSQL datový model.
 	\caption{Ukázka databáze klíč-hodnota.}
 	\label{fig:db_img_keyvalue}
 	\end{figure}
+\subsubsection{Datový model}
+\todo{todo}
+\subsubsection{Výhody}
+\todo{todo}
+\subsubsection{Nevýhody}
+\todo{todo}
+
 \subsection{Grafová databáze}
-\todo{Struktura ? Data model ? Výhody nevýhody ?}
 Grafová databáze je typem NoSQL databáze, která je založená na teorii grafů. Data jsou reprezentována jako uzly, hrany zase reprezentují vztahy mezi daty. Graf lze procházet podél určitých typů hran nebo přes celý graf. Procházení spojení nebo relací je velmi rychlé, protože vztahy mezi uzly se nepočítají v době dotazu, ale jsou v databázi trvalé. Typické příklady jsou: Neo4j, OrientDB, Microsoft Azure CosmosDB. Ukázku grafové databáze lze vidět na obrázku č. \ref{fig:db_img_graph}.
 	\begin{figure}[H]
 	\centering
@@ -75,8 +123,14 @@ Grafová databáze je typem NoSQL databáze, která je založená na teorii graf
 	\caption{Ukázka grafové databáze}
 	\label{fig:db_img_graph}
 	\end{figure}
+\subsubsection{Datový model}
+\todo{todo}
+\subsubsection{Výhody}
+\todo{todo}
+\subsubsection{Nevýhody}
+\todo{todo}
+
 \subsection{Dokumentová databáze}
-\todo{Struktura ? Data model ? Výhody nevýhody ?}
 Databáze dokumentů jsou typem NoSQL databáze a  jsou navržené pro ukládání, načítání a správu informací orientovaných na dokumenty. Dokumenty jsou obvykle uloženy ve formátu \gls{XML}, \gls{JSON}, \gls{BSON}. 
 Typické příklady jsou: MongoDB, Amazon DocumentDB, Elasticsearch. Ukázku dokumentové databáze lze vidět na obrázku č. \ref{fig:db_img_document}.
 	\begin{figure}[H]
@@ -85,6 +139,12 @@ Typické příklady jsou: MongoDB, Amazon DocumentDB, Elasticsearch. Ukázku dok
 	\caption{Ukázka dokumentově orientované databáze}
 	\label{fig:db_img_document}
 	\end{figure}
+\subsubsection{Datový model}
+\todo{todo}
+\subsubsection{Výhody}
+\todo{todo}
+\subsubsection{Nevýhody}
+\todo{todo}
 
 \section{Existující řešení}
 Pro vybrané typy databáze existují mnoho databázových řešení, které lze zmínit. V této kapitole se budeme zabývat především těmi nejznámějšími pro daný typ databáze, a které jsou zdarma ke stažení a používání. Pro každý typ databáze byly vybrány maximálně dvě řešení.
