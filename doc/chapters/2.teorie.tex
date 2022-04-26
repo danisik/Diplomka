@@ -34,6 +34,86 @@ Všechny databáze sestávají z pěti základních komponent, nehledě na použ
 \item \textbf{Procedury} - Procedura obsahuje předpřipravený seznam příkazů, které se následně vykonávají po zavolání dané procedury. 
 \end{itemize}
 
+\section{Typy databází}
+V dnešním světě existuje mnoho různých typů databází. Výběr nejlepšího typu databáze pro konkrétní organizaci závisí na tom, jak organizace zamýšlí data používat. V této kapitole je vypsáno pouze pár typů, protože vznikají stále nové, méně známé typy databází, které jsou tvořeny pro specifické požadavky (například finanční, věděcké) \cite{matillionTypeDB, OracleDB}.
+\subsection{Relační databáze}
+\todo{Struktura ? Data model ? Výhody nevýhody ?}
+Název relační databáze pochází ze způsobu, jakým jsou data uložena, a to ve více souvisejících tabulkách. Data v tabulkách jsou uložena v řádcích a sloupcích. Relační databáze jsou velice spolehlivé a podporují všechny čtyři žádoucí vlastnosti databázových transakcí \gls{ACID}. Pro co nejefektivěnjší využití tohoto typu databáze je potřeba ukládat pouze dobře strukturovaná data, pro částečně strukturovaná či nestrukturovaná data je vhodné použít například grafové nebo dokumentově založené databáze. Typické relační databáze jsou například: Microsoft SQL Server, Oracle Database, MySQL, PostgreSQL. Ukázku relační databáze lze vidět na obrázku č. \ref{fig:db_img_relational}.
+	\begin{figure}[H]
+	\centering
+	\includegraphics[width=14cm]{img/databaze/relational_db}
+	\caption{Ukázka relační databáze}
+	\label{fig:db_img_relational}
+	\end{figure}
+\subsection{Objektově-orientovaná databáze}
+\todo{Struktura ? Data model ? Výhody nevýhody ?}
+Objektově-orientovaná databáze je založena na objektově-orientovaném programování, kdy data a všechny jejich atributy a metody jsou svázány dohromady jako objekt. Stejně jako relační databáze, i objektově-orientované databáze odpovídají standardům \gls{ACID}. Typické příklady jsou například: ObjectStore, ConceptBase. Ukázku objektově-orientované databáze lze vidět na obrázku č. \ref{fig:db_img_oo}.
+	\begin{figure}[H]
+	\centering
+	\includegraphics[width=12cm]{img/databaze/oo_db}
+	\caption{Ukázka objektově-orientované databáze}
+	\label{fig:db_img_oo}
+	\end{figure}
+\subsection{NoSQL databáze}
+\todo{Struktura ? Data model ? Výhody nevýhody ?}
+NoSQL je široká kategorie databází, které nepoužívají \gls{SQL} jako svůj primární jazyk pro přístup k datům. Tyto typy databází jsou také někdy označovány jako nerelační databáze. V NoSQL databázích se pracuje s nestrukturovanými a polostrukturovanými sadami distribuovaných dat. Jednou z výhod je, že vývojáři mohou provádět změny databáze za běhu, aniž by to ovlivnilo aplikace, které databázi používají.
+\subsection{Databáze Klíč-Hodnota}
+\todo{Struktura ? Data model ? Výhody nevýhody ?}
+Databáze klíč-hodnota poskytuje nejjednodušší možný NoSQL datový model. Data jsou uložená jako pár klíč - hodnota ve slovníku / mapě, kdy klíč je indexem. Hodnota může být například celé číslo, řetězec, struktura \gls{JSON} nebo pole. Typické příklady jsou: Redis, Riak, LevelDB. Ukázku databáze klíč-hodnota lze vidět na obrázku č. \ref{fig:db_img_keyvalue}.
+	\begin{figure}[H]
+	\centering
+	\includegraphics[width=10cm]{img/databaze/keyvalue_db}
+	\caption{Ukázka databáze klíč-hodnota.}
+	\label{fig:db_img_keyvalue}
+	\end{figure}
+\subsection{Grafová databáze}
+\todo{Struktura ? Data model ? Výhody nevýhody ?}
+Grafová databáze je typem NoSQL databáze, která je založená na teorii grafů. Data jsou reprezentována jako uzly, hrany zase reprezentují vztahy mezi daty. Graf lze procházet podél určitých typů hran nebo přes celý graf. Procházení spojení nebo relací je velmi rychlé, protože vztahy mezi uzly se nepočítají v době dotazu, ale jsou v databázi trvalé. Typické příklady jsou: Neo4j, OrientDB, Microsoft Azure CosmosDB. Ukázku grafové databáze lze vidět na obrázku č. \ref{fig:db_img_graph}.
+	\begin{figure}[H]
+	\centering
+	\includegraphics[width=8cm]{img/databaze/graph_db}
+	\caption{Ukázka grafové databáze}
+	\label{fig:db_img_graph}
+	\end{figure}
+\subsection{Dokumentová databáze}
+\todo{Struktura ? Data model ? Výhody nevýhody ?}
+Databáze dokumentů jsou typem NoSQL databáze a  jsou navržené pro ukládání, načítání a správu informací orientovaných na dokumenty. Dokumenty jsou obvykle uloženy ve formátu \gls{XML}, \gls{JSON}, \gls{BSON}. 
+Typické příklady jsou: MongoDB, Amazon DocumentDB, Elasticsearch. Ukázku dokumentové databáze lze vidět na obrázku č. \ref{fig:db_img_document}.
+	\begin{figure}[H]
+	\centering
+	\includegraphics[width=11cm]{img/databaze/document_db}
+	\caption{Ukázka dokumentově orientované databáze}
+	\label{fig:db_img_document}
+	\end{figure}
+
+\section{Existující řešení}
+Pro vybrané typy databáze existují mnoho databázových řešení, které lze zmínit. V této kapitole se budeme zabývat především těmi nejznámějšími pro daný typ databáze, a které jsou zdarma ke stažení a používání. Pro každý typ databáze byly vybrány maximálně dvě řešení.
+\subsection{MySQL}
+MySQL je multiplatformní databáze uplatňující relační databázový model. Komunikace s databází (získávání dat, vytváření objektů, ...) probíhá pomocí jazyka \gls{SQL}, který je rozšířen o nové funkce. Nejnovější verze MySQL je open-source, což znamená, že kdokoliv může používat a libovolně upravovat MySQL systém, aniž by musel cokoliv platit. V případě změny zdrojových kódů je potřeba nastudovat podmínky užívání definované licencí \gls{GPL} \cite{mysql}.
+\newline
+\indent Od samých počátků bylo MySQL optimalizováno především na rychlost i za cenu některých zjednodušení (například způsob zálohování dat). Díky tomuto lze provozovat jednoduché servery na počítači společně s jinýma aplikacema, případně jiné databáze. Server lze nakonfigurovat tím způsobem, že může využívat veškerou paměť, procesorový čas i vstupně výstupní kapacity.
+\newline
+
+\noindent MySQL server může být využit dvěma způsoby:
+\begin{itemize}
+\item \textbf{Klient / server} - vícevláknový \gls{SQL} server, který podporuje různé back-endy, několik různých klientských programů a knihoven a mnoho dalšího.
+\item \textbf{Věstavěná knihovna} - vícevláknová věstavěná knihovna, kterou lze propojit do své aplikace a získat tím menší, rychlejší a snadněji spravovatelný samostatný produkt.
+\end{itemize}
+\subsection{PostgreSQL}
+Relační \todo{todo}
+\subsection{ConceptBase}
+OO \todo{todo}
+\subsection{LevelDB}
+KeyValue \todo{todo}
+\subsection{Redis}
+KeyValue \todo{todo}
+\subsection{MongoDB}
+Document \todo{todo}
+\subsection{Elasticsearch}
+Document \todo{todo}
+\subsection{Neo4j}
+Graf \todo{todo}
+
 \section{Jazyky} \label{sec:jazyky}
 Databázové jazyky, jinak známé jako dotazovací jazyky, jsou klasifikací programovacích jazyků, které se používají k definování a přístupu k databázím. Pomocí těchto jazyků dokáže uživatel získávat nebo spravovat data v databázích. V dnešní době se jazyky (například \gls{SQL}) mohou skládat ze čtyř podjazyků, kdy každý slouží k jinému účelu v rámci vykonávání příkazů \cite{indeedDBLanguage, begginersBookDBLanguage}:
 \begin{itemize}
@@ -71,70 +151,58 @@ Databázové jazyky, jinak známé jako dotazovací jazyky, jsou klasifikací pr
 	\caption{Ukázka jedné transakce (bez commitu)}
 	\label{fig:tcl_savepoint}
 	\end{figure}
-\section{Typy databází}
-V dnešním světě existuje mnoho různých typů databází. Výběr nejlepšího typu databáze pro konkrétní organizaci závisí na tom, jak organizace zamýšlí data používat. V této kapitole je vypsáno pouze pár typů, protože vznikají stále nové, méně známé typy databází, které jsou tvořeny pro specifické požadavky (například finanční, věděcké) \cite{matillionTypeDB, OracleDB}.
-\subsection{Relační databáze}
-Název relační databáze pochází ze způsobu, jakým jsou data uložena, a to ve více souvisejících tabulkách. Data v tabulkách jsou uložena v řádcích a sloupcích. Relační databáze jsou velice spolehlivé a podporují všechny čtyři žádoucí vlastnosti databázových transakcí \gls{ACID}. Pro co nejefektivěnjší využití tohoto typu databáze je potřeba ukládat pouze dobře strukturovaná data, pro částečně strukturovaná či nestrukturovaná data je vhodné použít například grafové nebo dokumentově založené databáze. Typické relační databáze jsou například: Microsoft SQL Server, Oracle Database, MySQL, PostgreSQL. Ukázku relační databáze lze vidět na obrázku č. \ref{fig:db_img_relational}.
+
+\noindent Níže v kapitolách jsou popsány příklady dnešních jazyků.
+\subsection{Structured Query Language}
+Structured Query Language (\gls{SQL}) je jazyk pro komunikaci s databázema, v dnešní době standard pro relační databázové systémy. Pomocí \gls{SQL} příkazů lze například vytvářet nové objekty v databázi, upravovat existující data v tabulkách nebo vytvářet různá integritní omezení a triggery. Většina existujících databázových systémů používá upravený \gls{SQL} jazyk, který navíc obsahuje dodatečná rozšíření pro splnění požadavků v jejich systémech.
+
+\subsubsection{Syntax}
+Syntaxe \gls{SQL} se skládá z unikátního seznamu pravidel a směrnic. Při psaní příkazů zde nehraje roli citlivost písma (příkazy select a SELECT jsou záměnné). Dotazy lze psát na jednu nebo více řádek, které musí / můžou být zakončené středníkem (záleží na pravidlech používaného systému). Na obrázku č. \ref{fig:sql} lze vidět příklad dotazu, který získá jména a příjmení uživatelů z tabulky 'user' s datem narození po roce 2000.
 	\begin{figure}[H]
 	\centering
-	\includegraphics[width=14cm]{img/databaze/relational_db}
-	\caption{Ukázka relační databáze}
-	\label{fig:db_img_relational}
-	\end{figure}
-\subsection{Objektově-orientovaná databáze}
-Objektově-orientovaná databáze je založena na objektově-orientovaném programování, kdy data a všechny jejich atributy a metody jsou svázány dohromady jako objekt. Stejně jako relační databáze, i objektově-orientované databáze odpovídají standardům \gls{ACID}. Typické příklady jsou například: ObjectStore, ConceptBase. Ukázku objektově-orientované databáze lze vidět na obrázku č. \ref{fig:db_img_oo}.
-	\begin{figure}[H]
-	\centering
-	\includegraphics[width=12cm]{img/databaze/oo_db}
-	\caption{Ukázka objektově-orientované databáze}
-	\label{fig:db_img_oo}
-	\end{figure}
-\subsection{NoSQL databáze}
-NoSQL je široká kategorie databází, které nepoužívají \gls{SQL} jako svůj primární jazyk pro přístup k datům. Tyto typy databází jsou také někdy označovány jako nerelační databáze. V NoSQL databázích se pracuje s nestrukturovanými a polostrukturovanými sadami distribuovaných dat. Jednou z výhod je, že vývojáři mohou provádět změny databáze za běhu, aniž by to ovlivnilo aplikace, které databázi používají.
-\subsection{Databáze Klíč-Hodnota}
-Databáze klíč-hodnota poskytuje nejjednodušší možný NoSQL datový model. Data jsou uložená jako pár klíč - hodnota ve slovníku / mapě, kdy klíč je indexem. Hodnota může být například celé číslo, řetězec, struktura \gls{JSON} nebo pole. Typické příklady jsou: Redis, Riak, LevelDB. Ukázku databáze klíč-hodnota lze vidět na obrázku č. \ref{fig:db_img_keyvalue}.
-	\begin{figure}[H]
-	\centering
-	\includegraphics[width=10cm]{img/databaze/keyvalue_db}
-	\caption{Ukázka databáze klíč-hodnota.}
-	\label{fig:db_img_keyvalue}
-	\end{figure}
-\subsection{Grafová databáze}
-Grafová databáze je typem NoSQL databáze, která je založená na teorii grafů. Data jsou reprezentována jako uzly, hrany zase reprezentují vztahy mezi daty. Graf lze procházet podél určitých typů hran nebo přes celý graf. Procházení spojení nebo relací je velmi rychlé, protože vztahy mezi uzly se nepočítají v době dotazu, ale jsou v databázi trvalé. Typické příklady jsou: Neo4j, OrientDB, Microsoft Azure CosmosDB. Ukázku grafové databáze lze vidět na obrázku č. \ref{fig:db_img_graph}.
-	\begin{figure}[H]
-	\centering
-	\includegraphics[width=8cm]{img/databaze/graph_db}
-	\caption{Ukázka grafové databáze}
-	\label{fig:db_img_graph}
-	\end{figure}
-\subsection{Dokumentová databáze}
-Databáze dokumentů jsou typem NoSQL databáze a  jsou navržené pro ukládání, načítání a správu informací orientovaných na dokumenty. Dokumenty jsou obvykle uloženy ve formátu \gls{XML}, \gls{JSON}, \gls{BSON}. 
-Typické příklady jsou: MongoDB, Amazon DocumentDB, Elasticsearch. Ukázku dokumentové databáze lze vidět na obrázku č. \ref{fig:db_img_document}.
-	\begin{figure}[H]
-	\centering
-	\includegraphics[width=11cm]{img/databaze/document_db}
-	\caption{Ukázka dokumentově orientované databáze}
-	\label{fig:db_img_document}
+	\includegraphics[width=13cm]{img/databaze/sql}
+	\caption{Příklad \gls{SQL} dotazu.}
+	\label{fig:sql}
 	\end{figure}
 
-\section{Existující řešení}
-Pro vybrané typy databáze existují mnoho databázových řešení, které lze zmínit. V této kapitole se budeme zabývat především těmi nejznámějšími pro daný typ databáze, a které jsou zdarma ke stažení a používání. Pro každý typ databáze byly vybrány maximálně dvě řešení.
-\subsection{MySQL}
-Relační
-\subsection{PostgreSQL}
-Relační
-\subsection{ConceptBase}
-OO
-\subsection{LevelDB}
-KeyValue
-\subsection{Redis}
-KeyValue
-\subsection{MongoDB}
-Document
-\subsection{Elasticsearch}
-Document
-\subsection{Neo4j}
-Graf
+\noindent Dotazy lze zanořovat do sebe, kdy výsledek jednoho dotazu jde použit jako podmínka pro druhý dotaz, viz obrázek č. \ref{fig:sql2}.
+	\begin{figure}[H]
+	\centering
+	\includegraphics[width=14cm]{img/databaze/sql2}
+	\caption{Příklad zanořeného \gls{SQL} dotazu.}
+	\label{fig:sql2}
+	\end{figure}
+
+\subsection{MongoDB Query Language}
+MongoDB Query Language (\gls{MQL}) je jazyk pro získávání dat z MongoDB dokumentových databází. Dotazy zde poskytují jednoduchost v procesu načítání dat z databáze, stejně jako tomu je u \gls{SQL}. Při provádění dotazů lze také použít kritéria nebo podmínky, kterými lze načíst konkrétní data z databáze. Jazyk také podporuje \gls{CRUD} operace. Výsledky můžeme třídit, seskupovat, fitrovat a spočítat jejich četnost za pomoci agregační pipeline (zřetězeného zpracování). \gls{MQL} podporuje transakce více dokumentů \cite{mongo_lang}.
+
+\subsubsection{Syntax}
+Syntaxe \gls{MQL} je intuitivní a jednoduchá na používání i pro velice složité dotazy, protože ta samá syntaxe se používá i pro uložené dokumenty v databázi. Příklad syntaxe pro vytváření, čtení, úpravu a mazání dokumentů (\gls{CRUD}) lze vidět na obrázku č. \ref{fig:crud}.
+	\begin{figure}[H]
+	\centering
+	\includegraphics[width=12cm]{img/databaze/crud}
+	\caption{Příklady \gls{CRUD} operací v MongoDB.}
+	\label{fig:crud}
+	\end{figure}
+
+\subsection{Cypher Query Language}
+Cypher je dotazovací jazyk pro grafovou databázi Neo4j a umožňuje získávat data z grafů. Tento jazyk byl inspirován hlavně \gls{SQL} - uživatel se zaměřuje pouze na to, jaká data chce získat, ne jak je má získat. Cypher je unikátní v tom, že poskytuje vizuální způsob, jak sladit vzory a vztahy \cite{cypher}.
+
+\subsubsection{Syntax}
+Cypher využívá \gls{ASCII}-art typ syntaxe, což je umění, které pracuje s počítačovým textem jako s výtvarným médiem (například obrázky se skládají ze znaků kódu \gls{ASCII}). Syntaxi lze vidět na obrázku č. \ref{fig:cypher_syntax}. Pro jednotlivé uzly se používají kruhové závorky, pro vztah se používá šipka s hranatýma závorkama obsahující vztah prvního uzlu s druhým uzlem.
+	\begin{figure}[H]
+	\centering
+	\includegraphics[width=14cm]{img/databaze/cypher_syntax1}
+	\caption{Syntaxe jazyka Cypher.}
+	\label{fig:cypher_syntax}
+	\end{figure}
+\noindent Na obrázku č. \ref{fig:cypher_sample} lze vidět jednoduchý dotaz, který hledá výsledný uzel pro vstupní uzel, kterým je člověk se jménem 'Dan', a vztahu 'LOVES' mezi uzly.
+	\begin{figure}[H]
+	\centering
+	\includegraphics[width=14cm]{img/databaze/sample-cypher}
+	\caption{Dotaz v jazyce Cypher.}
+	\label{fig:cypher_sample}
+	\end{figure}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %\chapter{Docker}

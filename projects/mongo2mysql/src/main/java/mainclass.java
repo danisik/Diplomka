@@ -84,10 +84,11 @@ public class mainclass {
         //convertSpanelsko();
 
         System.out.println("\n\nKanada");
-        convertCanada();
+        // HOTOVO
+        //convertCanada();
 
         System.out.println("\n\nFrancie");
-        //convertFrancie();
+        convertFrancie();
 
         System.out.println("\n\nRusko");
         // HOTOVO
@@ -1441,139 +1442,184 @@ public class mainclass {
 
                                                 Element elBiblio = (Element) doc.getElementsByTagName("fr-bibliographic-data").item(0);
 
-                                                // Patents
-                                                String country = el.getElementsByTagName("country").item(0).getTextContent();
-                                                String title = elBiblio.getElementsByTagName("invention-title").item(0).getTextContent();
-                                                String sPatentId = country + el.getElementsByTagName("doc-number").item(0).getTextContent();
-                                                String date = el.getElementsByTagName("date").item(0).getTextContent();
-                                                String kind = el.getElementsByTagName("kind").item(0).getTextContent().substring(0, 1);
-                                                String language = "FR";
+                                                if (elBiblio != null) {
 
-                                                if (title == null || title.equals("")) continue;
+                                                    // Patents
+                                                    String country = "";
 
-                                                if (title.length() > 300) title = title.substring(0, 300);
+                                                    if (el.getElementsByTagName("country") == null || el.getElementsByTagName("country").item(0) == null) country = "FR";
+                                                    else country = el.getElementsByTagName("country").item(0).getTextContent();
 
-                                                SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd", Locale.US);
-                                                java.util.Date utilDate = format.parse(date);
-                                                java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime());
+                                                    String title = "";
+                                                    if (elBiblio.getElementsByTagName("invention-title") == null || elBiblio.getElementsByTagName("invention-title").item(0) == null) continue;
+                                                    else title = elBiblio.getElementsByTagName("invention-title").item(0).getTextContent();
 
-                                                preparedStmt = conn.prepareStatement("insert into patents(patent_id, title, patent_date, kind, country, language) values (?, ?, ?, ?, ?, ?)");
-                                                preparedStmt.setString(1, sPatentId);
-                                                preparedStmt.setString(2, title);
-                                                preparedStmt.setDate(3, sqlDate);
-                                                preparedStmt.setString(4, kind);
-                                                preparedStmt.setString(5, country);
-                                                preparedStmt.setString(6, language);
-                                                preparedStmt.execute();
+                                                    String sPatentId = "";
+                                                    if (el.getElementsByTagName("doc-number") == null || el.getElementsByTagName("doc-number").item(0) == null) continue;
+                                                    else sPatentId = country + el.getElementsByTagName("doc-number").item(0).getTextContent();
 
-                                                Long patentId = 0L;
-                                                preparedStmt = conn.prepareStatement("select last_insert_id()");
-                                                ResultSet rSet = preparedStmt.executeQuery();
+                                                    String date = "";
+                                                    if (el.getElementsByTagName("date") == null || el.getElementsByTagName("date").item(0) == null) continue;
+                                                    else date = el.getElementsByTagName("date").item(0).getTextContent();
 
-                                                while (rSet.next()) {
+                                                    String kind = "";
+                                                    if (el.getElementsByTagName("kind") == null || el.getElementsByTagName("kind").item(0) == null) kind = "-";
+                                                    else kind = el.getElementsByTagName("kind").item(0).getTextContent().substring(0, 1);
 
-                                                    patentId = rSet.getLong(1);
-                                                }
+                                                    String language = "FR";
 
-                                                // Classification
-                                                Element elClass = (Element) elBiblio.getElementsByTagName("classification-ipc").item(0);
-                                                NodeList list = elClass.getElementsByTagName("further-classification");
+                                                    if (title == null || title.equals("")) continue;
 
-                                                List<String> lists = new ArrayList<>();
+                                                    if (title.length() > 300) title = title.substring(0, 300);
 
-                                                Element mainNot = (Element) elClass.getElementsByTagName("main-classification").item(0);
+                                                    SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd", Locale.US);
+                                                    java.util.Date utilDate = format.parse(date);
+                                                    java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime());
 
-                                                if (mainNot != null) {
-
-                                                    String full = mainNot.getTextContent();
-                                                    full = full.substring(0, 4);
-
-                                                    if (lists.contains(full)) continue;
-                                                    lists.add(full);
-
-                                                    String section = full.substring(0, 1);
-                                                    String sClass = full.substring(1, 3);
-                                                    String subclass = full.substring(3, 4);
-
-                                                    preparedStmt = conn.prepareStatement("insert into classification(id_patent, section, class, subclass) values (?, ?, ?, ?)");
-                                                    preparedStmt.setLong(1, patentId);
-                                                    preparedStmt.setString(2, section);
-                                                    preparedStmt.setString(3, sClass);
-                                                    preparedStmt.setString(4, subclass);
+                                                    preparedStmt = conn.prepareStatement("insert into patents(patent_id, title, patent_date, kind, country, language) values (?, ?, ?, ?, ?, ?)");
+                                                    preparedStmt.setString(1, sPatentId);
+                                                    preparedStmt.setString(2, title);
+                                                    preparedStmt.setDate(3, sqlDate);
+                                                    preparedStmt.setString(4, kind);
+                                                    preparedStmt.setString(5, country);
+                                                    preparedStmt.setString(6, language);
                                                     preparedStmt.execute();
-                                                }
 
-                                                for (int l = 0; l < list.getLength(); l++) {
+                                                    Long patentId = 0L;
+                                                    preparedStmt = conn.prepareStatement("select last_insert_id()");
+                                                    ResultSet rSet = preparedStmt.executeQuery();
 
-                                                    Element elClassS = (Element) list.item(0);
-                                                    String full = elClassS.getTextContent();
-                                                    full = full.substring(0, 4);
+                                                    while (rSet.next()) {
 
-                                                    if (lists.contains(full)) continue;
-                                                    lists.add(full);
+                                                        patentId = rSet.getLong(1);
+                                                    }
 
-                                                    String section = full.substring(0, 1);
-                                                    String sClass = full.substring(1, 3);
-                                                    String subclass = full.substring(3, 4);
+                                                    // Classification
+                                                    Element elClass = (Element) elBiblio.getElementsByTagName("classification-ipc").item(0);
 
-                                                    preparedStmt = conn.prepareStatement("insert into classification(id_patent, section, class, subclass) values (?, ?, ?, ?)");
-                                                    preparedStmt.setLong(1, patentId);
-                                                    preparedStmt.setString(2, section);
-                                                    preparedStmt.setString(3, sClass);
-                                                    preparedStmt.setString(4, subclass);
-                                                    preparedStmt.execute();
-                                                }
+                                                    if (elClass != null) {
 
+                                                        NodeList list = elClass.getElementsByTagName("further-classification");
 
-                                                // Inventors
-                                                Element elParties = (Element) elBiblio.getElementsByTagName("parties").item(0);
-                                                Element elInventors = (Element) elParties.getElementsByTagName("inventors").item(0);
-                                                NodeList inventors = elInventors.getElementsByTagName("inventor");
+                                                        List<String> lists = new ArrayList<>();
 
-                                                for (int l = 0; l < inventors.getLength(); l++) {
+                                                        Element mainNot = (Element) elClass.getElementsByTagName("main-classification").item(0);
 
-                                                    Element inventor = (Element) inventors.item(l);
-                                                    Element addressbook = (Element) inventor.getElementsByTagName("addressbook").item(0);
+                                                        if (mainNot != null) {
 
-                                                    if (addressbook.getElementsByTagName("last-name").item(0) == null) continue;
-                                                    if (addressbook.getElementsByTagName("first-name").item(0) == null) continue;
+                                                            String full = mainNot.getTextContent();
+                                                            full = full.substring(0, 4);
 
-                                                    String lastName = addressbook.getElementsByTagName("last-name").item(0).getTextContent();
-                                                    String firstName = addressbook.getElementsByTagName("first-name").item(0).getTextContent();
+                                                            if (lists.contains(full)) continue;
+                                                            lists.add(full);
 
-                                                    String name = lastName + " " + firstName;
+                                                            String section = full.substring(0, 1);
+                                                            String sClass = full.substring(1, 3);
+                                                            String subclass = full.substring(3, 4);
 
-                                                    if (name.length() > 100) name = name.substring(0, 100);
+                                                            preparedStmt = conn.prepareStatement("insert into classification(id_patent, section, class, subclass) values (?, ?, ?, ?)");
+                                                            preparedStmt.setLong(1, patentId);
+                                                            preparedStmt.setString(2, section);
+                                                            preparedStmt.setString(3, sClass);
+                                                            preparedStmt.setString(4, subclass);
+                                                            preparedStmt.execute();
+                                                        }
 
-                                                    preparedStmt = conn.prepareStatement("insert into inventors(id_patent, inventor) values (?, ?)");
-                                                    preparedStmt.setLong(1, patentId);
-                                                    preparedStmt.setString(2, name);
-                                                    preparedStmt.execute();
-                                                }
+                                                        for (int l = 0; l < list.getLength(); l++) {
 
-                                                // Applicants
-                                                Element elApplicants = (Element) elParties.getElementsByTagName("applicants").item(0);
-                                                NodeList applicants = elApplicants.getElementsByTagName("applicant");
+                                                            Element elClassS = (Element) list.item(0);
 
-                                                for (int l = 0; l < applicants.getLength(); l++) {
+                                                            if (elClassS != null) {
+                                                                String full = elClassS.getTextContent();
+                                                                full = full.substring(0, 4);
 
-                                                    Element applicant = (Element) applicants.item(l);
-                                                    Element addressbook = (Element) applicant.getElementsByTagName("addressbook").item(0);
+                                                                if (lists.contains(full)) continue;
+                                                                lists.add(full);
 
-                                                    if (addressbook.getElementsByTagName("last-name").item(0) == null) continue;
-                                                    if (addressbook.getElementsByTagName("first-name").item(0) == null) continue;
+                                                                String section = full.substring(0, 1);
+                                                                String sClass = full.substring(1, 3);
+                                                                String subclass = full.substring(3, 4);
 
-                                                    String lastName = addressbook.getElementsByTagName("last-name").item(0).getTextContent();
-                                                    String firstName = addressbook.getElementsByTagName("first-name").item(0).getTextContent();
+                                                                preparedStmt = conn.prepareStatement("insert into classification(id_patent, section, class, subclass) values (?, ?, ?, ?)");
+                                                                preparedStmt.setLong(1, patentId);
+                                                                preparedStmt.setString(2, section);
+                                                                preparedStmt.setString(3, sClass);
+                                                                preparedStmt.setString(4, subclass);
+                                                                preparedStmt.execute();
+                                                            }
+                                                        }
+                                                    }
 
-                                                    String name = lastName + " " + firstName;
+                                                    // Inventors
+                                                    Element elParties = (Element) elBiblio.getElementsByTagName("parties").item(0);
 
-                                                    if (name.length() > 100) name = name.substring(0, 100);
+                                                    if (elParties != null) {
+                                                        Element elInventors = (Element) elParties.getElementsByTagName("inventors").item(0);
 
-                                                    preparedStmt = conn.prepareStatement("insert into applicants(id_patent, applicant) values (?, ?)");
-                                                    preparedStmt.setLong(1, patentId);
-                                                    preparedStmt.setString(2, name);
-                                                    preparedStmt.execute();
+                                                        if (elInventors != null) {
+                                                            NodeList inventors = elInventors.getElementsByTagName("inventor");
+
+                                                            for (int l = 0; l < inventors.getLength(); l++) {
+
+                                                                Element inventor = (Element) inventors.item(l);
+                                                                Element addressbook = (Element) inventor.getElementsByTagName("addressbook").item(0);
+
+                                                                if (addressbook != null) {
+
+                                                                    if (addressbook.getElementsByTagName("last-name").item(0) == null)
+                                                                        continue;
+                                                                    if (addressbook.getElementsByTagName("first-name").item(0) == null)
+                                                                        continue;
+
+                                                                    String lastName = addressbook.getElementsByTagName("last-name").item(0).getTextContent();
+                                                                    String firstName = addressbook.getElementsByTagName("first-name").item(0).getTextContent();
+
+                                                                    String name = lastName + " " + firstName;
+
+                                                                    if (name.length() > 100)
+                                                                        name = name.substring(0, 100);
+
+                                                                    preparedStmt = conn.prepareStatement("insert into inventors(id_patent, inventor) values (?, ?)");
+                                                                    preparedStmt.setLong(1, patentId);
+                                                                    preparedStmt.setString(2, name);
+                                                                    preparedStmt.execute();
+                                                                }
+                                                            }
+                                                        }
+
+                                                        // Applicants
+                                                        Element elApplicants = (Element) elParties.getElementsByTagName("applicants").item(0);
+
+                                                        if (elApplicants != null) {
+                                                            NodeList applicants = elApplicants.getElementsByTagName("applicant");
+
+                                                            for (int l = 0; l < applicants.getLength(); l++) {
+
+                                                                Element applicant = (Element) applicants.item(l);
+                                                                Element addressbook = (Element) applicant.getElementsByTagName("addressbook").item(0);
+                                                                if (addressbook != null) {
+
+                                                                    if (addressbook.getElementsByTagName("last-name").item(0) == null)
+                                                                        continue;
+                                                                    if (addressbook.getElementsByTagName("first-name").item(0) == null)
+                                                                        continue;
+
+                                                                    String lastName = addressbook.getElementsByTagName("last-name").item(0).getTextContent();
+                                                                    String firstName = addressbook.getElementsByTagName("first-name").item(0).getTextContent();
+
+                                                                    String name = lastName + " " + firstName;
+
+                                                                    if (name.length() > 100)
+                                                                        name = name.substring(0, 100);
+
+                                                                    preparedStmt = conn.prepareStatement("insert into applicants(id_patent, applicant) values (?, ?)");
+                                                                    preparedStmt.setLong(1, patentId);
+                                                                    preparedStmt.setString(2, name);
+                                                                    preparedStmt.execute();
+                                                                }
+                                                            }
+                                                        }
+                                                    }
                                                 }
 
                                             } catch (SQLException e) {
@@ -1670,105 +1716,143 @@ public class mainclass {
                                                         // id_patent ; applicant    - applicants
 
                                                         Element elBiblio = (Element) doc.getElementsByTagName("fr-bibliographic-data").item(0);
-                                                        Element elPubliData = (Element) elBiblio.getElementsByTagName("fr-publication-data").item(0);
-                                                        Element elPubliRef = (Element) elPubliData.getElementsByTagName("fr-publication-reference").item(0);
-                                                        Element elPubliDocId = (Element) elPubliRef.getElementsByTagName("document-id").item(0);
+                                                        if (elBiblio != null) {
+                                                            Element elPubliData = (Element) elBiblio.getElementsByTagName("fr-publication-data").item(0);
+                                                            if (elPubliData != null) {
+                                                                Element elPubliRef = (Element) elPubliData.getElementsByTagName("fr-publication-reference").item(0);
+                                                                if (elPubliRef != null) {
+                                                                    Element elPubliDocId = (Element) elPubliRef.getElementsByTagName("document-id").item(0);
+                                                                    if (elPubliDocId != null) {
 
-                                                        // Patents
-                                                        String country = elPubliDocId.getElementsByTagName("country").item(0).getTextContent();
-                                                        String sPatentId = country + elPubliDocId.getElementsByTagName("doc-number").item(0).getTextContent();
+                                                                        // Patents
+                                                                        String country = "";
+                                                                        if (elPubliDocId.getElementsByTagName("country") == null || elPubliDocId.getElementsByTagName("country").item(0) == null) country = "FR";
+                                                                        else country = elPubliDocId.getElementsByTagName("country").item(0).getTextContent();
 
-                                                        Element elKind = (Element) elPubliDocId.getElementsByTagName("kind").item(0);
-                                                        String kind = "-";
-                                                        if (elKind != null) kind = elKind.getTextContent().substring(0, 1);
+                                                                        String sPatentId = country;
+                                                                        if (elPubliDocId.getElementsByTagName("doc-number") == null || elPubliDocId.getElementsByTagName("doc-number").item(0) == null) continue;
+                                                                        else sPatentId = elPubliDocId.getElementsByTagName("doc-number").item(0).getTextContent();
 
-                                                        Element elDate = (Element) elPubliDocId.getElementsByTagName("date").item(0);
-                                                        String date = "";
-                                                        if (elDate != null) date = elDate.getTextContent();
+                                                                        Element elKind = (Element) elPubliDocId.getElementsByTagName("kind").item(0);
+                                                                        String kind = "-";
+                                                                        if (elKind != null)
+                                                                            kind = elKind.getTextContent().substring(0, 1);
 
-                                                        if (date.equals("")) continue;
+                                                                        Element elDate = (Element) elPubliDocId.getElementsByTagName("date").item(0);
+                                                                        String date = "";
+                                                                        if (elDate != null)
+                                                                            date = elDate.getTextContent();
 
-                                                        String title = elBiblio.getElementsByTagName("invention-title").item(0).getTextContent();
+                                                                        if (date.equals("")) continue;
 
-                                                        if (title == null || title.equals("")) continue;
+                                                                        String title = "";
 
-                                                        if (title.length() > 300) title = title.substring(0, 300);
+                                                                        if (elBiblio.getElementsByTagName("invention-title") == null || elBiblio.getElementsByTagName("invention-title").item(0) == null) continue;
+                                                                        else title = elBiblio.getElementsByTagName("invention-title").item(0).getTextContent();
 
-                                                        SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd", Locale.US);
-                                                        java.util.Date utilDate = format.parse(date);
-                                                        java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime());
+                                                                        if (title == null || title.equals("")) continue;
 
-                                                        String language = elBiblio.getAttribute("lang").toUpperCase();
+                                                                        if (title.length() > 300)
+                                                                            title = title.substring(0, 300);
 
-                                                        preparedStmt = conn.prepareStatement("insert into patents(patent_id, title, patent_date, kind, country, language) values (?, ?, ?, ?, ?, ?)");
-                                                        preparedStmt.setString(1, sPatentId);
-                                                        preparedStmt.setString(2, title);
-                                                        preparedStmt.setDate(3, sqlDate);
-                                                        preparedStmt.setString(4, kind);
-                                                        preparedStmt.setString(5, country);
-                                                        preparedStmt.setString(6, language);
-                                                        preparedStmt.execute();
+                                                                        SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd", Locale.US);
+                                                                        java.util.Date utilDate = format.parse(date);
+                                                                        java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime());
 
-                                                        Long patentId = 0L;
-                                                        preparedStmt = conn.prepareStatement("select last_insert_id()");
-                                                        ResultSet rSet = preparedStmt.executeQuery();
+                                                                        String language = elBiblio.getAttribute("lang").toUpperCase();
 
-                                                        while (rSet.next()) {
+                                                                        preparedStmt = conn.prepareStatement("insert into patents(patent_id, title, patent_date, kind, country, language) values (?, ?, ?, ?, ?, ?)");
+                                                                        preparedStmt.setString(1, sPatentId);
+                                                                        preparedStmt.setString(2, title);
+                                                                        preparedStmt.setDate(3, sqlDate);
+                                                                        preparedStmt.setString(4, kind);
+                                                                        preparedStmt.setString(5, country);
+                                                                        preparedStmt.setString(6, language);
+                                                                        preparedStmt.execute();
 
-                                                            patentId = rSet.getLong(1);
-                                                        }
+                                                                        Long patentId = 0L;
+                                                                        preparedStmt = conn.prepareStatement("select last_insert_id()");
+                                                                        ResultSet rSet = preparedStmt.executeQuery();
 
-                                                        // Inventors
-                                                        Element elParties = (Element) elBiblio.getElementsByTagName("parties").item(0);
-                                                        Element elInventors = (Element) elBiblio.getElementsByTagName("fr-owners").item(0);
-                                                        NodeList inventors = elInventors.getElementsByTagName("fr-owner");
+                                                                        while (rSet.next()) {
 
-                                                        for (int l = 0; l < inventors.getLength(); l++) {
+                                                                            patentId = rSet.getLong(1);
+                                                                        }
 
-                                                            Element inventor = (Element) inventors.item(l);
-                                                            Element addressbook = (Element) inventor.getElementsByTagName("addressbook").item(0);
+                                                                        // Inventors
+                                                                        Element elParties = (Element) elBiblio.getElementsByTagName("parties").item(0);
+                                                                        Element elInventors = (Element) elBiblio.getElementsByTagName("fr-owners").item(0);
 
-                                                            if (addressbook.getElementsByTagName("last-name").item(0) == null) continue;
-                                                            if (addressbook.getElementsByTagName("first-name").item(0) == null) continue;
+                                                                        if (elInventors != null) {
+                                                                            NodeList inventors = elInventors.getElementsByTagName("fr-owner");
 
-                                                            String lastName = addressbook.getElementsByTagName("last-name").item(0).getTextContent();
-                                                            String firstName = addressbook.getElementsByTagName("first-name").item(0).getTextContent();
+                                                                            for (int l = 0; l < inventors.getLength(); l++) {
 
-                                                            String name = lastName;
-                                                            if (firstName.length() > 0) name += " " + firstName;
+                                                                                Element inventor = (Element) inventors.item(l);
+                                                                                Element addressbook = (Element) inventor.getElementsByTagName("addressbook").item(0);
 
-                                                            if (name.length() > 100) name = name.substring(0, 100);
+                                                                                if (addressbook == null) continue;
 
-                                                            preparedStmt = conn.prepareStatement("insert into inventors(id_patent, inventor) values (?, ?)");
-                                                            preparedStmt.setLong(1, patentId);
-                                                            preparedStmt.setString(2, name);
-                                                            preparedStmt.execute();
-                                                        }
+                                                                                if (addressbook.getElementsByTagName("last-name").item(0) == null)
+                                                                                    continue;
+                                                                                if (addressbook.getElementsByTagName("first-name").item(0) == null)
+                                                                                    continue;
 
-                                                        // Applicants
-                                                        Element elApplicants = (Element) elParties.getElementsByTagName("applicants").item(0);
-                                                        NodeList applicants = elApplicants.getElementsByTagName("applicant");
+                                                                                String lastName = addressbook.getElementsByTagName("last-name").item(0).getTextContent();
+                                                                                String firstName = addressbook.getElementsByTagName("first-name").item(0).getTextContent();
 
-                                                        for (int l = 0; l < applicants.getLength(); l++) {
+                                                                                String name = lastName;
+                                                                                if (firstName.length() > 0)
+                                                                                    name += " " + firstName;
 
-                                                            Element applicant = (Element) applicants.item(l);
-                                                            Element addressbook = (Element) applicant.getElementsByTagName("addressbook").item(0);
+                                                                                if (name.length() > 100)
+                                                                                    name = name.substring(0, 100);
 
-                                                            if (addressbook.getElementsByTagName("last-name").item(0) == null) continue;
-                                                            if (addressbook.getElementsByTagName("first-name").item(0) == null) continue;
+                                                                                preparedStmt = conn.prepareStatement("insert into inventors(id_patent, inventor) values (?, ?)");
+                                                                                preparedStmt.setLong(1, patentId);
+                                                                                preparedStmt.setString(2, name);
+                                                                                preparedStmt.execute();
+                                                                            }
+                                                                        }
 
-                                                            String lastName = addressbook.getElementsByTagName("last-name").item(0).getTextContent();
-                                                            String firstName = addressbook.getElementsByTagName("first-name").item(0).getTextContent();
+                                                                        // Applicants
+                                                                        if (elParties != null) {
+                                                                            Element elApplicants = (Element) elParties.getElementsByTagName("applicants").item(0);
+                                                                            if (elApplicants != null) {
+                                                                                NodeList applicants = elApplicants.getElementsByTagName("applicant");
 
-                                                            String name = lastName;
-                                                            if (firstName.length() > 0) name += " " + firstName;
+                                                                                for (int l = 0; l < applicants.getLength(); l++) {
 
-                                                            if (name.length() > 100) name = name.substring(0, 100);
+                                                                                    Element applicant = (Element) applicants.item(l);
+                                                                                    Element addressbook = (Element) applicant.getElementsByTagName("addressbook").item(0);
 
-                                                            preparedStmt = conn.prepareStatement("insert into applicants(id_patent, applicant) values (?, ?)");
-                                                            preparedStmt.setLong(1, patentId);
-                                                            preparedStmt.setString(2, name);
-                                                            preparedStmt.execute();
+                                                                                    if (addressbook == null) continue;
+
+                                                                                    if (addressbook.getElementsByTagName("last-name").item(0) == null)
+                                                                                        continue;
+                                                                                    if (addressbook.getElementsByTagName("first-name").item(0) == null)
+                                                                                        continue;
+
+                                                                                    String lastName = addressbook.getElementsByTagName("last-name").item(0).getTextContent();
+                                                                                    String firstName = addressbook.getElementsByTagName("first-name").item(0).getTextContent();
+
+                                                                                    String name = lastName;
+                                                                                    if (firstName.length() > 0)
+                                                                                        name += " " + firstName;
+
+                                                                                    if (name.length() > 100)
+                                                                                        name = name.substring(0, 100);
+
+                                                                                    preparedStmt = conn.prepareStatement("insert into applicants(id_patent, applicant) values (?, ?)");
+                                                                                    preparedStmt.setLong(1, patentId);
+                                                                                    preparedStmt.setString(2, name);
+                                                                                    preparedStmt.execute();
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
                                                         }
 
                                                     } catch (SQLException e) {
@@ -1853,128 +1937,169 @@ public class mainclass {
 
                                                     Element elBiblio = (Element) doc.getElementsByTagName("fr-bibliographic-data").item(0);
 
-                                                    // Patents
-                                                    String country = el.getElementsByTagName("country").item(0).getTextContent();
-                                                    String title = elBiblio.getElementsByTagName("invention-title").item(0).getTextContent();
-                                                    String sPatentId = country + el.getElementsByTagName("doc-number").item(0).getTextContent();
-                                                    String date = el.getElementsByTagName("date").item(0).getTextContent();
-                                                    String kind = el.getElementsByTagName("kind").item(0).getTextContent().substring(0, 1);
+                                                    if (elBiblio != null) {
 
-                                                    if (title == null || title.equals("")) continue;
+                                                        // Patents
+                                                        String country = "";
 
-                                                    if (title.length() > 300) title = title.substring(0, 300);
+                                                        if (el.getElementsByTagName("country") == null || el.getElementsByTagName("country").item(0) == null)
+                                                            country = "FR";
+                                                        else
+                                                            country = el.getElementsByTagName("country").item(0).getTextContent();
 
-                                                    SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd", Locale.US);
-                                                    java.util.Date utilDate = format.parse(date);
-                                                    java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime());
+                                                        String title = "";
+                                                        if (elBiblio.getElementsByTagName("invention-title") == null || elBiblio.getElementsByTagName("invention-title").item(0) == null)
+                                                            continue;
+                                                        else
+                                                            title = elBiblio.getElementsByTagName("invention-title").item(0).getTextContent();
 
-                                                    String language = "FR";
+                                                        String sPatentId = "";
+                                                        if (el.getElementsByTagName("doc-number") == null || el.getElementsByTagName("doc-number").item(0) == null)
+                                                            continue;
+                                                        else
+                                                            sPatentId = country + el.getElementsByTagName("doc-number").item(0).getTextContent();
 
-                                                    preparedStmt = conn.prepareStatement("insert into patents(patent_id, title, patent_date, kind, country, language) values (?, ?, ?, ?, ?, ?)");
-                                                    preparedStmt.setString(1, sPatentId);
-                                                    preparedStmt.setString(2, title);
-                                                    preparedStmt.setDate(3, sqlDate);
-                                                    preparedStmt.setString(4, kind);
-                                                    preparedStmt.setString(5, country);
-                                                    preparedStmt.setString(6, language);
-                                                    preparedStmt.execute();
+                                                        String date = "";
+                                                        if (el.getElementsByTagName("date") == null || el.getElementsByTagName("date").item(0) == null)
+                                                            continue;
+                                                        else
+                                                            date = el.getElementsByTagName("date").item(0).getTextContent();
 
-                                                    Long patentId = 0L;
-                                                    preparedStmt = conn.prepareStatement("select last_insert_id()");
-                                                    ResultSet rSet = preparedStmt.executeQuery();
+                                                        String kind = "";
+                                                        if (el.getElementsByTagName("kind") == null || el.getElementsByTagName("kind").item(0) == null)
+                                                            kind = "-";
+                                                        else
+                                                            kind = el.getElementsByTagName("kind").item(0).getTextContent().substring(0, 1);
 
-                                                    while (rSet.next()) {
+                                                        if (title == null || title.equals("")) continue;
 
-                                                        patentId = rSet.getLong(1);
-                                                    }
+                                                        if (title.length() > 300) title = title.substring(0, 300);
 
-                                                    // Classification
-                                                    Element elClass = (Element) elBiblio.getElementsByTagName("classifications-ipcr").item(0);
-                                                    NodeList list = elClass.getElementsByTagName("classification-ipcr");
+                                                        SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd", Locale.US);
+                                                        java.util.Date utilDate = format.parse(date);
+                                                        java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime());
 
-                                                    List<String> lists = new ArrayList<>();
+                                                        String language = "FR";
 
-                                                    for (int l = 0; l < list.getLength(); l++) {
-
-                                                        Element elClassS = (Element) list.item(0);
-                                                        Element text = (Element) elClassS.getElementsByTagName("text").item(0);
-
-                                                        String full = text.getTextContent();
-                                                        full = full.substring(0, 4);
-
-                                                        if (lists.contains(full)) continue;
-                                                        lists.add(full);
-
-                                                        String section = full.substring(0, 1);
-                                                        String sClass = full.substring(1, 3);
-                                                        String subclass = full.substring(3, 4);
-
-                                                        preparedStmt = conn.prepareStatement("insert into classification(id_patent, section, class, subclass) values (?, ?, ?, ?)");
-                                                        preparedStmt.setLong(1, patentId);
-                                                        preparedStmt.setString(2, section);
-                                                        preparedStmt.setString(3, sClass);
-                                                        preparedStmt.setString(4, subclass);
+                                                        preparedStmt = conn.prepareStatement("insert into patents(patent_id, title, patent_date, kind, country, language) values (?, ?, ?, ?, ?, ?)");
+                                                        preparedStmt.setString(1, sPatentId);
+                                                        preparedStmt.setString(2, title);
+                                                        preparedStmt.setDate(3, sqlDate);
+                                                        preparedStmt.setString(4, kind);
+                                                        preparedStmt.setString(5, country);
+                                                        preparedStmt.setString(6, language);
                                                         preparedStmt.execute();
-                                                    }
 
-                                                    // Inventors
-                                                    Element elParties = (Element) elBiblio.getElementsByTagName("parties").item(0);
-                                                    Element elInventors = (Element) elParties.getElementsByTagName("inventors").item(0);
+                                                        Long patentId = 0L;
+                                                        preparedStmt = conn.prepareStatement("select last_insert_id()");
+                                                        ResultSet rSet = preparedStmt.executeQuery();
 
-                                                    if (elInventors != null) {
-                                                        NodeList inventors = elInventors.getElementsByTagName("inventor");
+                                                        while (rSet.next()) {
 
-                                                        for (int l = 0; l < inventors.getLength(); l++) {
-
-                                                            Element inventor = (Element) inventors.item(l);
-                                                            Element addressbook = (Element) inventor.getElementsByTagName("addressbook").item(0);
-
-                                                            if (addressbook.getElementsByTagName("last-name").item(0) == null)
-                                                                continue;
-                                                            if (addressbook.getElementsByTagName("first-name").item(0) == null)
-                                                                continue;
-
-                                                            String lastName = addressbook.getElementsByTagName("last-name").item(0).getTextContent();
-                                                            String firstName = addressbook.getElementsByTagName("first-name").item(0).getTextContent();
-
-                                                            String name = lastName + " " + firstName;
-
-                                                            if (name.length() > 100) name = name.substring(0, 100);
-
-                                                            preparedStmt = conn.prepareStatement("insert into inventors(id_patent, inventor) values (?, ?)");
-                                                            preparedStmt.setLong(1, patentId);
-                                                            preparedStmt.setString(2, name);
-                                                            preparedStmt.execute();
+                                                            patentId = rSet.getLong(1);
                                                         }
-                                                    }
 
-                                                    // Applicants
-                                                    Element elApplicants = (Element) elParties.getElementsByTagName("applicants").item(0);
+                                                        // Classification
+                                                        Element elClass = (Element) elBiblio.getElementsByTagName("classifications-ipcr").item(0);
+                                                        if (elClass != null) {
+                                                            NodeList list = elClass.getElementsByTagName("classification-ipcr");
 
-                                                    if (elApplicants != null) {
-                                                        NodeList applicants = elApplicants.getElementsByTagName("applicant");
+                                                            List<String> lists = new ArrayList<>();
 
-                                                        for (int l = 0; l < applicants.getLength(); l++) {
+                                                            for (int l = 0; l < list.getLength(); l++) {
 
-                                                            Element applicant = (Element) applicants.item(l);
-                                                            Element addressbook = (Element) applicant.getElementsByTagName("addressbook").item(0);
+                                                                Element elClassS = (Element) list.item(0);
+                                                                Element text = (Element) elClassS.getElementsByTagName("text").item(0);
 
-                                                            if (addressbook.getElementsByTagName("last-name").item(0) == null)
-                                                                continue;
-                                                            if (addressbook.getElementsByTagName("first-name").item(0) == null)
-                                                                continue;
+                                                                if (text == null) continue;
 
-                                                            String lastName = addressbook.getElementsByTagName("last-name").item(0).getTextContent();
-                                                            String firstName = addressbook.getElementsByTagName("first-name").item(0).getTextContent();
+                                                                String full = text.getTextContent();
+                                                                full = full.substring(0, 4);
 
-                                                            String name = lastName + " " + firstName;
+                                                                if (lists.contains(full)) continue;
+                                                                lists.add(full);
 
-                                                            if (name.length() > 100) name = name.substring(0, 100);
+                                                                String section = full.substring(0, 1);
+                                                                String sClass = full.substring(1, 3);
+                                                                String subclass = full.substring(3, 4);
 
-                                                            preparedStmt = conn.prepareStatement("insert into applicants(id_patent, applicant) values (?, ?)");
-                                                            preparedStmt.setLong(1, patentId);
-                                                            preparedStmt.setString(2, name);
-                                                            preparedStmt.execute();
+                                                                preparedStmt = conn.prepareStatement("insert into classification(id_patent, section, class, subclass) values (?, ?, ?, ?)");
+                                                                preparedStmt.setLong(1, patentId);
+                                                                preparedStmt.setString(2, section);
+                                                                preparedStmt.setString(3, sClass);
+                                                                preparedStmt.setString(4, subclass);
+                                                                preparedStmt.execute();
+                                                            }
+                                                        }
+
+                                                        // Inventors
+                                                        Element elParties = (Element) elBiblio.getElementsByTagName("parties").item(0);
+
+                                                        if (elParties != null) {
+                                                            Element elInventors = (Element) elParties.getElementsByTagName("inventors").item(0);
+
+                                                            if (elInventors != null) {
+                                                                NodeList inventors = elInventors.getElementsByTagName("inventor");
+
+                                                                for (int l = 0; l < inventors.getLength(); l++) {
+
+                                                                    Element inventor = (Element) inventors.item(l);
+                                                                    Element addressbook = (Element) inventor.getElementsByTagName("addressbook").item(0);
+
+                                                                    if (addressbook == null) continue;
+
+                                                                    if (addressbook.getElementsByTagName("last-name").item(0) == null)
+                                                                        continue;
+                                                                    if (addressbook.getElementsByTagName("first-name").item(0) == null)
+                                                                        continue;
+
+                                                                    String lastName = addressbook.getElementsByTagName("last-name").item(0).getTextContent();
+                                                                    String firstName = addressbook.getElementsByTagName("first-name").item(0).getTextContent();
+
+                                                                    String name = lastName + " " + firstName;
+
+                                                                    if (name.length() > 100)
+                                                                        name = name.substring(0, 100);
+
+                                                                    preparedStmt = conn.prepareStatement("insert into inventors(id_patent, inventor) values (?, ?)");
+                                                                    preparedStmt.setLong(1, patentId);
+                                                                    preparedStmt.setString(2, name);
+                                                                    preparedStmt.execute();
+                                                                }
+                                                            }
+
+                                                            // Applicants
+                                                            Element elApplicants = (Element) elParties.getElementsByTagName("applicants").item(0);
+
+                                                            if (elApplicants != null) {
+                                                                NodeList applicants = elApplicants.getElementsByTagName("applicant");
+
+                                                                for (int l = 0; l < applicants.getLength(); l++) {
+
+                                                                    Element applicant = (Element) applicants.item(l);
+                                                                    Element addressbook = (Element) applicant.getElementsByTagName("addressbook").item(0);
+
+                                                                    if (addressbook == null) continue;
+
+                                                                    if (addressbook.getElementsByTagName("last-name").item(0) == null)
+                                                                        continue;
+                                                                    if (addressbook.getElementsByTagName("first-name").item(0) == null)
+                                                                        continue;
+
+                                                                    String lastName = addressbook.getElementsByTagName("last-name").item(0).getTextContent();
+                                                                    String firstName = addressbook.getElementsByTagName("first-name").item(0).getTextContent();
+
+                                                                    String name = lastName + " " + firstName;
+
+                                                                    if (name.length() > 100)
+                                                                        name = name.substring(0, 100);
+
+                                                                    preparedStmt = conn.prepareStatement("insert into applicants(id_patent, applicant) values (?, ?)");
+                                                                    preparedStmt.setLong(1, patentId);
+                                                                    preparedStmt.setString(2, name);
+                                                                    preparedStmt.execute();
+                                                                }
+                                                            }
                                                         }
                                                     }
 
