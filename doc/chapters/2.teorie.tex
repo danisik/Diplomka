@@ -20,7 +20,7 @@ Pro správu dat v databázi a její řízení je potřeba komplexní software, k
 \begin{figure}[h!]
 \centering
 \includegraphics[width=10cm]{img/databaze/dbms}
-\caption{Systém řízení báze dat}
+\caption{Systém řízení báze dat \cite{img_dbms}.}
 \label{fig:dbms}
 \end{figure}
 
@@ -42,7 +42,7 @@ Název relační databáze pochází ze způsobu, jakým jsou data uložena, a t
 	\begin{figure}[H]
 	\centering
 	\includegraphics[width=14cm]{img/databaze/relational_db}
-	\caption{Ukázka relační databáze}
+	\caption{Ukázka relační databáze.}
 	\label{fig:db_img_relational}
 	\end{figure}
 \subsubsection{Datový model}
@@ -50,7 +50,7 @@ Relační datový model obsahuje několik fundamentálních konceptů. Koncepty 
 \begin{figure}[H]
 \centering
 \includegraphics[width=16cm]{img/databaze/data_model_relational}
-\caption{Koncepty relačního datového modelu.}
+\caption{Koncepty relačního datového modelu \cite{data_model_oo}.}
 \label{fig:model_relational}
 \end{figure}
 
@@ -79,72 +79,158 @@ Relační datový model obsahuje několik fundamentálních konceptů. Koncepty 
 \indent Poslední koncept \textbf{Relační klíč} je atribut / seznam atributů, které lze využít jako unikátní identifikátor jedné entity v tabulce, případně k určení vazby mezi dvěma relacema. Existuje šest typů relačních klíčů - kandidátní, super, složený, primární, cizí, sekundární / alternativní \cite{data_model_relation}.
 
 \subsubsection{Výhody}
-\todo{todo}
+Výhody relační databáze jsou \cite{advantages_relational}:
+\begin{itemize}
+\item \textbf{Jednoduchost modelu} - Při porovnávání ostatních typů databází s relačním, relační databáze je o mnoho jednodušší. Díky tomu, že zde neprobíhá žádné zpracování dat, tak není potřeba využívat žádné složité dotazy.
+\item \textbf{Snadné použití} - Uživatelé můžou jednoduše přistupovat a získávat všechny potřebné informace v rámci sekund bez ohledu na složitost databáze.
+\item \textbf{Přesnost} - Relační databáze jsou dobře uspořádané a velice striktně definované. I za pomoci primárních a cizích klíčů se v databázi udržuje unikátnost hodnot, takže se zde nevyskytují žádné duplikáty.
+\item \textbf{Integrita dat} - Integrita dat zajišťuje konzistentnost všech tabulek v databázi, díky čemuž lze dosáhnout vlastností jako přesnost a snadné použití.
+\item \textbf{Normalizace} - Normalizace je metoda, pomocí které lze rozdělit jednu informaci do několika bloků za účelem snížení velikosti.
+\item \textbf{Spolupráce} - Více uživatelů může přistupovat k datům ve stejný čas i v případě, že část dat je upravována.
+\item \textbf{Bezpečnost} - Bezpečnost je zajištěna autorizací uživatelů, kdy pouze uživatelé s právy a přístupovými údaji mohou přistupovat k datům.
+\end{itemize}
 \subsubsection{Nevýhody}
-\todo{todo}
+Nevýhody relační databáze jsou \cite{advantages_relational}:
+\begin{itemize}
+\item \textbf{Problém s údržbou} -  Údržba relační databáze se stává postupem času náročnější vzhledem ke zvýšenému počtu uložených dat.
+\item \textbf{Cena} - Systém relační databáze je drahý k pořízení i pro správu. Samotná prvotní cena systému je relativně drahá pro menší byznys, ale zhoršuje se při zohlednění najímání profesionálních techniků, které musí mít dobré znalosti ohledně používaného systému.
+\item \textbf{Fyzické úložiště} - Relační databáze jsou složeny z řádků a sloupců, které potřebují hodně fyzické paměti, protože každá provedená operace závisí na samostatném úložišti. 
+\item \textbf{Malá škálovatelnost} - Při používání relační databáze na více serverech se její struktura mění a stává se obtížně zvládnutelnou, zejména při velkém objemu dat. Jak se databáze zvětšuje nebo více distribuuje s větším počtem serverů, tak se zvětšuje latence a problémy s dostupností, které ovlivňují celkový výkon.
+\item \textbf{Složitost struktury} - Relační databáze dokáží ukládat data pouze v tabulkové formě, která neumožňuje vyobrazit složitější vazby mezi objekty. Toto může být velký problém u dost aplikací, u kterých data nelze reprezentovat pouze jednou tabulkou díky jejich aplikační logice.
+\item \textbf{Snížení výkonu postupem času} - S větším množstvím uložených dat a tabulek se zvětšuje i složitost systému, díky čemuž bude systém reagovat pomaleji na dotazy, případně může i spadnout v případě více dotazů od více uživatelů.
+\end{itemize}
 
 \subsection{Objektově-orientovaná databáze}
 Objektově-orientovaná databáze je založena na objektově-orientovaném programování, kdy data a všechny jejich atributy a metody jsou svázány dohromady jako objekt. Stejně jako relační databáze, i objektově-orientované databáze odpovídají standardům \gls{ACID}. Typické příklady jsou například: ObjectStore, ConceptBase. Ukázku objektově-orientované databáze lze vidět na obrázku č. \ref{fig:db_img_oo}.
 	\begin{figure}[H]
 	\centering
-	\includegraphics[width=12cm]{img/databaze/oo_db}
-	\caption{Ukázka objektově-orientované databáze}
+	\includegraphics[width=11cm]{img/databaze/oo_db}
+	\caption{Ukázka objektově-orientované databáze.}
 	\label{fig:db_img_oo}
 	\end{figure}
 \subsubsection{Datový model}
-\todo{todo}
+V objektově-orientovaném modelu jsou data a jejich vztahy mezi sebou uložené v jediné struktuře, která se jinak nazývá objekt. Všechny objekty mají mezi sebou vícenásobné vztahy. Jednoduše řečeno, objektově-orientovaný datový model je spojením relačního databázového modelu a objektově-orientovaného programování \cite{data_model_oo}.
+\newline
+\noindent V datovém modelu existují tyto komponenty:
+\begin{itemize}
+\item \textbf{Objekt} - Objekt je abstrakcí jakékoliv entity z reálného světa, jinak zvaná jako instance jedné třídy. Objekt zapouzdřuje data a funkční kód do celku, který poskytuje pouze datovou abstrakci, zatímco schovává implementační detaily od uživatele. Příklad objektů z obrázku č. \ref{fig:db_img_oo}: \textit{Student}, \textit{Doktor} a \textit{Inženýr} jsou instancí celku \textit{Člověk}.
+\item \textbf{Atribut} - Atribut popisuje vlastnosti objektu. Například \textit{Student} obsahuje atributy \textit{Číslo} a \textit{Obor}.
+\item \textbf{Metoda} - Metoda reprezentuje chování objektu. Například \textit{Student} obsahuje metodu s názvem \textit{nastav\_obor}, pomocí které můžeme získat studovaný obor daného studenta.
+\item \textbf{Třída} - Třída je vlastně kolekce podobných objektů, které sdílejí strukturu (neboli atributy) a chování (neboli metody). 
+\item \textbf{Dědičnost} - Vytvořenému objektu se říká instance třídy, která zdědí kopie / instance všech atributů a metod dané třídy. \textit{Student}, \textit{Doktor} i \textit{Inženýr} dědí od celku \textit{Člověk} atributy \textit{Jméno}, \textit{Věk} a metodu \textit{nastav\_jmeno}.
+\end{itemize}
+
 \subsubsection{Výhody}
-\todo{todo}
+Výhody objektově-orientované databáze jsou \cite{advantages_oo}:
+\begin{itemize}
+\item \textbf{Výkonnost} - Mnohonásobně výkonnější než relační databáze.
+\item \textbf{Rozšiřitelnost} - lze vytvářet nové datové typy z již existujících. Jako příklad lze uvést vytvořením super třídy, která bude obsahovat všechny společné atributy a metody. Tímto lze snížit redundanci v systému.
+\item \textbf{Podpora velkého množství datových typů} - Oproti ostatním typům databáze, objektově-orientovaná databáze podporuje ukládání různých typů dat, jako například obrázky, zvuky, video a mnoho dalších.
+\item \textbf{Podpora vývoje schématu} - Těsné propojení mezi daty a aplikacemi činí vývoj schématu více proveditelnějším.
+\item \textbf{Podpora pro dlouhotrvající transakce} - Objektově-orientovaná databáze využívá jiný protokol pro zpracovávání dlouhotrvajících transakcí než relační databáze.
+\end{itemize}
+
 \subsubsection{Nevýhody}
-\todo{todo}
+Nevýhody objektově-orientované databáze jsou \cite{advantages_oo}:
+\begin{itemize}
+\item \textbf{Neexistující univerzální datový model} - V dnešní době stále neexistuje univerzální datový model, navíc většině modelů chybí teoretický základ.
+\item \textbf{Nedostačující standardy} - Pro objektově-orientované databáze neexistují žádný univerzální datový model, stejně jako standardní dotazovací jazyk.
+\item \textbf{Složitost} - Funkcionality jako například dlouhotrvající transakce, zpráva verzí nebo evoluce schémat činí výsledný systém mnohonásobně složitější, což vede k vyšší ceně a složitějšímu používání.
+\item \textbf{Zabezpečení} - V databázi neexistuje adekvátní zabezpečovací systém, který by mohl přiřazovat přístupová práva na objekty nebo třídy.
+\end{itemize}
 
 \subsection{NoSQL databáze}
 NoSQL je široká kategorie databází, které nepoužívají \gls{SQL} jako svůj primární jazyk pro přístup k datům. Tyto typy databází jsou také někdy označovány jako nerelační databáze. V NoSQL databázích se pracuje s nestrukturovanými a polostrukturovanými sadami distribuovaných dat. Jednou z výhod je, že vývojáři mohou provádět změny databáze za běhu, aniž by to ovlivnilo aplikace, které databázi používají.
+
 \subsection{Databáze Klíč-Hodnota}
-Databáze klíč-hodnota poskytuje nejjednodušší možný NoSQL datový model. Data jsou uložená jako pár klíč - hodnota ve slovníku / mapě, kdy klíč je indexem. Hodnota může být například celé číslo, řetězec, struktura \gls{JSON} nebo pole. Typické příklady jsou: Redis, Riak, LevelDB. Ukázku databáze klíč-hodnota lze vidět na obrázku č. \ref{fig:db_img_keyvalue}.
+Databáze klíč-hodnota poskytuje nejjednodušší možný NoSQL datový model. Data jsou uložená jako pár klíč - hodnota ve slovníku / mapě, kdy klíč je indexem. Hodnota může být například celé číslo, řetězec, struktura \gls{JSON} nebo pole. Z vlastností databáze vyplývá, že zde není potřeba žádný dotazovací jazyk pro získávání výsledků. Typické příklady jsou: Redis, Riak, LevelDB. Ukázku databáze klíč-hodnota lze vidět na obrázku č. \ref{fig:db_img_keyvalue}.
 	\begin{figure}[H]
 	\centering
-	\includegraphics[width=10cm]{img/databaze/keyvalue_db}
+	\includegraphics[width=9cm]{img/databaze/keyvalue_db}
 	\caption{Ukázka databáze klíč-hodnota.}
 	\label{fig:db_img_keyvalue}
 	\end{figure}
-\subsubsection{Datový model}
-\todo{todo}
 \subsubsection{Výhody}
-\todo{todo}
+Výhody této databáze jsou \cite{advantages_keyvalue}:
+\begin{itemize}
+\item \textbf{Škálovatelnost} - Databázi lze škálovat jak vertikálně, tak i horizontálně. 
+\item \textbf{Redundance} - Zabudovaná redundance zapříčiňuje větší spolehlivost databáze.
+\item \textbf{Rychlost} - Reakční čas je velice rychlý díky jednoduchosti struktury a jednoduchých příkazů (vlož, smaž, získej).
+\end{itemize}
+
 \subsubsection{Nevýhody}
-\todo{todo}
+Nevýhody této databáze jsou \cite{advantages_keyvalue}:
+\begin{itemize}
+\item \textbf{Optimalizace dat} - Optimalizace je provedena pouze pro data, kde je pouze jeden klíč a jedna hodnota. V případě ukládání složitějších struktur je potřeba parser. 
+\item \textbf{Složité dotazy} - Nelze používat složité dotazy, pomocí kterých lze vyhledávat specifické hodnoty.
+\end{itemize}
 
 \subsection{Grafová databáze}
 Grafová databáze je typem NoSQL databáze, která je založená na teorii grafů. Data jsou reprezentována jako uzly, hrany zase reprezentují vztahy mezi daty. Graf lze procházet podél určitých typů hran nebo přes celý graf. Procházení spojení nebo relací je velmi rychlé, protože vztahy mezi uzly se nepočítají v době dotazu, ale jsou v databázi trvalé. Typické příklady jsou: Neo4j, OrientDB, Microsoft Azure CosmosDB. Ukázku grafové databáze lze vidět na obrázku č. \ref{fig:db_img_graph}.
 	\begin{figure}[H]
 	\centering
 	\includegraphics[width=8cm]{img/databaze/graph_db}
-	\caption{Ukázka grafové databáze}
+	\caption{Ukázka grafové databáze \cite{neo_graph}.}
 	\label{fig:db_img_graph}
 	\end{figure}
 \subsubsection{Datový model}
-\todo{todo}
+Datový model grafové databáze se skládá ze čtyř komponent (viz obrázek č. \ref{fig:graph_components}) \cite{data_model_graph}:
+	\begin{figure}[H]
+	\centering
+	\includegraphics[width=11cm]{img/databaze/graph_components}
+	\caption{Komponenty grafu.}
+	\label{fig:graph_components}
+	\end{figure}
+\begin{itemize}
+\item \textbf{Uzel} - Uzel je jeden ze dvou fundamentálních komponent který vytváří graf. Uzly slouží k reprezentaci entit nebo jiných doménových komponent.
+\item \textbf{Vztah} - Vztah propojuje dva uzly a dovoluje nám vyhledávat související uzly. Uzel, ze kterého vztah začíná, se jmenuje zdrojový, zatímco uzel, ve kterém vztah končí, se nazývá cílový (šipka ukazuje směr vztahu). Vztahy musí mít vždy jen jeden zdrojový a jeden cílový uzel, proto při mazání uzlů se mažou i všechny jeho závislosti (vstupující a vystupující vztahy).
+\item \textbf{Štítek} - Štítek slouží k zařazování uzlů do skupin. Všechny uzly, které jsou označené stejným štítkem, patří do jedné skupiny. Uzel může obsahovat libovolné množství štítků (0 až nekonečno). Při vyhledávání může databáze pracovat nejen s celým grafem, ale i s množinou uzlů patřící do jedné skupiny.
+\item \textbf{Vlastnosti} - Vlasnost je množina dvojic klíč - hodnota, které lze ukládat s každým uzlem a vztahem. Jsou podporovány skoro všechny datové typy.
+\end{itemize}
+
 \subsubsection{Výhody}
-\todo{todo}
+Výhody grafové databáze jsou \cite{advantages_graph}:
+\begin{itemize}
+\item Struktury jsou flexibilní a přizpůsobivé.
+\item Reprezentace vztahů mezi entitami je zřetelné.
+\item Dotazy poskytují výsledky v reálném čase. Rychlost závisí na počtu relací.
+\end{itemize}
+
 \subsubsection{Nevýhody}
-\todo{todo}
+Nevýhody grafové databáze jsou \cite{advantages_graph}:
+\begin{itemize}
+\item Neexistuje žádný standardizovaný jazyk. Jazyk závisí na použité platformě.
+\item Grafy jsou nevhodné pro transakční systémy.
+\item Je těžké najít podporu, protože uživatelská základna je velice malá.
+\end{itemize}
 
 \subsection{Dokumentová databáze}
-Databáze dokumentů jsou typem NoSQL databáze a  jsou navržené pro ukládání, načítání a správu informací orientovaných na dokumenty. Dokumenty jsou obvykle uloženy ve formátu \gls{XML}, \gls{JSON}, \gls{BSON}. 
-Typické příklady jsou: MongoDB, Amazon DocumentDB, Elasticsearch. Ukázku dokumentové databáze lze vidět na obrázku č. \ref{fig:db_img_document}.
+Databáze dokumentů jsou typem NoSQL databáze a  jsou navržené pro ukládání, načítání a správu informací orientovaných na dokumenty. Typické příklady jsou: MongoDB, Amazon DocumentDB, Elasticsearch. Ukázku dokumentové databáze lze vidět na obrázku č. \ref{fig:db_img_document}.
 	\begin{figure}[H]
 	\centering
 	\includegraphics[width=11cm]{img/databaze/document_db}
-	\caption{Ukázka dokumentově orientované databáze}
+	\caption{Ukázka dokumentově orientované databáze \cite{relat_vs_nosql}.}
 	\label{fig:db_img_document}
 	\end{figure}
 \subsubsection{Datový model}
-\todo{todo}
+Základním prvkem dokumentové databáze je \textbf{Dokument}. Definice dokumentů se liší podle konkrétní implementace databáze, ale jedno mají společné: dokumenty kódují zapouzdřená data či informace do nějakého standardního formátu nebo kódování. Mezi typy kódování patří například \gls{JSON}, \gls{XML}. Dokument nemusí dodržovat pevně definovanou strukturu, takže v databázi mohou existovat dva dokumenty stejného formátu s rozdílnou strukturou dat \cite{data_model_document}.
+
 \subsubsection{Výhody}
-\todo{todo}
+Výhody dokumentové databáze jsou \cite{advantages_document}:
+\begin{itemize}
+\item \textbf{Bez schématu} - Neexistují zde žádná omezení ve formátu a struktuře ukládání dat, proto lze bez problémů uchovávat data i ve stále se měnícím systému s obrovským množstvím dat.
+\item \textbf{Údržba} - Po vytvoření dokumentu je vyžadována minimální údržba.
+\item \textbf{Nezávislost dokumentů} - Dokumenty na sobě jsou nezávislé kvůli absenci cizích klíčů.
+\item \textbf{Otevřené formáty} - K popisu dokumentů lze použít například formát \gls{XML}, \gls{JSON} a mnoho dalších.
+\item \textbf{Věstavěné verzování} - Díky verzování lze snižovat konflikty.
+\end{itemize}
+
 \subsubsection{Nevýhody}
-\todo{todo}
+Nevýhody dokumentové databáze jsou \cite{advantages_document}:
+\begin{itemize}
+\item \textbf{Kontrola konzistence} - Je zde omezená kontrola konzistence, takže se v databázi můžou vyskytovat duplikáty.
+\item \textbf{Neexistence atomicity} - V případě úpravy, která ovlivňuje dvě kolekce, je potřeba spustit dva samostatné dotazy (jeden pro každou kolekci).
+\end{itemize}
 
 \section{Existující řešení}
 Pro vybrané typy databáze existují mnoho databázových řešení, které lze zmínit. V této kapitole se budeme zabývat především těmi nejznámějšími pro daný typ databáze, a které jsou zdarma ke stažení a používání. Pro každý typ databáze byly vybrány maximálně dvě řešení.
@@ -241,7 +327,7 @@ Syntaxe \gls{MQL} je intuitivní a jednoduchá na používání i pro velice slo
 	\begin{figure}[H]
 	\centering
 	\includegraphics[width=12cm]{img/databaze/crud}
-	\caption{Příklady \gls{CRUD} operací v MongoDB.}
+	\caption{Příklady \gls{CRUD} operací v MongoDB \cite{mongo_query}.}
 	\label{fig:crud}
 	\end{figure}
 
@@ -260,7 +346,7 @@ Cypher využívá \gls{ASCII}-art typ syntaxe, což je umění, které pracuje s
 	\begin{figure}[H]
 	\centering
 	\includegraphics[width=14cm]{img/databaze/sample-cypher}
-	\caption{Dotaz v jazyce Cypher.}
+	\caption{Dotaz v jazyce Cypher \cite{cypher}.}
 	\label{fig:cypher_sample}
 	\end{figure}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

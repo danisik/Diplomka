@@ -1370,9 +1370,13 @@ public class mainclass {
 
                     File[] filess = month.listFiles();
 
+                    if (year.getAbsolutePath().contains("bibliograficke")) System.out.println(month.getAbsolutePath());
+
                     for (File file : filess) {
 
                         File[] docFiles = file.listFiles();
+
+                        if (month.getAbsolutePath().contains("AMD\\")) System.out.println(file.getAbsolutePath());
 
                         if (docFiles == null) continue;
 
