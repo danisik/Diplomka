@@ -38,13 +38,14 @@ Všechny databáze sestávají z pěti základních komponent, nehledě na použ
 V dnešním světě existuje mnoho různých typů databází. Výběr nejlepšího typu databáze pro konkrétní organizaci závisí na tom, jak organizace zamýšlí data používat. V této kapitole je vypsáno pouze pár typů, protože vznikají stále nové, méně známé typy databází, které jsou tvořeny pro specifické požadavky (například finanční, věděcké) \cite{matillionTypeDB, OracleDB}.
 
 \subsection{Relační databáze}
-Název relační databáze pochází ze způsobu, jakým jsou data uložena, a to ve více souvisejících tabulkách. Data v tabulkách jsou uložena v řádcích a sloupcích. Relační databáze jsou velice spolehlivé a podporují všechny čtyři žádoucí vlastnosti databázových transakcí \gls{ACID}. Pro co nejefektivěnjší využití tohoto typu databáze je potřeba ukládat pouze dobře strukturovaná data, pro částečně strukturovaná či nestrukturovaná data je vhodné použít například grafové nebo dokumentově založené databáze. Typické relační databáze jsou například: Microsoft SQL Server, Oracle Database, MySQL, PostgreSQL. Ukázku relační databáze lze vidět na obrázku č. \ref{fig:db_img_relational}.
+Název relační databáze pochází ze způsobu, jakým jsou data uložena, a to ve více souvisejících tabulkách. Data v tabulkách jsou uložena v řádcích a sloupcích. Relační databáze jsou velice spolehlivé a podporují všechny čtyři žádoucí vlastnosti databázových transakcí \gls{ACID}. Pro co nejefektivěnjší využití tohoto typu databáze je potřeba ukládat pouze dobře strukturovaná data, pro částečně strukturovaná či nestrukturovaná data je vhodné použít například grafové nebo dokumentově založené databáze. Typické relační databáze jsou například: Microsoft SQL Server, Oracle Database, MySQL. Ukázku relační databáze lze vidět na obrázku č. \ref{fig:db_img_relational}.
 	\begin{figure}[H]
 	\centering
 	\includegraphics[width=14cm]{img/databaze/relational_db}
 	\caption{Ukázka relační databáze.}
 	\label{fig:db_img_relational}
 	\end{figure}
+\newpage
 \subsubsection{Datový model}
 Relační datový model obsahuje několik fundamentálních konceptů. Koncepty lze vidět na obrázku č. \ref{fig:model_relational}.
 \begin{figure}[H]
@@ -173,6 +174,7 @@ Grafová databáze je typem NoSQL databáze, která je založená na teorii graf
 	\caption{Ukázka grafové databáze \cite{neo_graph}.}
 	\label{fig:db_img_graph}
 	\end{figure}
+\newpage
 \subsubsection{Datový model}
 Datový model grafové databáze se skládá ze čtyř komponent (viz obrázek č. \ref{fig:graph_components}) \cite{data_model_graph}:
 	\begin{figure}[H]
@@ -233,7 +235,7 @@ Nevýhody dokumentové databáze jsou \cite{advantages_document}:
 \end{itemize}
 
 \section{Existující řešení}
-Pro vybrané typy databáze existují mnoho databázových řešení, které lze zmínit. V této kapitole se budeme zabývat především těmi nejznámějšími pro daný typ databáze, a které jsou zdarma ke stažení a používání. Pro každý typ databáze byly vybrány maximálně dvě řešení.
+Pro vybrané typy databáze existují mnoho databázových řešení, které lze zmínit. V této kapitole se budeme zabývat především těmi nejznámějšími pro daný typ databáze, a které jsou zdarma ke stažení a používání. Pro každý typ databáze bylo vybráno vždy jedno z nejznámějších řešení.
 \subsection{MySQL}
 MySQL je multiplatformní databáze uplatňující relační databázový model. Komunikace s databází (získávání dat, vytváření objektů, ...) probíhá pomocí jazyka \gls{SQL}, který je rozšířen o nové funkce. Nejnovější verze MySQL je open-source, což znamená, že kdokoliv může používat a libovolně upravovat MySQL systém, aniž by musel cokoliv platit. V případě změny zdrojových kódů je potřeba nastudovat podmínky užívání definované licencí \gls{GPL} \cite{mysql}.
 \newline
@@ -242,23 +244,54 @@ MySQL je multiplatformní databáze uplatňující relační databázový model.
 
 \noindent MySQL server může být využit dvěma způsoby:
 \begin{itemize}
-\item \textbf{Klient / server} - vícevláknový \gls{SQL} server, který podporuje různé back-endy, několik různých klientských programů a knihoven a mnoho dalšího.
-\item \textbf{Věstavěná knihovna} - vícevláknová věstavěná knihovna, kterou lze propojit do své aplikace a získat tím menší, rychlejší a snadněji spravovatelný samostatný produkt.
+\item \textbf{Klient / server} - Vícevláknový \gls{SQL} server, který podporuje různé back-endy, několik různých klientských programů a knihoven a mnoho dalšího.
+\item \textbf{Věstavěná knihovna} - Vícevláknová věstavěná knihovna, kterou lze propojit do své aplikace a získat tím menší, rychlejší a snadněji spravovatelný samostatný produkt.
 \end{itemize}
 \subsection{PostgreSQL}
-Relační \todo{todo}
-\subsection{ConceptBase}
-OO \todo{todo}
+PostgreSQL je open-source objektově-relační databázový systém, který vznikl spojením relačního a objektově-orientovaného databázového systému. PostgreSQL je velice silný nástroj, který používá rozšíření jazyka \gls{SQL} společně s mnoha funkcemi, které bezpečně skladují a škálují většinu nejsložitějších datových úloh.
+\newline
+\indent PostgreSQL přichází s mnoha funkcemi, které jsou zaměřené na pomoc vývojářům při vytváření aplikací, správu a bezpečnost dat a odolnost proti chybám v systému. Jako další výhody lze zmínit velkou rozšiřitelnost (lze tvořit vlastní datové typy a funkce), psaní kódu v jiných programovacích jazycích, podpora \gls{ACID} a možnost provozovat server na všech hlavních operačních systémech \cite{postgres}.
+\newline
+
+\noindent PostgreSQL obsahuje mnoho funkcí, které může uživatel využít. Zde je výpis pouze část z nich:
+\begin{itemize}
+\item \textbf{Datové typy} - Primitivní (číslo, text, ...),  strukturované (datum, pole, ...), dokumenty (\gls{JSON}, \gls{XML}, ...), geometrie (bod, kruh, ...) a vlastní datové typy.
+\item \textbf{Celistvost dat} - Unikátní hodnoty, primární a cizí klíče, zámky.
+\item \textbf{Výkonnost} - Indexování pomocí stromů, výrazů. Základní a vnořené transakce.
+\item \textbf{Zabezpečení} - Vícefaktorová autentikace s certifikáty, sloupcové a řádkové zabezpečení.
+\item \textbf{Textové vyhledávání} - Full-textové vyhledávání.
+\end{itemize}
+
 \subsection{LevelDB}
-KeyValue \todo{todo}
-\subsection{Redis}
-KeyValue \todo{todo}
+LevelDB je open-source databáze typu Klíč-hodnota, která se používá hlavně u malých přenosných aplikací a nepotřebují žádné \gls{API} (rozhraní). Databáze byla vytvořena dvěma programátory Googlu, kteří byli inspirování již existující databází Bigtable (databáze typu klíč-hodnota, která je součástí platformy Google Cloud), ale chtěli vytvořit jednoduchou, lehce přenosnou databázi, kterou lze distribuovat zároveň s aplikací, která ji využívá.
+\newline
+\indent Algoritmus pro ukládání databáze funguje tak, že dočasně ukládá data v \textit{MemTable} (mezipaměť pro zpětný zápis řádků, ve které lze hledat pomocí klíče), ze které se data postupně přesouvají do \textit{SSTable} (Sorted String Table), což je tabulka seřazených řetězců, které nelze měnit. Neměnná data jsou ukládána na disk, který může být sdílen s více clustery \cite{leveldb}.
+\newline
+
+\noindent Výhody LevelDB jsou:
+\begin{itemize}
+\item \textbf{Jednoduché operace} - LevelDB má tři základní jednoduché operace \textit{Get} (vrací hodnotu podle klíče), \textit{Put} (vkládá dvojici klíč-hodnota) a \textit{Delete} (mazání dvojice klíč-hodnota).
+\item \textbf{Bytové pole} - Klíče a hodnoty lze ukládat i do bytového pole, což může být užitečné v případě, kdy nechceme ukládat hodnoty jako řetězce.
+\item \textbf{Atomické operace} - LevelDB podporuje atomické operace, to znamená, že lze použít více operací najednou v jednom nepřerušeném volání.
+\end{itemize}
+
 \subsection{MongoDB}
-Document \todo{todo}
-\subsection{Elasticsearch}
-Document \todo{todo}
+MongoDB je dokumentově-orientovaná databáze, která se používá zejména tam, kde je potřeba uchovávat velké množství dat. Firma MongoDB.Inc poskytuje oficiální ovladače ke všem populárním programovacím jazykům jako je například C\#, Java, C++ a mnoho dalších. Existují i neoficiální ovladače vytvořené komunitou, které pokrývají ještě více programovacích jazyků.
+\newline
+\indent MongoDB je vlastně ve skutečnosti server, který umožňuje vytvářet a udržovat několik databází najednou. Každá databáze může mít své vlastní kolekce, které sdružují dokumenty.  MongoDB podporuje vnořená data, což umožňuje vytvářet složité vztahy mezi dokumenty a ukládat je do stejného dokumentu, což činí práci a načítání dat extrémně efektivní ve srovnání s SQL.\cite{mongo}
+\newline
+
+\noindent Výhody MongoDB jsou \cite{advantages_mongo}:
+\begin{itemize}
+\item Dokumenty lze mapovat na objekty v kódu aplikace, takže se s nimi dá jednodušeji pracovat.
+\item Indexování, shlukování v reálném čase a ad-hoc dotazy poskytují velice výkonné způsoby přístupu k datům a jejich analýzy.
+\item MongoDB nabízí vysokou dostupnost, horizontální škálování a geografickou distribuci a to díky tomu, že je ve svém jádře distribuovanou databází.
+\end{itemize}
+
 \subsection{Neo4j}
-Graf \todo{todo}
+Neo4j je open-source nativní grafová databáze, která efektivně implementuje vlastnosti grafového modelu až na úroveň úložiště, které je velmi výkonné. Pomocí Neo4j lze naimplementovat každý graf, který dokážeme nakreslit na tabuli, za pomoci ukazatelů. Stejně jako pro MongoDB, i zde existují ovladače pro populární programovací jazyky, jako například Java, .NET a mnoho dalších.
+\newline
+\indent Neo4j je velice populární právě z důvodu konstantních časových přechodů ve velkých grafech jak pro prohledávání do šířky, tak i do hloubky, díky efektivní reprezentaci a škálování uzlů a vztahů mezi nimi. Databáze navíc umožňuje vytvářet flexibilní schéma vlastností grafu, které se může v průběhu času přizpůsobovat, díky čemuž lze přidávat nové vztahy pro vytváření zkratek mezi uzly pro zrychlení práce s daty. Neo4j také poskytuje úplné databázové charakteristiky, které zahrnují i \gls{ACID} vlastnosti, podpory clusterů a převzetí služeb při selhání za běhu \cite{neo4j}.
 
 \section{Jazyky} \label{sec:jazyky}
 Databázové jazyky, jinak známé jako dotazovací jazyky, jsou klasifikací programovacích jazyků, které se používají k definování a přístupu k databázím. Pomocí těchto jazyků dokáže uživatel získávat nebo spravovat data v databázích. V dnešní době se jazyky (například \gls{SQL}) mohou skládat ze čtyř podjazyků, kdy každý slouží k jinému účelu v rámci vykonávání příkazů \cite{indeedDBLanguage, begginersBookDBLanguage}:
@@ -349,9 +382,3 @@ Cypher využívá \gls{ASCII}-art typ syntaxe, což je umění, které pracuje s
 	\caption{Dotaz v jazyce Cypher \cite{cypher}.}
 	\label{fig:cypher_sample}
 	\end{figure}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-%\chapter{Docker}
-%\todo{todo}
-%Popsat docker jako takový - kontejnery, image, docker compose, ...\newline
-%\section{Kontejner vs Virtuální stroj}
