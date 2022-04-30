@@ -19,11 +19,9 @@
 \item \textbf{Stabilita} - Server musí být stabilní a nesmí padat při práci s velkým množstvím dat, zvlášť při vyhledávání s použitím složitých dotazů (nařípkad hledání přes více tabulek).
 \end{itemize}
 
-\todo{todo}
-%Popsat že nejdřív se vybírají patenty a jejich struktura dat, a podle toho se pak může vybrat databáze. Popsat to tak jakože "Účelem této kapitoly je vybrat patentové zdroje, ze kterých patenty a pak podle toho typ databáze."
+\noindent V následujících kapitolách bude popsán postup výběru zdrojů patentů a patentových dat. Následně budou vybrány typy databáze, které budou vhodné pro uložení vybraných patentových dat a následné zvolení existujících řešení.
 
 \section{Výběr patentů}
-\todo{dopsat něco?}
 Při výběru patentů byly stanoveny tři podmínky, které museli být splněny:
 \begin{itemize}
 \item \textbf{Dostupnost} - Patenty musí být dostupné z online stránek / databází bez poplatků.
@@ -35,135 +33,141 @@ Při výběru patentů byly stanoveny tři podmínky, které museli být splněn
 V dnešním světě existuje několik desítek až stovek patentových zdrojů dat, od webových vyhledávačů v databázi až po plný export databáze s patenty. Velké organizace, jako například \gls{EPO}, \gls{WIPO}, \gls{USPTO}, udržují jedny z největších patentových databází (desítky až stovky milionů patentů), ve kterých lze vyhledávat velké množství informací zdarma za použití webových vyhledávačů na dané stránce organizace. Lze zde najít všechny typy patentů (přihlášky, publikace), národní patenty i patenty registrované například u \gls{EPO}. V případě exportu databází, \gls{USPTO} poskytuje plný export svých databází veřejnosti pro libovolné používání, zcela zdarma. Využití těchto zdrojů dat by bylo určitě skvělé, ale tyto zdroje byly nedávno použity a rozebrány v jiné diplomové práci, proto je vhodné se spíše zaměřit na národní zdroje dat patentů.
 \newline
 \indent Národní databáze patentů dané země obsahuje všechny národní patenty, některé dokonce i patenty z jiných zemí registrovaných u \gls{EPO}. 
+\newline
+\indent Při průzkumu bylo zkoumáno celkem 51 národních zdrojů dat (patentových úřadů). V tabulkách č. \ref{tab:table_offices1} a \ref{tab:table_offices2} lze vidět název země, název patentového úřadu v dané zemi, zkratku patentového úřadu (pokud nějakou má) a jestli patentový úřad poskytoval data nebo ne. U každého patentového úřadu byl procházen její oficiální web a zkoumán na dostupnost patentových dat. Většina úřadů má na svých stránkách vyhledávač pro procházení vlastní databáze patentů, ale jen zlomek z nich poskytoval použitelná data zadarmo. Tyto data byla většinou schována pod neodpovídajícím názvem článku / příspěvku, a některé dokonce poskytovaly odkazy ke stažení dat na svých stránkách pouze v národním jazyce (neexistující článek s daty v anglické verzi webu). 
 	\begin{table}[H]
 	\centering
-	\begin{tabular}{|>{\centering\arraybackslash}p{2.2cm}|>{\centering\arraybackslash}p{8cm}|>{\centering\arraybackslash}p{2cm}|} 
+	\begin{tabular}{|>{\centering\arraybackslash}p{2.2cm}|>{\centering\arraybackslash}p{7cm}|>{\centering\arraybackslash}p{2cm}|>{\centering\arraybackslash}p{1cm}|} 
 	\hline
-	\textbf{Země}    & \textbf{Patentový úřad} & \textbf{Zkratka}                \\ 
+	\textbf{Země}    & \textbf{Patentový úřad} & \textbf{Zkratka} & \textbf{Data}                \\ 
 	\hline
-	Anglie & \href{https://www.gov.uk/topic/intellectual-property}{Intellectual Property Office}  & IPO         \\ 
+	Anglie & \href{https://www.gov.uk/topic/intellectual-property}{Intellectual Property Office}  & IPO & ANO        \\ 
 	\hline
-	Arménie & \href{https://www.aipa.am/hy/}{Intellectual Property Office}  & -         \\ 
+	Arménie & \href{https://www.aipa.am/hy/}{Intellectual Property Office}  & - & NE        \\ 
 	\hline
-	Austrálie & \href{https://www.ipaustralia.gov.au/}{IP Australia}  & -         \\ 
+	Austrálie & \href{https://www.ipaustralia.gov.au/}{IP Australia}  & - & ANO         \\ 
 	\hline
-	Bělorusko & \href{https://www.ncip.by/}{National Center of Intellectual Property}  & NCIP         \\ 
+	Bělorusko & \href{https://www.ncip.by/}{National Center of Intellectual Property}  & NCIP & NE         \\ 
 	\hline
-	Bulharsko & \href{https://www.bpo.bg/}{Patent Office of Republic of Bulgaria}  & -         \\ 
+	Bulharsko & \href{https://www.bpo.bg/}{Patent Office of Republic of Bulgaria}  & -  & NE       \\ 
 	\hline
-	Česko & \href{https://upv.gov.cz/}{Industrial Property Office of the Czech Republic}  & -         \\ 
+	Česko & \href{https://upv.gov.cz/}{Industrial Property Office of the Czech Republic}  & -   & ANO      \\ 
 	\hline
-	Čína & \href{https://www.cnipa.gov.cn/}{China National Intellectual Property Administration}  & CNIPA         \\ 
+	Čína & \href{https://www.cnipa.gov.cn/}{China National Intellectual Property Administration}  & CNIPA   & NE      \\ 
 	\hline
-	Dánsko & \href{https://www.dkpto.org/}{Danish Patent and Trademark Office}  & -         \\ 
+	Dánsko & \href{https://www.dkpto.org/}{Danish Patent and Trademark Office}  & -    & NE     \\ 
 	\hline
-	Egypt & \href{http://www.egypo.gov.eg}{Egyptian Patent Office}  & -         \\ 
+	Egypt & \href{http://www.egypo.gov.eg}{Egyptian Patent Office}  & -   & NE      \\ 
 	\hline
-	Estonsko & \href{https://www.epa.ee/et}{The Estonian Patent Office}  & -         \\ 
+	Estonsko & \href{https://www.epa.ee/et}{The Estonian Patent Office}  & -   & NE      \\ 
 	\hline
-	Filipíny & \href{http://www.ipophil.gov.ph/}{Intellectual Property Office of the Philippines}  & IPOPHL         \\ 
+	Filipíny & \href{http://www.ipophil.gov.ph/}{Intellectual Property Office of the Philippines}  & IPOPHL & NE        \\ 
 	\hline
-	Finsko & \href{http://www.prh.fi/en/index.html}{Finnish Patent and Registration Office}  & PRH         \\ 
+	Finsko & \href{http://www.prh.fi/en/index.html}{Finnish Patent and Registration Office}  & PRH   & NE      \\ 
 	\hline
-	Francie & \href{http://www.inpi.fr/}{National Institute of Industrial Property}  & INPI         \\ 
+	Francie & \href{http://www.inpi.fr/}{National Institute of Industrial Property}  & INPI   & ANO      \\ 
 	\hline
-	Hong Kong & \href{https://www.ipd.gov.hk/index.htm}{Intellectual Property Department}  & -         \\ 
+	Hong Kong & \href{https://www.ipd.gov.hk/index.htm}{Intellectual Property Department}  & -   & NE      \\ 
 	\hline
-	Chorvatsko & \href{https://www.dziv.hr/}{State Intellectual Property Office of the Republic of Croatia}  & SIPO         \\ 
+	Chorvatsko & \href{https://www.dziv.hr/}{State Intellectual Property Office of the Republic of Croatia}  & SIPO  & NE       \\ 
 	\hline
-	Indie & \href{http://www.ipindia.nic.in/}{Office of the Controller General of Patents, Designs and Trade Marks}  & -         \\ 
+	Indie & \href{http://www.ipindia.nic.in/}{Office of the Controller General of Patents, Designs and Trade Marks}  & -    & NE    \\ 
 	\hline
-	Indonésie & \href{http://www.dgip.go.id/}{Directorate General of Intellectual Property}  & DGIP         \\ 
+	Indonésie & \href{http://www.dgip.go.id/}{Directorate General of Intellectual Property}  & DGIP & NE        \\ 
 	\hline
-	Irsko & \href{https://www.ipoi.gov.ie/en/}{Intellectual Property Office of Ireland}  & IPOI         \\ 
+	Irsko & \href{https://www.ipoi.gov.ie/en/}{Intellectual Property Office of Ireland}  & IPOI   & NE      \\ 
 	\hline
-	Island & \href{https://www.isipo.is/}{Icelandic Intellectual Property Office}  & ISIPO         \\ 
+	Island & \href{https://www.isipo.is/}{Icelandic Intellectual Property Office}  & ISIPO    & NE     \\ 
 	\hline
-	Israel & \href{https://www.gov.il/en/departments/ilpo}{The Israel Patent Office}  & ILPO         \\ 
+	Israel & \href{https://www.gov.il/en/departments/ilpo}{The Israel Patent Office}  & ILPO    & ANO     \\ 
 	\hline
-	Itálie & \href{https://uibm.mise.gov.it/index.php/it/}{Directorate General for the Protection of Industrial Property}  & -         \\ 
+	Itálie & \href{https://uibm.mise.gov.it/index.php/it/}{Directorate General for the Protection of Industrial Property}  & -    & ANO*     \\ 
 	\hline
-	Japonsko & \href{https://www.jpo.go.jp/e/index.html}{Japan Patent Office}  & JPO         \\ 
+	Japonsko & \href{https://www.jpo.go.jp/e/index.html}{Japan Patent Office}  & JPO  & ANO       \\ 
 	\hline
-	Jižní Korea & \href{http://www.kipo.go.kr/}{Korean Intellectual Property Office}  & KIPO         \\ 
+	Jižní Korea & \href{http://www.kipo.go.kr/}{Korean Intellectual Property Office}  & KIPO   & ANO      \\ 
 	\hline	
-	Kanada & \href{https://www.ic.gc.ca/}{Canadian Intellectual Property Office}  & CIPO         \\ 
+	Kanada & \href{https://www.ic.gc.ca/}{Canadian Intellectual Property Office}  & CIPO  & ANO      \\ 
 	\hline
 	\end{tabular}
 	\caption{Národní patentové úřady a jejich zkratky, část první}
 	\label{tab:table_offices1}
 	\end{table}
-
 \newpage
-
 	\begin{table}[H]
 	\centering
-	\begin{tabular}{|>{\centering\arraybackslash}p{2.2cm}|>{\centering\arraybackslash}p{8cm}|>{\centering\arraybackslash}p{2cm}|} 
+	\begin{tabular}{|>{\centering\arraybackslash}p{2.2cm}|>{\centering\arraybackslash}p{7cm}|>{\centering\arraybackslash}p{2cm}|>{\centering\arraybackslash}p{1cm}|} 
 	\hline
-	\textbf{Země}    & \textbf{Patentový úřad} & \textbf{Zkratka}                \\ 
+	\textbf{Země}    & \textbf{Patentový úřad} & \textbf{Zkratka}        & \textbf{Data}        \\ 
 	\hline
-	Kuba & \href{http://www.ocpi.cu}{Cuban Industrial Property Office}  & OCPI         \\ 
+	Kuba & \href{http://www.ocpi.cu}{Cuban Industrial Property Office}  & OCPI   & NE      \\ 
 	\hline
-	Litva & \href{http://vpb.lrv.lt/en/}{State Patent Bureau of the Republic of Lithuania}  & -         \\
+	Litva & \href{http://vpb.lrv.lt/en/}{State Patent Bureau of the Republic of Lithuania}  & -    & ANO     \\
 	\hline
- 	Lotyšsko & \href{https://www.lrpv.gov.lv/lv}{Patent Office of the Republic of Latvia}  & -         \\ 
+ 	Lotyšsko & \href{https://www.lrpv.gov.lv/lv}{Patent Office of the Republic of Latvia}  & -    & NE     \\ 
 	\hline
-	Maďarsko & \href{http://www.hipo.gov.hu/}{Hungarian Intellectual Property Office}  & HIPO         \\ 
+	Maďarsko & \href{http://www.hipo.gov.hu/}{Hungarian Intellectual Property Office}  & HIPO   & NE      \\ 
 	\hline
-	Malajsie & \href{http://www.myipo.gov.my/}{Intellectual Property Corporation of Malaysia}  & MyIPO         \\ 
+	Malajsie & \href{http://www.myipo.gov.my/}{Intellectual Property Corporation of Malaysia}  & MyIPO  & NE       \\ 
 	\hline
-	Mexiko & \href{https://www.gob.mx/impi/en}{Instituto Mexicano De La Propiedad Industrial}  & IMPI         \\ 
+	Mexiko & \href{https://www.gob.mx/impi/en}{Instituto Mexicano De La Propiedad Industrial}  & IMPI  & ANO       \\ 
 	\hline
-	Moldova & \href{http://www.agepi.gov.md/}{State Agency on Intellectual Property}  & AGEPI         \\ 
+	Moldova & \href{http://www.agepi.gov.md/}{State Agency on Intellectual Property}  & AGEPI   & NE      \\ 
 	\hline
-	Německo & \href{http://www.dpma.de/}{German Patent and Trade Mark Office}  & DPMA         \\ 
+	Německo & \href{http://www.dpma.de/}{German Patent and Trade Mark Office}  & DPMA   & ANO      \\ 
 	\hline
-	Nizozemsko & \href{http://www.rvo.nl/octrooien}{Netherlands Patent Office}  & -         \\ 
+	Nizozemsko & \href{http://www.rvo.nl/octrooien}{Netherlands Patent Office}  & -    & NE    \\ 
 	\hline
-	Norsko & \href{https://www.patentstyret.no/en/}{Norwegian Industrial Property Office}  & NIPO         \\ 
+	Norsko & \href{https://www.patentstyret.no/en/}{Norwegian Industrial Property Office}  & NIPO    & NE     \\ 
 	\hline
-	Nový Zéland & \href{http://www.iponz.govt.nz/}{Intellectual Property Office of New Zealand}  & IPONZ         \\ 
+	Nový Zéland & \href{http://www.iponz.govt.nz/}{Intellectual Property Office of New Zealand}  & IPONZ   & ANO      \\ 
 	\hline
-	Peru & \href{http://www.indecopi.gob.pe/}{National Institute for the Defense of Competition and Protection of Intellectual Property}  & INDECOPI         \\ 
+	Peru & \href{http://www.indecopi.gob.pe/}{National Institute for the Defense of Competition and Protection of Intellectual Property}  & INDECOPI    & ANO     \\ 
 	\hline
-	Polsko & \href{https://uprp.gov.pl/pl}{Urząd Patentowy Rzeczypospolitej Polskiej}  & UPRP         \\ 
+	Polsko & \href{https://uprp.gov.pl/pl}{Urząd Patentowy Rzeczypospolitej Polskiej}  & UPRP    & ANO     \\ 
 	\hline
-	Portugalsko & \href{https://inpi.justica.gov.pt/}{Portuguese Institute of Industrial Property}  & -         \\ 
+	Portugalsko & \href{https://inpi.justica.gov.pt/}{Portuguese Institute of Industrial Property}  & -     & ANO    \\ 
 	\hline
-	Rakousko & \href{http://www.patentamt.at/}{Austrian Patent Office}  & -         \\ 
+	Rakousko & \href{http://www.patentamt.at/}{Austrian Patent Office}  & -     & NE    \\ 
 	\hline
-	Rumunsko & \href{http://www.osim.ro/}{State Office for Inventions and Trademarks}  & OSIM         \\ 
+	Rumunsko & \href{http://www.osim.ro/}{State Office for Inventions and Trademarks}  & OSIM      & NE   \\ 
 	\hline
-	Rusko & \href{https://rospatent.gov.ru/}{Federal Service for Intellectual Property}  & Rospatent         \\ 
+	Rusko & \href{https://rospatent.gov.ru/}{Federal Service for Intellectual Property}  & Rospatent   & ANO      \\ 
 	\hline
-	Řecko & \href{http://www.obi.gr/el/}{Hellenic Industrial Property Organization}  & HIPO         \\ 
+	Řecko & \href{http://www.obi.gr/el/}{Hellenic Industrial Property Organization}  & HIPO   & NE      \\ 
 	\hline
-	Singapur & \href{http://www.ipos.gov.sg/}{Intellectual Property Office of Singapore}  & IPOS         \\ 
+	Singapur & \href{http://www.ipos.gov.sg/}{Intellectual Property Office of Singapore}  & IPOS    & NE     \\ 
 	\hline
-	Slovensko & \href{https://www.indprop.gov.sk/}{Industrial Property Office of the Slovak Republic}  & -         \\ 
+	Slovensko & \href{https://www.indprop.gov.sk/}{Industrial Property Office of the Slovak Republic}  & -     & NE    \\ 
 	\hline
-	Slovinsko & \href{http://www.uil-sipo.si/}{Slovenian Intellectual Property Office}  & SIPO         \\ 
+	Slovinsko & \href{http://www.uil-sipo.si/}{Slovenian Intellectual Property Office}  & SIPO   & NE      \\ 
 	\hline
-	Srbsko & \href{http://www.zis.gov.rs/}{Intellectual Property Office of the Republic of Serbia}  & -         \\ 
+	Srbsko & \href{http://www.zis.gov.rs/}{Intellectual Property Office of the Republic of Serbia}  & -   & NE      \\ 
 	\hline
-	Španělsko & \href{http://www.oepm.es/}{Spanish Patent and Trademark Office}  & OEPM         \\ 
+	Španělsko & \href{http://www.oepm.es/}{Spanish Patent and Trademark Office}  & OEPM   & ANO      \\ 
 	\hline
-	Švédsko & \href{http://www.prv.se/}{Swedish Intellectual Property Office}  & PRV         \\ 
+	Švédsko & \href{http://www.prv.se/}{Swedish Intellectual Property Office}  & PRV   & ANO      \\ 
 	\hline
-	Švýcarsko & \href{https://www.ige.ch/}{Swiss Federal Institute of Intellectual Property}  & -         \\ 
+	Švýcarsko & \href{https://www.ige.ch/}{Swiss Federal Institute of Intellectual Property}  & -     & NE    \\ 
 	\hline
-	Turecko & \href{http://www.turkpatent.gov.tr/}{Turkish Patent and Trademark Office}  & Turkpatent         \\ 
+	Turecko & \href{http://www.turkpatent.gov.tr/}{Turkish Patent and Trademark Office}  & Turkpatent   & NE      \\ 
 	\hline
-	Ukrajina & \href{https://ukrpatent.org/en}{Ukrainian Intellectual Property Institute}  & Ukrpatent         \\ 
+	Ukrajina & \href{https://ukrpatent.org/en}{Ukrainian Intellectual Property Institute}  & Ukrpatent    & NE     \\ 
 	\hline
 	\end{tabular}
 	\caption{Národní patentové úřady a jejich zkratky, část druhá}
 	\label{tab:table_offices2}
 	\end{table}
-
 \newpage
 
+\noindent Z celkových 51 patentových zdrojů nám pouze 19 zdrojů poskytuje data. V případě Itálie nám data neposkytuje přímo patentový úřad, ale výzkumný úřad PATIRIS, který poskytuje patentová data z univerzit a veřejných výzkumných ústavů v Itálii. 
+\newline
+\indent Bohužel ne všechny patentové úřady poskytují svá data zdarma. Celkem tři úřady - Austrálie, Německo, Nový Zéland chtěli za svá data zaplatit. 
+\newline
+\indent Ještě je potřeba zmínit Japonsko, které svá data poskytuje, ale je potřeba vyplnit formulář, ve kterém bylo potřeba naskenovat oficiální dokument potvrzující adresu školy. Z tohoto důvodu jsme bylo Japonsko jako jako zdroj dat zavrhnuto. Z původních 19 zdrojů dat poskytující data zůstalo nakonec jen 14 zdrojů dat, které poskytují svá data zadarmo.
+
 \subsection{Atributy}\label{subsec:atributy}
+\todo{TODO}
 \subsubsection{Povinné atributy}
 
 	\begin{table}[H]
@@ -206,7 +210,7 @@ V dnešním světě existuje několik desítek až stovek patentových zdrojů d
 	\end{table}
 
 \subsubsection{Nepovinné atributy}
-
+\todo{TODO}
 	\begin{table}[H]
 	\centering
 	\begin{tabular}{|c|c|c|c|c|} 
@@ -287,7 +291,8 @@ V dnešním světě existuje několik desítek až stovek patentových zdrojů d
 
 
 \subsection{Závěr průzkumu}
-Rovnou udělat kapitolu, ve který se aplikují všechny podmínky + se sepíše souhrn počtu patentů, z jakých zemí atp.
+\todo{TODO}
+%Rovnou udělat kapitolu, ve který se aplikují všechny podmínky + se sepíše souhrn počtu patentů, z jakých zemí atp.
 
 
 \section{Výběr databáze}
