@@ -7,15 +7,28 @@
 %information about patent data and provide some concrete examples of these
 %data sources.
 
-Zdroje (které ano, které ne + proč) + udělat stejnou tabulku jak v excelu + zmínit stránku ze který jsem čerpal informace (wipo.int)\todo{todo}\newline
-Nezapomenout zmínit meze let, ve kterých se jednotlivé patenty z daných zemí nachází \todo{todo}
+%Zdroje (které ano, které ne + proč) + udělat stejnou tabulku jak v excelu + zmínit stránku ze který jsem čerpal informace (wipo.int)\todo{todo}\newline
+%Nezapomenout zmínit meze let, ve kterých se jednotlivé patenty z daných zemí nachází \todo{todo}
+
+\indent Hlavní motivací pro vytvoření této práce je vytěžování patentů pro účely zjišťování existence napříkad různých technologických vynálezů či algoritmů. Pomocí těchto informací lze zjistit, zda například má smysl vymýšlet nový algoritmus pro určitý problém a neexistuje k němu jiné, lepší řešení, případně vymyslet modifikaci, která zajistí lepší výsledky.
+\newline
+
+\noindent Dále je potřebat definovat, co vlastně znamená pojem efektivní vytěžování. Vytěžování lze označit za efektivní, pokud budou splněny tyto podmínky:
+\begin{itemize}
+\item \textbf{Rychlost} - Vyhledávání musí probíhat v rámci jednotek až desítek sekund (případně jednotky minut, záleží na celkovém počtu patentů a na hardwarové konfiguraci serveru).
+\item \textbf{Stabilita} - Server musí být stabilní a nesmí padat při práci s velkým množstvím dat, zvlášť při vyhledávání s použitím složitých dotazů (nařípkad hledání přes více tabulek).
+\end{itemize}
+
+\todo{todo}
+%Popsat že nejdřív se vybírají patenty a jejich struktura dat, a podle toho se pak může vybrat databáze. Popsat to tak jakože "Účelem této kapitoly je vybrat patentové zdroje, ze kterých patenty a pak podle toho typ databáze."
 
 \section{Výběr patentů}
+\todo{dopsat něco?}
 Při výběru patentů byly stanoveny tři podmínky, které museli být splněny:
 \begin{itemize}
-\item Dostupnost - patenty musí být dostupné z online stránek / databází bez poplatků.
-\item Datum - patentová přihláška nebo publikace patentu musí být podána alespoň v roce 2000, všechny ostatní patenty budou vyfiltrovány.
-\item Atributy - všechny patenty musí obsahovat povinné atributy (viz kapitola č. \ref{subsec:atributy}).
+\item \textbf{Dostupnost} - Patenty musí být dostupné z online stránek / databází bez poplatků.
+\item \textbf{Datum} - Patentová přihláška nebo publikace patentu musí být podána alespoň v roce 2000, všechny ostatní patenty budou vyfiltrovány.
+\item \textbf{Atributy} - Všechny patenty musí obsahovat povinné atributy (viz kapitola č. \ref{subsec:atributy}).
 \end{itemize}
 
 \subsection{Zdroje dat}
@@ -278,12 +291,36 @@ Rovnou udělat kapitolu, ve který se aplikují všechny podmínky + se sepíše
 
 
 \section{Výběr databáze}
-\todo{todo}
+V kapitole č. \ref{chap:databaze} bylo podrobně popsáno co databáze je, jaké typy databází dnes existují (krátký výčet) i nejznámější existující řešení pro popsané typy databází. V této kapitole budou podrobně popsány rozdíly mezi jednotlivými řešeními a následně se vybere nejlepší typ databáze pro ukládání velkého objemu patentových dat. Následně, podle vybraného typu databáze, se vybere nejvhodnější existující řešení.
+
 \subsection{Výběr typu databáze}
+Abychom zajistili co nejefektivnější vytěžování, tak je potřeba vybrat co nejvhodnější typ databáze vzhledem k povaze úlohy. V budoucnu se očekává, že počet skladovaných patentů bude v řádech jednotek až desítek milionů (nelze vyvrátit i stovky milionů v případě, že se budou ukládat i patenty z jiných než národních zdrojů).
+
+\subsubsection{Relační databáze}
+Relační databáze není vhodným kandidátem pro ukládání nestrukturovaných patentových dat. V databázi sice existuje datový typ \textbf{BLOB}, který umožňuje ukládat binární soubory (v našem případě soubor s patentovými daty), ale nelze to pokládat za nejlepší řešení, když existují například dokumentové databáze. Lze zmínit i datový typ \textbf{TEXT} / \textbf{LONGTEXT}, který umožňuje ukládát velké množství textu a lze ho procházet pomocí full-text vyhledávání, ale výkonnostně a rychlostně se stejně nevyrovná NoSQL databázím. 
+\newline
+\indent Využití relační databáze by mělo smysl pouze v případě vytváření statistik (například počet v patentů v Kanadě za rok 2020). Tento přístup by ale vyžadoval extrahovat specifická data (například jen povinné atributy) ze souboru pomocí parseru a následné uložení hodnot do tabulek. 
+
+\subsubsection{Objektově-orientovaná databáze}
+Objektově-orientovaná databáze, stejně jako relační databáze, není vhodným kandidátem pro ukládání nestrukturovaných dat. Lze argumentovat vytvořením objektů odpovídající struktuře dokumentu, ale při vložení dokumentu s jinou strukturou nastává problém s uložením atributů, které se nenachází v objektu. V některých případech může vysoká složitost systému zpomalovat vyhledávání. Velká výhoda objektově-orientované datábaze spočívá v jednoduchém mapování objektů při práci s objektově-orientovaném programování, které ale v našem případě nemá využití. V případě vytěžování statistik je objektově-orientovaná databáze horší volbou než relační databáze.
+
+\subsubsection{Databáze klíč-hodnota}
+Databáze klíč-hodnota je jednoduchá a velice rychlá databáze, která umožňuje ukládat i nestrukturovaná data a nepotřebuje k tomu velké množství paměti. Její nevýhoda je ale v ukládání složitých struktur, které soubory s patenty mají. Lze uložit celou strukturu patentu jako hodnotu, ale následné vyhledávání hodnot pomocí názvů parametrů je nemožné. Použití databáze klíč-hodnota v našem případě není moc vhodné.
+
+\subsubsection{Grafová databáze}
+Grafová databáze není vhodným kandidátem pro ukládání patentů, protože se zaměřuje hlavně na vztahy mezi jednotlivými daty, což u patentů nelze a ani není potřeba sledovat.
+
+\subsubsection{Databáze dokumentů}
+Databáze dokumentů, jak už název napovídá, je databáze pro efektivní ukládání dokumentů a jejich vytěžování. Umožňuje ukládat velké množství nestrukturovaných dat, její udržba je snadná a akceptuje dokumenty v několika datových formátech. Její velká nevýhoda je v kontrole konzistence, takže se v databázi mohou vyskytovat duplikáty. I přes tuto nevýhodu je dokumentová databáze vhodným kandidátem pro ukládání patentových dat.
+
+\subsubsection{Závěr}
+Dokumentová databáze bude použita jako primární databáze, protože umožňuje ukládat nestrukturované dokumenty velice efektivně. Zároveň podporuje vkládání dokumentů ve více formátech, což v případě mnoha národních zdrojů, kdy každý zdroj ukládá dat v jiném formátu, je velice vhodná vlastnost. Její nevýhoda, kontrola konzistence, může být odstraněna pomocí jednoduché aplikace, která bude kontrolovat výskyt patentu v databázi podle jeho identifikátoru (ID). Dokumentová databáze podporuje i full-text vyhledávání pro efektivnější a rychlejší vyhledávání.
+\newline
+\indent Relační databáze bude použita jako sekundární databáze pro vytěžování, zaměřená hlavně na tvorbu statistik. Relační databáze je vhodnou volbou pro získávání statistik, protože vyhledávání je velice rychlé a snadné. \gls{SQL} dotazy pro statistiky se můžou uložit do pohledů, které zjednoduší uživateli práci se zadáváním dotazů. Lze zmínit i nevýhody jako třeba problém s údržbou nebo potřeba velkého množství paměti. Tyto nevýhody ale nehrají velkou roli v případě jednotek až desítek milionů záznamů.
+
 \subsection{Výběr z existujících řešení}
-\subsubsection{MongoDB vs Elastisearch}
-popsat výhody nevýhody jednoho i druhýho a na záver vypsat proč mongo k uložení a elastic pro full-text
-
-
-https://cloud.netapp.com/blog/cvo-blg-elasticsearch-vs-mongodb-6-key-differences
-\subsection{Závěr průzkumu}
+V dnešní době existuje mnoho dokumentových i relačních databází, placených i zdarma poskytovaných. Placené verze oproti verzím zdarma mají výhodu v lepší podpoře ze strany vývojářů, obsahují více užitečných funkcí a mají lepší zabezpečení. Pro naše účely bohatě postačí verze zdarma.
+\newline
+\indent Jako existující řešení databáze dokumentů byla vybrána komunitní verze databáze MongoDB. Komunitní verze je zdarma a server lze provozovat jak lokálně, tak i na cloudu, kde MongoDB poskytuje zdarma uložiště o velikosti 512 MB. Pro lepší a spolehlivější vyhledávání v datech bude MongoDB spojena s vyhledávačem Elasticsearch. Elasticsearch je full-textový open-source vyhledávač, který nabízí vysokou dostupnost, rychlost a škálovatelnost. MongoDB sice obsahuje vlastní full-textový vyhledávač, který ale není tak výkonný jako Elasticsearch.
+\newline
+\indent Jako existující řešení relační databáze byla vybrána komunitní verze databáze MySQL. MySQL je skvělá databáze, která se používá hlavně pro čtení dat. Zároveň je to jedna z nejpoužívanějších relačních databází, což znamená, že je pro ní k dispozici více nástrojů třetích stran.

@@ -11,7 +11,7 @@ základní informace + uložiště dat + info o zdrojích (patentové úřady at
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %CHAPTER
-\chapter{Databáze}
+\chapter{Databáze} \label{chap:databaze}
 
 Termín databáze označuje organizovanou kolekci strukturovaných informací nebo dat, která jsou typicky ukládána elektronicky v počítačovém systému. Data / informace lze nazvat jako fakta vztahující se k libovolnému uvažovanému objektu. Typický příklad objektu je člověk, jehož fakta jsou: jméno, věk, výška, váha a mnoho dalších \cite{guru99Database}.\newline
 
@@ -34,7 +34,7 @@ Všechny databáze sestávají z pěti základních komponent, nehledě na použ
 \item \textbf{Procedury} - Procedura obsahuje předpřipravený seznam příkazů, které se následně vykonávají po zavolání dané procedury. 
 \end{itemize}
 
-\section{Typy databází}
+\section{Typy databází} \label{sec:typy_databazi}
 V dnešním světě existuje mnoho různých typů databází. Výběr nejlepšího typu databáze pro konkrétní organizaci závisí na tom, jak organizace zamýšlí data používat. V této kapitole je vypsáno pouze pár typů, protože vznikají stále nové, méně známé typy databází, které jsou tvořeny pro specifické požadavky (například finanční, věděcké) \cite{matillionTypeDB, OracleDB}.
 
 \subsection{Relační databáze}
@@ -45,7 +45,6 @@ Název relační databáze pochází ze způsobu, jakým jsou data uložena, a t
 	\caption{Ukázka relační databáze.}
 	\label{fig:db_img_relational}
 	\end{figure}
-\newpage
 \subsubsection{Datový model}
 Relační datový model obsahuje několik fundamentálních konceptů. Koncepty lze vidět na obrázku č. \ref{fig:model_relational}.
 \begin{figure}[H]
@@ -174,7 +173,6 @@ Grafová databáze je typem NoSQL databáze, která je založená na teorii graf
 	\caption{Ukázka grafové databáze \cite{neo_graph}.}
 	\label{fig:db_img_graph}
 	\end{figure}
-\newpage
 \subsubsection{Datový model}
 Datový model grafové databáze se skládá ze čtyř komponent (viz obrázek č. \ref{fig:graph_components}) \cite{data_model_graph}:
 	\begin{figure}[H]
@@ -206,7 +204,7 @@ Nevýhody grafové databáze jsou \cite{advantages_graph}:
 \item Je těžké najít podporu, protože uživatelská základna je velice malá.
 \end{itemize}
 
-\subsection{Dokumentová databáze}
+\subsection{Databáze dokumentů}
 Databáze dokumentů jsou typem NoSQL databáze a  jsou navržené pro ukládání, načítání a správu informací orientovaných na dokumenty. Typické příklady jsou: MongoDB, Amazon DocumentDB, Elasticsearch. Ukázku dokumentové databáze lze vidět na obrázku č. \ref{fig:db_img_document}.
 	\begin{figure}[H]
 	\centering
@@ -234,7 +232,7 @@ Nevýhody dokumentové databáze jsou \cite{advantages_document}:
 \item \textbf{Neexistence atomicity} - V případě úpravy, která ovlivňuje dvě kolekce, je potřeba spustit dva samostatné dotazy (jeden pro každou kolekci).
 \end{itemize}
 
-\section{Existující řešení}
+\section{Existující řešení} \label{sec:existujici_reseni}
 Pro vybrané typy databáze existují mnoho databázových řešení, které lze zmínit. V této kapitole se budeme zabývat především těmi nejznámějšími pro daný typ databáze, a které jsou zdarma ke stažení a používání. Pro každý typ databáze bylo vybráno vždy jedno z nejznámějších řešení.
 \subsection{MySQL}
 MySQL je multiplatformní databáze uplatňující relační databázový model. Komunikace s databází (získávání dat, vytváření objektů, ...) probíhá pomocí jazyka \gls{SQL}, který je rozšířen o nové funkce. Nejnovější verze MySQL je open-source, což znamená, že kdokoliv může používat a libovolně upravovat MySQL systém, aniž by musel cokoliv platit. V případě změny zdrojových kódů je potřeba nastudovat podmínky užívání definované licencí \gls{GPL} \cite{mysql}.
