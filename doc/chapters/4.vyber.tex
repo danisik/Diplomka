@@ -90,7 +90,7 @@ V dnešním světě existuje několik desítek až stovek patentových zdrojů d
 	Kanada & \href{https://www.ic.gc.ca/}{Canadian Intellectual Property Office}  & CIPO  & ANO      \\ 
 	\hline
 	\end{tabular}
-	\caption{Národní patentové úřady a jejich zkratky, část první}
+	\caption{Národní patentové úřady a jejich zkratky, část první.}
 	\label{tab:table_offices1}
 	\end{table}
 \newpage
@@ -155,7 +155,7 @@ V dnešním světě existuje několik desítek až stovek patentových zdrojů d
 	Ukrajina & \href{https://ukrpatent.org/en}{Ukrainian Intellectual Property Institute}  & Ukrpatent    & NE     \\ 
 	\hline
 	\end{tabular}
-	\caption{Národní patentové úřady a jejich zkratky, část druhá}
+	\caption{Národní patentové úřady a jejich zkratky, část druhá.}
 	\label{tab:table_offices2}
 	\end{table}
 \newpage
@@ -167,14 +167,66 @@ V dnešním světě existuje několik desítek až stovek patentových zdrojů d
 \indent Ještě je potřeba zmínit Japonsko, které svá data poskytuje, ale je potřeba vyplnit formulář, ve kterém bylo potřeba naskenovat oficiální dokument potvrzující adresu školy. Z tohoto důvodu jsme bylo Japonsko jako jako zdroj dat zavrhnuto. Z původních 19 zdrojů dat poskytující data zůstalo nakonec jen 14 zdrojů dat, které poskytují svá data zadarmo.
 
 \subsection{Atributy}\label{subsec:atributy}
-\todo{TODO}
+Při zadávání práce byly definovány podmínky pro výběr platných zdrojů dat, a jednou z nich bylo i povinnost mít důležité atributy ve struktuře dat patentu. Celkem byly definovány čtyři povinné atributy společně s osmi nepovinnými. Povinné a nepovinné atributy jsou podrobně popsány níže.
 \subsubsection{Povinné atributy}
+Se zadavatelem bylo domluveno, že validní zdroj patentových dat musí poskytovat patenty obsahující tyto atributy:
+\begin{itemize}
+\item \textbf{Titulek} - Titulek patentu, který říká o čem daný patent.
+\item \textbf{Rok přihlášky / publikace} - Patent musí obsahovat alespoň rok přihlášky / publikace. Publikace / přihláška musí být minimálně z roku 2000, patenty před rokem 2000 budou zamítnuty.
+\item \textbf{Autor} - U patentu bude nutné vědět jeho autor (jméno autora, případně název instituce).
+\item \textbf{ID patentu} - Patent musí mít nějaké kódové označení / identifikátor, podle kterého ho lze vyhledávat. Identifikátor se bude držet formátu viz obrázek č. \ref{fig:patent_id}, ale nemusí obsahovat všechny položky, protože každá země může některé položky zanedbávat, případně měnit počet znaků v položce, viz tabulka č. \ref{tab:patent_table_id}.
+\end{itemize}
 
+	\begin{figure}[H]
+	\centering
+	\includegraphics[width=12cm]{img/patent_id}
+	\caption{Základní formát pro identifikátor patentu \cite{patent_id_format}.}
+	\label{fig:patent_id}
+	\end{figure}
+
+	\begin{table}[H]
+	\centering
+	\begin{tabular}{|>{\centering\arraybackslash}p{2.2cm}|>{\centering\arraybackslash}p{1cm}|>{\centering\arraybackslash}p{2cm}|>{\centering\arraybackslash}p{2cm}|>{\centering\arraybackslash}p{3cm}|>{\centering\arraybackslash}p{1cm}|}
+	\hline
+	\textbf{Země}    & \textbf{CC} & \textbf{TT} & \textbf{YYYY} & \textbf{NNNNNNNN} & \textbf{KK} \\
+	\hline
+	Austrálie & AU & & 4 znaky & 6 znaků & ANO \\
+	\hline
+	Kanada & CA & & & 7 znaků & ANO \\
+	\hline
+	Čína & CN & 1 znak & & 8 znaků & ANO \\
+	\hline
+	EPO & EP & & & 7 znaků & ANO \\
+	\hline
+	Německo & DE & 2 znaky & 4 znaky & 6 znaků & ANO \\
+	\hline
+	Francie & FR & & & 7 znaků & ANO \\
+	\hline
+	Velká Británie & GB & & & 7 znaků & ANO \\
+	\hline
+	Nizozemsko & NL & & & 7 znaků & ANO \\
+	\hline
+	Japonsko & JP & & 4 znaky & 6 znaků & ANO \\
+	\hline
+	Korea & KR & 2 znaky & 4 znaky & 7 znaků & ANO \\
+	\hline
+	Rusko & RU & & 4 znaky & 6 znaků & ANO \\
+	\hline
+	USA & US & & 4 znaky & 7 znaků & ANO \\
+	\hline
+	WIPO & PCT & & 4 znaky & 6 znaků & ANO \\
+	\hline
+	\end{tabular}
+	\caption{Aktuálně používané formáty pro patenty z různých zemí \cite{patent_id_format}.}
+	\label{tab:patent_table_id}
+	\end{table}
+
+\noindent V tabulce č. \ref{tab:table_attributes_critical} lze vidět patenty, poskytované národními patentovými úřady zdarma, obsahují povinné atributy.
 	\begin{table}[H]
 	\centering
 	\begin{tabular}{|>{\centering\arraybackslash}p{2.2cm}|>{\centering\arraybackslash}p{2cm}|>{\centering\arraybackslash}p{3cm}|>{\centering\arraybackslash}p{2cm}|>{\centering\arraybackslash}p{2.5cm}|} 
 	\hline
-	\textbf{Země}    & \textbf{Název patentu} & \textbf{Rok přihlášky / publikace} & \textbf{Autor} & \textbf{ID patentu}                \\ 
+	\textbf{Země}    & \textbf{Titulek patentu} & \textbf{Rok přihlášky / publikace} & \textbf{Autor} & \textbf{ID patentu}                \\ 
 	\hline
 	Kanada & x & x & x & x \\
 	\hline
@@ -205,17 +257,56 @@ V dnešním světě existuje několik desítek až stovek patentových zdrojů d
 	Francie & x & x & x & x \\
 	\hline
 	\end{tabular}
-	\caption{Povinné atributy nacházející se v dostupných patentech}
+	\caption{Povinné atributy nacházející se v dostupných patentech.}
 	\label{tab:table_attributes_critical}
 	\end{table}
 
 \subsubsection{Nepovinné atributy}
-\todo{TODO}
+Při průzkumu byly zjišťovány i nepovinné atributy, které nemají vliv na výběr zdrojů dat, ale je dobré vědět co který patent z daného patentového zdroje poskytuje za atributy. Nepovinné atributy jsou:
+\begin{itemize}
+\item \textbf{Abstrakt} - Stručný výtah patentu, který popisuje o čem daný patent je.
+\item \textbf{Klíčová slova} - Klíčová sloa nebo fráze spojené s patentem. Mohou sloužit při vyhledávání patentů se stejným zaměřením.
+\item \textbf{Reference} - Reference na podobné typy patentů nebo na související patenty (například odkaz na základní verzi algoritmu).
+\item \textbf{Žadatel} - Žadatel a autor může být tatáž osoba, ale v některých případech je žadatelem někdo jiný (například autor je zaměstnanec firmy, žadatelem je samotná firma).
+\item \textbf{Adresa autora / instituce} - Adresa autora nebo instituce.
+\item \textbf{Rodina patentů} - Rodina patentů je kolekce patentových žádostí, které se zaměřují na stejný nebo alespoň podobný technický obsah.
+\item \textbf{Obor} - Obor, který daný patent pokrývá. Obory jsou klasifikovány podle systému \gls{IPC} používaného ve více než 100 zemích. Seznam základních oborů lze vidět v tabulce č. \ref{tab:kind_codes}, úplnou klasifikaci lze vidět na stránkách \gls{WIPO}.
+\item \textbf{Full-text} - Zdroje dat poskytují veškerá data o patentu (nejenom to co je v přihláškách / publikacích, například různé poznámky, obrázky).
+\end{itemize}
+
+	\begin{table}[H]
+	\centering
+	\begin{tabular}{|>{\centering\arraybackslash}p{1cm}|>{\centering\arraybackslash}p{12cm}|}
+	\hline
+	\textbf{Kód}    & \textbf{Popisek}\\
+	\hline
+	A & Lidské potřeby - jídlo, léky, oblečení, ... \\
+	\hline
+	B & Operace a Doprava - tisk, auta, koleje, nanotechnologie, ...\\
+	\hline
+	C & Chemie a Hutnictví - sklo, cement, železo, ...\\
+	\hline
+	D & Textílie a Papír - výroba papíru, provazy, tkalcovství \\
+	\hline
+	E & Pevné konstrukce -  stavby, dveře, zámky, dolování, ... \\
+	\hline
+	F & Strojírenství, Osvětlení, Vytápění, Zbraně, Odstřelování \\
+	\hline
+	G & Fyzika -  měření, testování, optika, nukleární fyzika, ...\\
+	\hline
+	H & Elektřina - zákadní elektrické elementy (kabely, rezistory, ...), techniky elektrické komunikace, ...  \\
+	\hline
+	\end{tabular}
+	\caption{Základní \gls{IPC} klasifikace oborů \cite{ipc_class}.}
+	\label{tab:kind_codes}
+	\end{table}
+
+\noindent V tabulkách č. \ref{tab:table_attributes_notcrit1}, č. \ref{tab:table_attributes_notcrit2} lze vidět patenty, poskytované národními patentovými úřady zdarma, obsahující nepovinné atributy.
 	\begin{table}[H]
 	\centering
 	\begin{tabular}{|c|c|c|c|c|} 
 	\hline
-	\textbf{Země}    & \textbf{Abstrakt} & \textbf{Slovník} & \textbf{Reference} & \textbf{Žadatel} \\
+	\textbf{Země}    & \textbf{Abstrakt} & \textbf{Klíčová slova} & \textbf{Reference} & \textbf{Žadatel} \\
 	\hline
 	Kanada & - & - & - & x \\
 	\hline
@@ -246,7 +337,7 @@ V dnešním světě existuje několik desítek až stovek patentových zdrojů d
 	Francie & x & - & x & x \\
 	\hline
 	\end{tabular}
-	\caption{Nepovinné atributy nacházející se v dostupných patentech, část první}
+	\caption{Nepovinné atributy nacházející se v dostupných patentech, část první.}
 	\label{tab:table_attributes_notcrit1}
 	\end{table}
 
@@ -254,7 +345,7 @@ V dnešním světě existuje několik desítek až stovek patentových zdrojů d
 	\centering
 	\begin{tabular}{|c|c|c|c|c|} 
 	\hline
-	\textbf{Země}    &  \textbf{Adresa} & \textbf{Rodina patentů} & \textbf{Obor} & \textbf{Fulltext} \\
+	\textbf{Země}    &  \textbf{Adresa} & \textbf{Rodina patentů} & \textbf{Obor} & \textbf{Full-text} \\
 	\hline
 	Kanada & x & - & x & - \\
 	\hline
@@ -285,15 +376,71 @@ V dnešním světě existuje několik desítek až stovek patentových zdrojů d
 	Francie & - & - & x & - \\
 	\hline
 	\end{tabular}
-	\caption{Nepovinné atributy nacházející se v dostupných patentech, část druhá}
+	\caption{Nepovinné atributy nacházející se v dostupných patentech, část druhá.}
 	\label{tab:table_attributes_notcrit2}
 	\end{table}
 
 
 \subsection{Závěr průzkumu}
-\todo{TODO}
-%Rovnou udělat kapitolu, ve který se aplikují všechny podmínky + se sepíše souhrn počtu patentů, z jakých zemí atp.
+Průzkum národních zdrojů zahrnoval celkem 51 národních patentujících institucí, ze kterých pouze 10 poskytovalo svá data zdarma a splňovala všechny podmínky. V tabulce č. \ref{tab:patent_rozdeleni} lze vidět souhrn výsledků.
 
+	\begin{table}[H]
+	\centering
+	\begin{tabular}{|>{\centering\arraybackslash}p{3cm}|>{\centering\arraybackslash}p{2cm}|>{\centering\arraybackslash}p{2.2cm}|}
+	\hline
+	\textbf{Popis}    & \textbf{Počet} & \textbf{Počet v \%}\\
+	\hline
+	Nedostupné & 33 & 64,70 \%\\
+	\hline
+	Nepoužitelné & 4 & 7,85 \%\\
+	\hline
+	Za peníze & 4 & 7,85 \%\\
+	\hline
+	Použitelné & 10 & 19,60 \%\\
+	\hline
+	\end{tabular}
+	\caption{Souhrn průzkumu národních patentujících institucí.}
+	\label{tab:patent_rozdeleni}
+	\end{table}
+
+\noindent Pro všechny použitelné národní zdroje bylo kromě výskytu atributů dále sledováno: formát uložených dat, počet patentů po roce 2000 (včetně roku 2000) obsahující všechny povinné atributy, počet patentů před rokem 2000 a počet duplikátů. Duplikátem se myslí jiná verze daného patentu, protože v průběhu let se mohl měnit obsah patentu a v databázi nechceme ukládat žádné starší verze jednoho patentu (výsledky vyhledávání v databázi nebudou validní). V tabulce č. \ref{tab:final_zdroje} lze vidět všechny validní národní zdroje.
+
+\todo{Dopsat itálii po přidání do mysql  + souhrn přepsat}
+
+	\begin{table}[H]
+	\centering
+	\begin{tabular}{|>{\centering\arraybackslash}p{2.2cm}|>{\centering\arraybackslash}p{1.5cm}|>{\centering\arraybackslash}p{3cm}|>{\centering\arraybackslash}p{3cm}|>{\centering\arraybackslash}p{2.2cm}|}
+	\hline
+	\textbf{Země}    & \textbf{Formát dat} & \textbf{Počet patentů (rok >= 2000)} & \textbf{Počet patentů (rok < 2000)} & \textbf{Počet duplikátů}\\
+	\hline
+	Anglie & XML & 88 032 & 141 & 19\\
+	\hline
+	Francie & XML & 273 193 & 192 630 & 1 140 084\\
+	\hline
+	Israel & XML & 116 373 & 0 & 9 956\\
+	\hline
+	Itálie & SQL & 17 622 & 3 728 & 0\\
+	\hline
+	Kanada & XML & 816 828 & 130 279 & 499 682\\
+	\hline
+	Litva & XML & 869 & 0 & 0\\
+	\hline
+	Peru & XLSX & 1 805  & 21 352 & 0\\
+	\hline
+	Portugalsko & XML & 69 & 0 & 0\\
+	\hline
+	Rusko & CSV & 614 035 & 139 714 & 15 166 816\\
+	\hline
+	Španělsko & XML & 325 662  & 37 596 & 39 033\\
+	\hline
+	&&&& \\
+	\hline
+	\textbf{Souhrn} & & \textbf{2 236 866} & \textbf{525 440} & \textbf{16 855 590} \\
+	\hline
+	\end{tabular}
+	\caption{Seznam všech validních národních zdrojů.}
+	\label{tab:final_zdroje}
+	\end{table}
 
 \section{Výběr databáze}
 V kapitole č. \ref{chap:databaze} bylo podrobně popsáno co databáze je, jaké typy databází dnes existují (krátký výčet) i nejznámější existující řešení pro popsané typy databází. V této kapitole budou podrobně popsány rozdíly mezi jednotlivými řešeními a následně se vybere nejlepší typ databáze pro ukládání velkého objemu patentových dat. Následně, podle vybraného typu databáze, se vybere nejvhodnější existující řešení.
