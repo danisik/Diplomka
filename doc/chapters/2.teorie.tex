@@ -41,9 +41,10 @@ Test2 \cite{usptoPlantPatent}.
 \todo{todo}
 
 \section{Obory}
-\todo{todo}
-% obory sepsat do \subsubsection{}
-Obory jsou klasifikovány podle systému \gls{IPC} používaného ve více než 100 zemích. Seznam základních oborů lze vidět v tabulce č. \ref{tab:kind_codes}, úplnou klasifikaci lze vidět na stránkách \gls{WIPO}.
+Každý patent je po podání přihlášky klasifikován do jednoho oboru podle klasifikačního systému \gls{IPC}. \textbf{International Patent Classification} (\gls{IPC}) je hierarchický systém, který používá jazykově nezávislé symboly pro klasifikaci patentů a užitných vzorů podle oblasti technologie, ke které se vztahují \cite{espacenetIPC}. Tento systém je používán ve více než 100 zemí. 
+\newline
+\indent \gls{IPC} schéma definuje celkem osm hlavních oblastí technologie, do kterých lze patent přiřadit. Každá oblast je symbolizována jedním písmenem (viz tabulka č. \ref{tab:kind_codes}).
+
 	\begin{table}[H]
 	\centering
 	\begin{tabular}{|>{\centering\arraybackslash}p{1cm}|>{\centering\arraybackslash}p{12cm}|}
@@ -69,6 +70,29 @@ Obory jsou klasifikovány podle systému \gls{IPC} používaného ve více než 
 	\end{tabular}
 	\caption{Základní \gls{IPC} klasifikace oborů \cite{ipc_class}.}
 	\label{tab:kind_codes}
+	\end{table}
+
+\noindent Klasifikační symboly definované \gls{IPC} jsou tvořeny písmenem označující hlavní oblast technologie (neboli sekce), následovaným dvěmi číslicemi označující třídu, poté písmenem označujícím podtřídu. Po podtřídě následuje proměnná čítající jednu až čtyří číslice, která označuje hlavní skupinu. Následuje dopředné lomítko a číslo čítající dvě až šest číslic označující podskupinu \cite{espacenetIPC}. Příklad klasifikace lze vidět v tabulce č. \ref{tab:ipc_example}.
+
+	\begin{table}[H]
+	\centering
+	\begin{tabular}{|>{\centering\arraybackslash}p{2cm}|>{\centering\arraybackslash}p{2cm}|>{\centering\arraybackslash}p{2.5cm}|>{\centering\arraybackslash}p{6cm}|}
+	\hline
+	\textbf{Divize}    & \textbf{Počet divizí} & \textbf{Symbol} & \textbf{Titulek} \\
+	\hline
+	Sekce & 8 & G & Fyzika \\
+	\hline
+	Třída & 120 & G01 & Měření; Testování \\
+	\hline
+	Podtřída & 628 & G01G & Vážení \\
+	\hline
+	Skupina & +- 6 900 & G01G 21 & Podrobnosti o vážení aparátu \\
+	\hline
+	Podskupina & +- 62 100 & G01G 21/02 & Podrobnosti o vážení ložisek s ostřím nože   \\
+	\hline
+	\end{tabular}
+	\caption{Příklad \gls{IPC} klasifikace \cite{ipcTable}.}
+	\label{tab:ipc_example}
 	\end{table}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
