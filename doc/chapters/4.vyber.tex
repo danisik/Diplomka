@@ -22,6 +22,7 @@
 \noindent V následujících kapitolách bude popsán postup výběru zdrojů patentů a patentových dat. Následně budou vybrány typy databáze, které budou vhodné pro uložení vybraných patentových dat a následné zvolení existujících řešení.
 
 \section{Výběr patentů}
+\todo{čtvrtá podmínka - pouze patenty ?}
 Při výběru patentů byly stanoveny tři podmínky, které museli být splněny:
 \begin{itemize}
 \item \textbf{Dostupnost} - Patenty musí být dostupné z online stránek / databází bez poplatků.
@@ -270,36 +271,11 @@ Při průzkumu byly zjišťovány i nepovinné atributy, které nemají vliv na 
 \item \textbf{Žadatel} - Žadatel a autor může být tatáž osoba, ale v některých případech je žadatelem někdo jiný (například autor je zaměstnanec firmy, žadatelem je samotná firma).
 \item \textbf{Adresa autora / instituce} - Adresa autora nebo instituce.
 \item \textbf{Rodina patentů} - Rodina patentů je kolekce patentových žádostí, které se zaměřují na stejný nebo alespoň podobný technický obsah.
-\item \textbf{Obor} - Obor, který daný patent pokrývá. Obory jsou klasifikovány podle systému \gls{IPC} používaného ve více než 100 zemích. Seznam základních oborů lze vidět v tabulce č. \ref{tab:kind_codes}, úplnou klasifikaci lze vidět na stránkách \gls{WIPO}.
+\item \textbf{Obor} - Obor, který daný patent pokrývá.
 \item \textbf{Full-text} - Zdroje dat poskytují veškerá data o patentu (nejenom to co je v přihláškách / publikacích, například různé poznámky, obrázky).
 \end{itemize}
 
-	\begin{table}[H]
-	\centering
-	\begin{tabular}{|>{\centering\arraybackslash}p{1cm}|>{\centering\arraybackslash}p{12cm}|}
-	\hline
-	\textbf{Kód}    & \textbf{Popisek}\\
-	\hline
-	A & Lidské potřeby - jídlo, léky, oblečení, ... \\
-	\hline
-	B & Operace a Doprava - tisk, auta, koleje, nanotechnologie, ...\\
-	\hline
-	C & Chemie a Hutnictví - sklo, cement, železo, ...\\
-	\hline
-	D & Textílie a Papír - výroba papíru, provazy, tkalcovství \\
-	\hline
-	E & Pevné konstrukce -  stavby, dveře, zámky, dolování, ... \\
-	\hline
-	F & Strojírenství, Osvětlení, Vytápění, Zbraně, Odstřelování \\
-	\hline
-	G & Fyzika -  měření, testování, optika, nukleární fyzika, ...\\
-	\hline
-	H & Elektřina - zákadní elektrické elementy (kabely, rezistory, ...), techniky elektrické komunikace, ...  \\
-	\hline
-	\end{tabular}
-	\caption{Základní \gls{IPC} klasifikace oborů \cite{ipc_class}.}
-	\label{tab:kind_codes}
-	\end{table}
+
 
 \noindent V tabulkách č. \ref{tab:table_attributes_notcrit1}, č. \ref{tab:table_attributes_notcrit2} lze vidět patenty, poskytované národními patentovými úřady zdarma, obsahující nepovinné atributy.
 	\begin{table}[H]
@@ -347,19 +323,19 @@ Při průzkumu byly zjišťovány i nepovinné atributy, které nemají vliv na 
 	\hline
 	\textbf{Země}    &  \textbf{Adresa} & \textbf{Rodina patentů} & \textbf{Obor} & \textbf{Full-text} \\
 	\hline
-	Kanada & x & - & x & - \\
+	Kanada & x & x & x & - \\
 	\hline
-	Česko & - & - & x & - \\
+	Česko & - & x & x & - \\
 	\hline
-	Litva & - & - & x & - \\
+	Litva & - & x & x & - \\
 	\hline
 	Portugalsko & - & - & x & - \\
 	\hline
 	Španělsko & x & - & x & x \\
 	\hline
-	Švédsko & - & - & x & x \\
+	Švédsko & - & x & x & x \\
 	\hline
-	Izrael & x & - & - & - \\
+	Izrael & x & x & - & - \\
 	\hline
 	Itálie & - & - & - & - \\
 	\hline
@@ -373,7 +349,7 @@ Při průzkumu byly zjišťovány i nepovinné atributy, které nemají vliv na 
 	\hline
 	Peru & - & - & x & - \\
 	\hline
-	Francie & - & - & x & - \\
+	Francie & - & x & x & - \\
 	\hline
 	\end{tabular}
 	\caption{Nepovinné atributy nacházející se v dostupných patentech, část druhá.}
