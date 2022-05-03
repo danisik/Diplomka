@@ -37,6 +37,7 @@ services:
       default:
     volumes:
       - ./init/mongo_init.sh:/mongo_init.sh
+      - ./init/create_mongo_database.js:/create_mongo_database.js
     entrypoint: [ "/mongo_init.sh" ]
     depends_on:
       - mongo
@@ -108,3 +109,4 @@ services:
       PMA_HOST: ${PMA_HOST}
       PMA_PORT: ${PMA_PORT}
       PMA_ARBITRARY: ${PMA_ARBITRARY}      
+      UPLOAD_LIMIT: ${UPLOAD_LIMIT}

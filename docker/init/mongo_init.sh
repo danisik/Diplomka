@@ -13,3 +13,5 @@ done
 echo "Started.."
 
 mongosh --host ${MONGODB}:27017 --eval "rs.initiate();"
+
+mongosh --host ${MONGODB}:27017 < create_mongo_database.js
