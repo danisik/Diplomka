@@ -1,16 +1,5 @@
 \chapter{Návrh úložiště}
-
-%This section provides a general overview of the state of today’s bibliographic
-%databases and describes different types of bibliographical databases. First,
-%we take a look at publication databases and show some examples of how they
-%compare to each other. Next, we describe databases storing bibliographic
-%information about patent data and provide some concrete examples of these
-%data sources.
-
-%Zdroje (které ano, které ne + proč) + udělat stejnou tabulku jak v excelu + zmínit stránku ze který jsem čerpal informace (wipo.int)\todo{todo}\newline
-%Nezapomenout zmínit meze let, ve kterých se jednotlivé patenty z daných zemí nachází \todo{todo}
-
-\indent Hlavní motivací pro vytvoření této práce je vytěžování patentů pro účely zjišťování existence napříkad různých technologických vynálezů či algoritmů. Pomocí těchto informací lze zjistit, zda například má smysl vymýšlet nový algoritmus pro určitý problém a neexistuje k němu jiné, lepší řešení, případně vymyslet modifikaci, která zajistí lepší výsledky.
+Hlavní motivací pro vytvoření této práce je vytěžování patentů pro účely zjišťování existence napříkad různých technologických vynálezů či algoritmů. Pomocí těchto informací lze zjistit, zda například má smysl vymýšlet nový algoritmus pro určitý problém a neexistuje k němu jiné, lepší řešení, případně vymyslet modifikaci, která zajistí lepší výsledky.
 \newline
 
 \noindent Dále je potřebat definovat, co vlastně znamená pojem efektivní vytěžování. Vytěžování lze označit za efektivní, pokud budou splněny tyto podmínky:
@@ -22,7 +11,6 @@
 \noindent V následujících kapitolách bude popsán postup výběru zdrojů patentů a patentových dat. Následně budou vybrány typy databáze, které budou vhodné pro uložení vybraných patentových dat a následné zvolení existujících řešení.
 
 \section{Výběr patentů}
-\todo{čtvrtá podmínka - pouze patenty ?}
 Při výběru patentů byly stanoveny tři podmínky, které museli být splněny:
 \begin{itemize}
 \item \textbf{Dostupnost} - Patenty musí být dostupné z online stránek / databází bez poplatků.
@@ -364,7 +352,7 @@ Průzkum národních zdrojů zahrnoval celkem 51 národních patentujících ins
 	\centering
 	\begin{tabular}{|>{\centering\arraybackslash}p{3cm}|>{\centering\arraybackslash}p{2cm}|>{\centering\arraybackslash}p{2.2cm}|}
 	\hline
-	\textbf{Popis}    & \textbf{Počet} & \textbf{Počet v \%}\\
+	\textbf{Popis}    & \textbf{Počet} & \textbf{Poměr}\\
 	\hline
 	Nedostupné & 33 & 64,70 \%\\
 	\hline
@@ -380,9 +368,6 @@ Průzkum národních zdrojů zahrnoval celkem 51 národních patentujících ins
 	\end{table}
 
 \noindent Pro všechny použitelné národní zdroje bylo kromě výskytu atributů dále sledováno: formát uložených dat, počet patentů po roce 2000 (včetně roku 2000) obsahující všechny povinné atributy, počet patentů před rokem 2000 a počet duplikátů. Duplikátem se myslí jiná verze daného patentu, protože v průběhu let se mohl měnit obsah patentu a v databázi nechceme ukládat žádné starší verze jednoho patentu (výsledky vyhledávání v databázi nebudou validní). V tabulce č. \ref{tab:final_zdroje} lze vidět všechny validní národní zdroje.
-
-\todo{Dopsat itálii po přidání do mysql  + souhrn přepsat}
-
 	\begin{table}[H]
 	\centering
 	\begin{tabular}{|>{\centering\arraybackslash}p{2.2cm}|>{\centering\arraybackslash}p{1.5cm}|>{\centering\arraybackslash}p{3cm}|>{\centering\arraybackslash}p{3cm}|>{\centering\arraybackslash}p{2.2cm}|}
@@ -391,13 +376,13 @@ Průzkum národních zdrojů zahrnoval celkem 51 národních patentujících ins
 	\hline
 	Anglie & XML & 88 032 & 141 & 19\\
 	\hline
-	Francie & XML & 273 193 & 192 630 & 1 140 084\\
+	Francie & XML & 746 899 & 192 630 & 1 140 084\\
 	\hline
-	Israel & XML & 116 373 & 0 & 9 956\\
+	Israel & XML & 116 380 & 0 & 9 956\\
 	\hline
 	Itálie & SQL & 17 622 & 3 728 & 0\\
 	\hline
-	Kanada & XML & 816 828 & 130 279 & 499 682\\
+	Kanada & XML & 936 464 & 130 279 & 499 682\\
 	\hline
 	Litva & XML & 869 & 0 & 0\\
 	\hline
@@ -405,17 +390,54 @@ Průzkum národních zdrojů zahrnoval celkem 51 národních patentujících ins
 	\hline
 	Portugalsko & XML & 69 & 0 & 0\\
 	\hline
-	Rusko & CSV & 614 035 & 139 714 & 15 166 816\\
+	Rusko & CSV & 614 256 & 139 714 & 15 166 816\\
 	\hline
-	Španělsko & XML & 325 662  & 37 596 & 39 033\\
+	Španělsko & XML & 381 713  & 37 596 & 39 033\\
 	\hline
 	&&&& \\
 	\hline
-	\textbf{Souhrn} & & \textbf{2 236 866} & \textbf{525 440} & \textbf{16 855 590} \\
+	\textbf{Souhrn} & & \textbf{2 904 109} & \textbf{525 440} & \textbf{16 855 590} \\
 	\hline
 	\end{tabular}
 	\caption{Seznam všech validních národních zdrojů.}
 	\label{tab:final_zdroje}
+	\end{table}
+
+\noindent V tabulce č. \ref{tab:final_zdroje_filter} lze vidět výsledný počet patentů (po filtraci všech patentů neobsahující povinné atributy - ID, titulek, autor, datum).
+
+	\begin{table}[H]
+	\centering
+	\begin{tabular}{|>{\centering\arraybackslash}p{2.2cm}|>{\centering\arraybackslash}p{3.5cm}|>{\centering\arraybackslash}p{3cm}|>{\centering\arraybackslash}p{3.5cm}|}
+	\hline
+	\textbf{Země}  & \textbf{Počet patentů před filtrací} & \textbf{Filtrace} & \textbf{Počet patentů po filtraci} \\
+	\hline
+	Anglie & 88 032 & 1 & 88 031\\
+	\hline
+	Francie & 746 899 & 474 850 & 272 049\\
+	\hline
+	Israel & 116 380 & 291 & 116 089 \\
+	\hline
+	Itálie & 17 622 & 10 532 & 7 090\\
+	\hline
+	Kanada & 936 464 & 119 696 & 816 768\\
+	\hline
+	Litva & 869 & 0 & 869\\
+	\hline
+	Peru & 1 805  & 0 & 1 805\\
+	\hline
+	Portugalsko & 69 & 0 & 69\\
+	\hline
+	Rusko & 614 256 & 223 & 614 033\\
+	\hline
+	Španělsko & 381 713  & 308 029 & 73 684\\
+	\hline
+	&&& \\
+	\hline
+	\textbf{Souhrn} & \textbf{2 904 109} & \textbf{913 622}& \textbf{1 990 487} \\
+	\hline
+	\end{tabular}
+	\caption{Výsledný počet patentů po filtraci.}
+	\label{tab:final_zdroje_filter}
 	\end{table}
 
 \section{Výběr databáze}
