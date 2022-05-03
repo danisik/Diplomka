@@ -7,8 +7,8 @@ Cílem tohoto rožšíření by bylo automatické přidávání patentů z datov
 
 Rozšíření by se dalo realizovat jako aplikace ve vyšším programovacím jazyku (např. Java, C), kdy vstupem do aplikace by byl soubor v datovém formátu \gls{JSON}/\gls{XML}/\gls{CSV} a jiné. Vstupní soubor by se následně:
 \begin{itemize}
-\item převedl na \gls{JSON} řetězec (v případě že soubor není ve formátu \gls{JSON}) a vložil do Mongo databáze
-\item rozparsoval a extrahovali by se všechny atributy, které se ukládají v MySQL databázi (viz mysql kapitola \todo{TODO})
+\item převedl na \gls{JSON} řetězec (v případě že soubor není ve formátu \gls{JSON}) a vložil do Mongo databáze.
+\item rozparsoval a extrahovali by se všechny atributy, které se ukládají v MySQL databázi (viz kapitola č. \ref{subsec:mysql_impl}).
 \end{itemize}
 
 Jelikož je dost časté, že každý národní zdroj dat používá odlišnou strukturu patentu, tak bude potřeba aplikaci neustále upravovat (ať už v rámci přidávání nových zdrojů, nebo v případě změny struktury patentu u již podporovaných zdrojů).
