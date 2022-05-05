@@ -1,0 +1,12 @@
+{
+	"name": "mongo-source-connector",
+	"config": {
+		"tasks.max":"1",
+		"connector.class":"com.mongodb.kafka.connect.MongoSourceConnector",
+		"connection.uri":"mongodb://mongo:27017",
+		"key.converter": "org.apache.kafka.connect.json.JsonConverter",
+		"value.converter": "org.apache.kafka.connect.json.JsonConverter",
+		"database":"patents",
+		"collection":"patents"
+	}
+}

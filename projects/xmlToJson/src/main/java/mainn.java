@@ -46,16 +46,20 @@ public class mainn {
     static final String inputFolder = "D:\\PATENTY\\2.Data\\";
     static final String outputFolder = "D:\\PATENTY\\3.DataJSON\\";
 
-    public static void main(String[] args) throws IOException, ParserConfigurationException, SAXException {
+    public static void main(String[] args) throws IOException, ParserConfigurationException, SAXException, TransformerException {
+
+        System.out.println("\n\nLitva");
+        // TODO: HOTOVO
+        convertLitva();
+
+        System.out.println("Portugal");
+        //convertPortugal();
 
         System.out.println("Anglie");
         //convertAnglie();
 
         System.out.println("\n\nIsrael");
-        convertIsrael();
-
-        System.out.println("\n\nLitva");
-        //convertLitva();
+        //convertIsrael();
 
         System.out.println("\n\nPeru");
         //convertPeru();
@@ -64,7 +68,6 @@ public class mainn {
         //convertRusko();
 
         System.out.println("\n\nŠpanělsko");
-        // TODO
         //convertSpanelsko();
 
         System.out.println("\n\nKanada");
@@ -72,6 +75,84 @@ public class mainn {
 
         System.out.println("\n\nFrancie");
         //convertFrancie();
+    }
+
+    private static void convertPortugal() throws FileNotFoundException {
+
+
+
+        String name = "";
+        try {
+
+            MongoClient mongoClient = new MongoClient(new MongoClientURI("mongodb://localhost:27017"));
+            DB database = mongoClient.getDB("patents");
+            DBCollection collection = database.getCollection("patents");
+
+            // Instantiate the Factory
+            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance("com.sun.org.apache.xerces.internal.jaxp.DocumentBuilderFactoryImpl", ClassLoader.getSystemClassLoader());
+
+            // optional, but recommended
+            // process XML securely, avoid attacks like XML External Entities (XXE)
+            dbf.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+            // Disable external DTDs as well
+            dbf.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+
+            // parse XML file
+            DocumentBuilder db = dbf.newDocumentBuilder();
+            Document doc = db.parse("D:\\PATENTY\\2.Data\\Portugalsko\\Portugal_Patentes.xml");
+            doc.getDocumentElement().normalize();
+
+            List<String> patentIDs = new ArrayList<>();
+
+            NodeList entries = doc.getElementsByTagName("entry");
+            for (int i = 0; i < entries.getLength(); i++) {
+
+                Element entry = (Element) entries.item(i);
+                Element content = (Element) entry.getElementsByTagName("content").item(0);
+
+                Element properties = (Element) content.getElementsByTagName("m:properties").item(0);
+
+                // Patents
+                String country = "PT";
+                String sPatentId = country + properties.getElementsByTagName("d:numero").item(0).getTextContent();
+                String title = properties.getElementsByTagName("d:titulo").item(0).getTextContent();
+                String date = properties.getElementsByTagName("d:data").item(0).getTextContent();
+                String kind = "-";
+                String language = "PT";
+
+                SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+                java.util.Date utilDate = format.parse(date);
+                java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime());
+
+                if (patentIDs.contains(sPatentId)) continue;
+                patentIDs.add(sPatentId);
+
+                StringWriter sw = new StringWriter();
+                Transformer t = TransformerFactory.newInstance().newTransformer();
+                t.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+                t.setOutputProperty(OutputKeys.INDENT, "yes");
+                t.transform(new DOMSource(doc), new StreamResult(sw));
+
+                String newXmlContentString = sw.toString();
+
+                newXmlContentString = newXmlContentString.replace("m:type=\"Edm.DateTime\"", "");
+                newXmlContentString = newXmlContentString.replace("m:type=\"Edm.Guid\"", "");
+                newXmlContentString = newXmlContentString.replace("m:type=\"Edm.Int32\"", "");
+                newXmlContentString = newXmlContentString.replace("type=\"application/xml\"", "");
+                newXmlContentString = newXmlContentString.replace("type=\"text\"", "");
+
+                // Convert xml to json.
+                JSONObject json = XML.toJSONObject(newXmlContentString, true);
+                String jsonString = json.toString(4);
+
+                DBObject dbObject = (DBObject) JSON.parse(jsonString);
+                collection.insert(dbObject);
+            }
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+        }
     }
 
     private static void convertRusko() throws FileNotFoundException {
@@ -245,6 +326,8 @@ public class mainn {
             List<String> columns = new ArrayList<>();
             Map<Long, List<String>> values = new HashMap();
 
+            int count = 0;
+
             boolean skipFirstRow = false;
             boolean secondRow = false;
 
@@ -357,7 +440,8 @@ public class mainn {
 
             String jsonString = json.toString();
             DBObject dbObject = (DBObject) JSON.parse(jsonString);
-            collection.insert(dbObject);
+            //collection.insert(dbObject);
+            System.out.println(values.size());
         }
         catch(Exception e)
         {
@@ -1048,7 +1132,7 @@ public class mainn {
         myWriter.close();
     }
 
-    public static void convertLitva() throws IOException {
+    public static void convertLitva() throws IOException, ParserConfigurationException, SAXException, TransformerException {
 
         List<String> files;
 
@@ -1077,6 +1161,8 @@ public class mainn {
 
                     if (xml.getAbsolutePath().contains("TOC")) continue;
 
+                    if (xml.getAbsolutePath().contains("dtd")) continue;
+
                     if (set.contains(substr)) continue;
 
                     set.add(substr);
@@ -1092,9 +1178,30 @@ public class mainn {
                         newXmlContentString += line + "\n";
                     }
 
+                    // Instantiate the Factory
+                    DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance("com.sun.org.apache.xerces.internal.jaxp.DocumentBuilderFactoryImpl", ClassLoader.getSystemClassLoader());
+
+                    // optional, but recommended
+                    // process XML securely, avoid attacks like XML External Entities (XXE)
+                    dbf.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+                    // Disable external DTDs as well
+                    dbf.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+
+                    DocumentBuilder db = dbf.newDocumentBuilder();
+
+                    Document doc = db.parse(xml);
+                    doc.getDocumentElement().normalize();
+
+                    StringWriter sw = new StringWriter();
+                    Transformer t = TransformerFactory.newInstance().newTransformer();
+                    t.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+                    t.setOutputProperty(OutputKeys.INDENT, "yes");
+                    t.transform(new DOMSource(doc), new StreamResult(sw));
+
+                    newXmlContentString = doc.toString();
 
                     // Convert xml to json.
-                    JSONObject json = XML.toJSONObject(newXmlContentString);
+                    JSONObject json = XML.toJSONObject(newXmlContentString, true);
                     String jsonString = json.toString(4);
 
                     DBObject dbObject = (DBObject) JSON.parse(jsonString);
