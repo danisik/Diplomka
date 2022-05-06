@@ -1,3 +1,6 @@
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -6,6 +9,7 @@ public class mainn {
 
     private static Connection conn = null;
     private static List<Patent> patents = new ArrayList<>();
+    private static List<ItalyPatent> italyPatents = new ArrayList<>();
 
     public static void main(String[] args) {
 
@@ -31,6 +35,7 @@ public class mainn {
 
 
 
+        /*
         // Postup:   (ID, date, title, author, IPCR, kind)
         // 1. Zjistit všechny patenty - kind, author
         getPatents();
@@ -47,6 +52,16 @@ public class mainn {
         // 4. Zjistit ipcr - ipcr
         getIpcr();
         System.out.println("IPCR done");
+         */
+
+        getPatentsForMongo();
+        System.out.println("patents done");
+        getTitlesForMongo();
+        System.out.println("titles done");
+        getPrioritiesForMongo();
+        System.out.println("priorities done");
+        getIpcrForMongo();
+        System.out.println("ipcrs done");
 
         long noAuthor = 0;
         long noID = 0;
@@ -54,6 +69,53 @@ public class mainn {
         long noTitle = 0;
         long success = 0;
 
+        String destFolder = "D:\\PATENTY\\3.DataJSON\\Italie\\";
+
+        for (ItalyPatent patent : italyPatents) {
+
+            if (patent.getTitle().equals("")) {
+                noTitle++;
+                continue;
+            }
+
+            if (patent.getDocNumber().equals("")) {
+                noID++;
+                continue;
+            }
+
+            if (patent.getDocDate() == null || patent.getDocDate().toString().equals("")) {
+                noDate++;
+                continue;
+            }
+
+            if (patent.getInventors().size() == 0) {
+                noAuthor++;
+                continue;
+            }
+
+            String jsonString = patent.toJson();
+            success++;
+
+            String destination = destFolder + patent.getDocNumber() + ".json";
+
+            try {
+                File myObj = new File(destination);
+                if (myObj.createNewFile()) {
+
+                    FileWriter myWriter = new FileWriter(destination);
+                    myWriter.write(jsonString);
+                    myWriter.close();
+
+                } else {
+                    System.out.println("File already exists.");
+                }
+            } catch (IOException e) {
+                System.out.println("An error occurred.");
+                e.printStackTrace();
+            }
+        }
+
+        /*
         for (Patent patent : patents) {
 
             PreparedStatement stmt = null;
@@ -79,6 +141,7 @@ public class mainn {
                 noAuthor++;
                 continue;
             }
+
 
             try {
 
@@ -129,6 +192,7 @@ public class mainn {
                 e.printStackTrace();
             }
         }
+         */
 
         System.out.println("No ID: " + noID);
         System.out.println("No AUTHOR: " + noAuthor);
@@ -169,6 +233,37 @@ public class mainn {
         }
     }
 
+    private static void getPatentsForMongo() {
+
+        try {
+            PreparedStatement stmt = conn.prepareStatement("select ID_PATENT, DOCDB_KIND, INSTITUTE_TEXT, FAMILY, COUNTRY from sapebinich_patent");
+            ResultSet set = stmt.executeQuery();
+
+            while (set.next()) {
+
+                ItalyPatent patent = new ItalyPatent();
+                patent.setId(set.getLong(1));
+                patent.setKind(set.getString(2));
+                patent.setFamily(set.getString(4));
+                patent.setCountry(set.getString(5));
+
+                String author = set.getString(3);
+                String[] authors = author.split(";");
+
+                for (String at : authors) {
+
+                    patent.addInventor(at);
+                }
+
+                italyPatents.add(patent);
+            }
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+        }
+    }
+
     private static void getTitles() {
 
         try {
@@ -178,6 +273,29 @@ public class mainn {
                 PreparedStatement stmt = conn.prepareStatement("SELECT title FROM `sapebinich_patent_title` where id_patent = ? and ID_PATENT_TITLE = (select id_patent_title from sapebinich_patent_title where id_patent = ? order by id_patent_title desc LIMIT 1)");
                 stmt.setLong(1, patent.getIdTable());
                 stmt.setLong(2, patent.getIdTable());
+                ResultSet set = stmt.executeQuery();
+
+                while (set.next()) {
+
+                    patent.setTitle(set.getString(1));
+                }
+            }
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+        }
+    }
+
+    private static void getTitlesForMongo() {
+
+        try {
+
+            for (ItalyPatent patent: italyPatents) {
+
+                PreparedStatement stmt = conn.prepareStatement("SELECT title FROM `sapebinich_patent_title` where id_patent = ? and ID_PATENT_TITLE = (select id_patent_title from sapebinich_patent_title where id_patent = ? order by id_patent_title desc LIMIT 1)");
+                stmt.setLong(1, patent.getId());
+                stmt.setLong(2, patent.getId());
                 ResultSet set = stmt.executeQuery();
 
                 while (set.next()) {
@@ -207,6 +325,71 @@ public class mainn {
                     if (!patent.getId().equals("")) break;
                     patent.setId(set.getString(1));
                     patent.setDate(set.getDate(2));
+                }
+            }
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+        }
+    }
+
+    private static void getPrioritiesForMongo() {
+
+        try {
+
+            for (ItalyPatent patent: italyPatents) {
+
+                PreparedStatement stmt = conn.prepareStatement("SELECT DOC_NUMBER, DOC_DATE, KIND FROM `sapebinich_patent_priority` where id_patent = ? and YEAR(doc_date) >= 2000");
+                stmt.setLong(1, patent.getId());
+                ResultSet set = stmt.executeQuery();
+
+                while (set.next()) {
+
+                    if (!patent.getDocNumber().equals("")) break;
+                    patent.setDocNumber(set.getString(1));
+                    patent.setDocDate(set.getDate(2));
+                    patent.setKind(set.getString(3));
+                }
+            }
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+        }
+    }
+
+    private static void getIpcrForMongo() {
+
+        try {
+
+            for (ItalyPatent patent: italyPatents) {
+
+                long id_ipcr = 0;
+
+                PreparedStatement stmt = conn.prepareStatement("SELECT ID_IPCR FROM `sapebinich_patent_ipcr` where id_patent = ?");
+                stmt.setLong(1, patent.getId());
+                ResultSet set = stmt.executeQuery();
+
+                while (set.next()) {
+
+                    id_ipcr = set.getLong(1);
+                }
+
+                stmt = conn.prepareStatement("SELECT SECTION, CLASS, SUBCLASS, FGROUP, SUBGROUP FROM `sapebinich_ipcr` where id_ipcr = ?");
+                stmt.setLong(1, id_ipcr);
+                set = stmt.executeQuery();
+
+                while (set.next()) {
+
+                    IPCR ipcr = new IPCR();
+                    ipcr.setSection(set.getString(1));
+                    ipcr.setsClass(set.getString(2));
+                    ipcr.setSubclass(set.getString(3));
+                    ipcr.setGroup(set.getString(4));
+                    ipcr.setSubgroup(set.getString(5));
+
+                    patent.addIpcr(ipcr);
                 }
             }
 
