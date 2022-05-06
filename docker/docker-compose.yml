@@ -5,17 +5,15 @@ services:
     image: elasticsearch:8.2.0
     container_name: elasticsearch
     restart: always
-    env_file:
-      - .env
     ports:
       - 9200:9200
       - 9300:9300
     environment:
-      discovery.type: ${ES_DISCOVERY_TYPE}
-      xpack.security.enabled: ${ES_SECURITY_ENABLED}
-      http.cors.enabled: ${ES_CORS_ENABLED}
-      http.cors.allow-origin: ${ES_CORS_ORIGIN}
-      http.cors.allow-headers: ${ES_CORS_HEADERS}
+      discovery.type: single-node
+      xpack.security.enabled: false
+      http.cors.enabled: true
+      http.cors.allow-origin: "http://localhost:8080"
+      http.cors.allow-headers: X-Requested-With,Content-Type,Content-Length,Authorization
     ulimits:
       memlock:
         soft: -1
@@ -29,7 +27,7 @@ services:
     container_name: elasticvue
     ports:
       - 8080:8080
-
+      
   mongo-setup:
     container_name: mongo-setup
     image: mongo:5.0.6
@@ -37,37 +35,33 @@ services:
     networks:
       default:
     volumes:
-      - ./init/mongo_init.sh:/mongo_init.sh
-      - ./init/create_mongo_database.js:/create_mongo_database.js
+      - ./init/mongo/mongo_init.sh:/mongo_init.sh
+      - ./init/mongo/create_mongo_database.js:/create_mongo_database.js
     entrypoint: [ "/mongo_init.sh" ]
     depends_on:
-      - mongo
-      
+      - mongo    
+
   mongo:
     image: mongo:5.0.6
     restart: always
     container_name: mongo
     ports:
       - 27017:27017
-    env_file:
-      - .env
     environment:
-      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
-      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
-    command: [ "/usr/bin/mongod", "--bind_ip_all", "--replSet", "${MONGO_REPLICA_SET_NAME}" ]
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: password
+    command: [ "/usr/bin/mongod", "--bind_ip_all", "--replSet", "rs0" ]
     
   mongo-express:
     image: mongo-express:0.54.0
     container_name: mongo-express
     restart: always
-    env_file:
-      - .env
     ports:
       - 8081:8081
     environment:
-      ME_CONFIG_MONGODB_ADMINUSERNAME: ${MONGO_INITDB_ROOT_USERNAME}
-      ME_CONFIG_MONGODB_ADMINPASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
-      ME_CONFIG_MONGODB_URL: ${MONGO_URL}  
+      ME_CONFIG_MONGODB_ADMINUSERNAME: admin
+      ME_CONFIG_MONGODB_ADMINPASSWORD: password
+      ME_CONFIG_MONGODB_URL: mongo://admin:password@mongo:27017/
       
   zookeeper:
     image: confluentinc/cp-zookeeper:6.1.0
@@ -143,101 +137,44 @@ services:
       CONNECT_INTERNAL_VALUE_CONVERTER: "org.apache.kafka.connect.json.JsonConverter"
       CONNECT_REST_ADVERTISED_HOST_NAME: "connect"
       CONNECT_PLUGIN_PATH: /usr/share/confluent-hub-components    
-
+      
+  connect-setup:
+    hostname: connect-setup
+    container_name: connect-setup
+    restart: on-failure
+    build: .
+    networks:
+      default:      
+    volumes:
+      - ./init/connectors/elasticsearch_sink_connector.txt:/elasticsearch_sink_connector.txt
+      - ./init/connectors/mongo_source_connector.txt:/mongo_source_connector.txt
+      - ./init/connectors/connect.sh:/connect.sh:ro
+    entrypoint: [ "sh", "/connect.sh" ]
+    depends_on:
+      - connect
+      
   mysql:
     image: mysql:8.0.16
     container_name: mysql
-    restart: always
-    env_file:
-      - .env    
+    restart: always 
     ports:
       - 6033:3306
     command: --init-file /mysql_init.sql
     volumes:
-        - ./init/mysql_init.sql:/mysql_init.sql
+        - ./init/mysql/mysql_init.sql:/mysql_init.sql
     environment:
-      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}    
+      - MYSQL_ROOT_PASSWORD=password  
 
   phpmyadmin:
     image: phpmyadmin:5.1.3
     container_name: phpmyadmin
     restart: always
-    env_file:
-      - .env
     ports:
       - 8082:80
     links:
       - mysql
     environment:
-      PMA_HOST: ${PMA_HOST}
-      PMA_PORT: ${PMA_PORT}
-      PMA_ARBITRARY: ${PMA_ARBITRARY}      
-      UPLOAD_LIMIT: ${UPLOAD_LIMIT}
-
-  mongo_connector:
-    image: yeasy/mongo-connector:latest
-    restart: always
-    container_name: mongo-connector
-    env_file:
-      - .env
-    links:
-      - elasticsearch:elasticsearch
-    environment:
-      MONGO: ${MONGO_CON_HOST}
-      MONGO_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
-      MONGO_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
-
-  mongo-express:
-    image: mongo-express:0.54.0
-    container_name: mongo-express
-    restart: always
-    env_file:
-      - .env
-    ports:
-      - 8081:8081
-    environment:
-      ME_CONFIG_MONGODB_ADMINUSERNAME: ${MONGO_INITDB_ROOT_USERNAME}
-      ME_CONFIG_MONGODB_ADMINPASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
-      ME_CONFIG_MONGODB_URL: ${MONGO_URL}
-        mongo_connector:
-    image: yeasy/mongo-connector:latest
-    restart: always
-    container_name: mongo-connector
-    env_file:
-      - .env
-    links:
-      - elasticsearch:elasticsearch
-    environment:
-      MONGO: ${MONGO_CON_HOST}
-      MONGO_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
-      MONGO_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
-
-  mysql:
-    image: mysql:8.0.16
-    container_name: mysql
-    restart: always
-    env_file:
-      - .env    
-    ports:
-      - 6033:3306
-    command: --init-file /mysql_init.sql
-    volumes:
-        - ./init/mysql_init.sql:/mysql_init.sql
-    environment:
-      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}    
-
-  phpmyadmin:
-    image: phpmyadmin:5.1.3
-    container_name: phpmyadmin
-    restart: always
-    env_file:
-      - .env
-    ports:
-      - 8082:80
-    links:
-      - mysql
-    environment:
-      PMA_HOST: ${PMA_HOST}
-      PMA_PORT: ${PMA_PORT}
-      PMA_ARBITRARY: ${PMA_ARBITRARY}      
-      UPLOAD_LIMIT: ${UPLOAD_LIMIT}
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+      PMA_ARBITRARY: 1   
+      UPLOAD_LIMIT: 600M

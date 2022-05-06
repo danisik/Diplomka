@@ -71,6 +71,8 @@ public class mainn {
 
         String destFolder = "D:\\PATENTY\\3.DataJSON\\Italie\\";
 
+        List<String> patentss = new ArrayList<>();
+
         for (ItalyPatent patent : italyPatents) {
 
             if (patent.getTitle().equals("")) {
@@ -93,8 +95,10 @@ public class mainn {
                 continue;
             }
 
+            if (patentss.contains(patent.getDocNumber())) continue;
+            patentss.add(patent.getDocNumber());
+
             String jsonString = patent.toJson();
-            success++;
 
             String destination = destFolder + patent.getDocNumber() + ".json";
 
@@ -105,6 +109,7 @@ public class mainn {
                     FileWriter myWriter = new FileWriter(destination);
                     myWriter.write(jsonString);
                     myWriter.close();
+                    success++;
 
                 } else {
                     System.out.println("File already exists.");
