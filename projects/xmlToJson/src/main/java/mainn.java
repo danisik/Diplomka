@@ -85,8 +85,56 @@ public class mainn {
         System.out.println("\n\nKanada");
         // TODO: HOTOVO OSETRENI
         //convertCanada();
+
+        convertItaly();
     }
 
+
+    private static void convertItaly() {
+
+        String folder = "D:\\PATENTY\\3.DataJSON\\Italie";
+        String actualFile = "";
+
+        try {
+
+            MongoClient mongoClient = new MongoClient(new MongoClientURI("mongodb://localhost:27017"));
+            DB database = mongoClient.getDB("patents");
+            DBCollection collection = database.getCollection("patents");
+
+            File dir = new File(folder);
+            File[] jsons = dir.listFiles();
+
+            for (File file : jsons) {
+
+                BufferedReader br = new BufferedReader(new FileReader(file.getAbsolutePath()));
+                try {
+                    StringBuilder sb = new StringBuilder();
+                    String line = br.readLine();
+
+                    while (line != null) {
+                        sb.append(line);
+                        sb.append(System.lineSeparator());
+                        line = br.readLine();
+                    }
+                    String jsonString = sb.toString();
+
+                    DBObject dbObject = (DBObject) JSON.parse(jsonString);
+                    collection.insert(dbObject);
+
+                } catch (Exception e) {
+
+                    System.out.println(file.getAbsolutePath());
+                }
+                finally {
+                    br.close();
+                }
+            }
+
+        } catch (Exception e) {
+
+            System.out.println(actualFile);
+        }
+    }
 
     private static void convertPortugal() throws FileNotFoundException {
 
@@ -172,7 +220,7 @@ public class mainn {
 
         long start = System.currentTimeMillis();
 
-        File dir = new File(inputFolder + "Rusko");
+
 
         long duplicates = 0;
         long countt = 0;
@@ -180,6 +228,7 @@ public class mainn {
         HashSet<String> set = new HashSet<String>();
         long test = 0;
 
+        File dir = new File(inputFolder + "Rusko");
         File[] csvs = dir.listFiles();
         List<String[]> r = null;
         CSVParser csvParser = new CSVParserBuilder().withSeparator(',').build(); // custom separator

@@ -3,13 +3,17 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class mainn {
 
     private static Connection conn = null;
     private static List<Patent> patents = new ArrayList<>();
     private static List<ItalyPatent> italyPatents = new ArrayList<>();
+
+    private static Map<String, ArrayList<Long>> ipcrs = new HashMap<>();
 
     public static void main(String[] args) {
 
@@ -54,6 +58,7 @@ public class mainn {
         System.out.println("IPCR done");
          */
 
+        /*
         getPatentsForMongo();
         System.out.println("patents done");
         getTitlesForMongo();
@@ -119,6 +124,7 @@ public class mainn {
                 e.printStackTrace();
             }
         }
+         */
 
         /*
         for (Patent patent : patents) {
@@ -197,15 +203,99 @@ public class mainn {
                 e.printStackTrace();
             }
         }
-         */
+
 
         System.out.println("No ID: " + noID);
         System.out.println("No AUTHOR: " + noAuthor);
         System.out.println("No DATE: " + noDate);
         System.out.println("No TITLE: " + noTitle);
         System.out.println("SUCCESS: " + success);
+         */
+
+        getClassifications();
+
+        for (String key : ipcrs.keySet()) {
+
+            String[] keys = key.split(",");
+            String section = keys[0];
+            String sClass = keys[1];
+            String subclass = keys[2];
+
+            List<Long> ids = ipcrs.get(key);
+
+            try {
+
+                PreparedStatement stmt = conn.prepareStatement("INSERT INTO classification(section, class, subclass) values (?, ?, ?)");
+                stmt.setString(1, section);
+                stmt.setString(2, sClass);
+                stmt.setString(3, subclass);
+                stmt.execute();
+
+                Long ipcrID = 0L;
+                stmt = conn.prepareStatement("select last_insert_id()");
+                ResultSet rSet = stmt.executeQuery();
+
+                while (rSet.next()) {
+
+                    ipcrID = rSet.getLong(1);
+                }
+
+                for (Long idd : ids) {
+
+                    stmt = conn.prepareStatement("INSERT INTO patent_classification(id_patent, id_classification) VALUES (?, ?)");
+                    stmt.setLong(1, idd);
+                    stmt.setLong(2, ipcrID);
+                    stmt.execute();
+                }
+
+            } catch (Exception e) {
+
+                e.printStackTrace();
+                break;
+            }
+        }
 
         closeConnection();
+    }
+
+    public static void getClassifications() {
+
+        long count = 0;
+        try {
+
+            PreparedStatement stmt = conn.prepareStatement("SELECT ID_PATENT, SECTION, CLASS, SUBCLASS FROM classification2");
+            ResultSet set = stmt.executeQuery();
+
+            while (set.next()) {
+
+                String section = set.getString(2);
+                String sClass = set.getString(3);
+                String subclass = set.getString(4);
+
+                String fullString = section + "," + sClass + "," + subclass;
+
+                if (ipcrs.containsKey(fullString)) {
+
+                    ArrayList<Long> list = ipcrs.get(fullString);
+                    list.add(set.getLong(1));
+                    ipcrs.put(fullString, list);
+                    count++;
+
+                } else {
+
+                    ArrayList<Long> list = new ArrayList<>();
+                    list.add(set.getLong(1));
+                    ipcrs.put(fullString, list);
+                    count++;
+                }
+            }
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+        }
+
+        System.out.println(count);
     }
 
     private static void getPatents() {
