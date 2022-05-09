@@ -52,7 +52,7 @@ public class mainn {
 
         System.out.println("\n\nLitva");
         // TODO: HOTOVO OSETRENI
-        //convertLitva();
+        convertLitva();
 
         System.out.println("Portugal");
         // TODO: HOTOVO OSETRENI
@@ -86,7 +86,7 @@ public class mainn {
         // TODO: HOTOVO OSETRENI
         //convertCanada();
 
-        convertItaly();
+        //convertItaly();
     }
 
 
@@ -375,6 +375,13 @@ public class mainn {
     }
 
     public static void convertPeru() {
+        long count = 0;
+        long noAuthor = 0;
+        long noId = 0;
+        long noTitle = 0;
+        long noDate = 0;
+        long patentsCount = 0;
+        long date2000 = 0;
 
         try
         {
@@ -385,13 +392,13 @@ public class mainn {
             XSSFSheet sheet = wb.getSheetAt(0);     //creating a Sheet object to retrieve object
             Iterator<Row> itr = sheet.iterator();    //iterating over excel file
 
-            long patentsCount = 0;
+
+
+
             List<String> patentIdss = new ArrayList<>();
 
             List<String> columns = new ArrayList<>();
             Map<Long, List<String>> values = new HashMap();
-
-            int count = 0;
 
             boolean skipFirstRow = false;
             boolean secondRow = false;
@@ -458,6 +465,7 @@ public class mainn {
 
                                 String val = value.substring(value.lastIndexOf("-") + 1);
                                 if (!val.startsWith("20")) {
+                                    date2000++;
                                     break;
                                 }
                             }
@@ -581,21 +589,25 @@ public class mainn {
 
                 if (sPatentId.equals("")) {
 
+                    noId++;
                     continue;
                 }
 
                 if (title.equals("")) {
 
+                    noTitle++;
                     continue;
                 }
 
                 if (date.equals("")) {
 
+                    noDate++;
                     continue;
                 }
 
                 if (iNames.size() == 0) {
 
+                    noAuthor++;
                     continue;
                 } else {
                     List<String> nanames = new ArrayList<>();
@@ -607,6 +619,7 @@ public class mainn {
 
                     if (nanames.size() == 0) {
 
+                        noAuthor++;
                         continue;
                     }
                 }
@@ -638,7 +651,7 @@ public class mainn {
                 jsonString = jsonString.replaceAll("COOPERATIVA INDUSTRIAL\"MANUFACTURAS DEL CENTRO LTDA.; ", "COOPERATIVA INDUSTRIAL MANUFACTURAS DEL CENTRO LTDA.; ");
 
                 DBObject dbObject = (DBObject) JSON.parse(jsonString);
-                collection.insert(dbObject);
+                //collection.insert(dbObject);
             }
 
             System.out.println(patentsCount);
@@ -649,6 +662,13 @@ public class mainn {
         {
             e.printStackTrace();
         }
+
+        System.out.println("\tcount: " + (patentsCount));
+        System.out.println("\tNo ID: " + (noId));
+        System.out.println("\tNo Author: " + (noAuthor));
+        System.out.println("\tNo Date2000: " + (date2000));
+        System.out.println("\tNo Date: " + (noDate));
+        System.out.println("\tNo Title: " + (noTitle));
     }
 
     public static void convertCanada() throws ParserConfigurationException, IOException, SAXException {
@@ -1870,6 +1890,8 @@ public class mainn {
 
         List<String> files;
 
+        long duplicates = 0;
+
         HashSet<String> set = new HashSet<String>();
 
         File israelDir = new File(inputFolder + "Litva");
@@ -1897,7 +1919,10 @@ public class mainn {
 
                     if (xml.getAbsolutePath().contains("dtd")) continue;
 
-                    if (set.contains(substr)) continue;
+                    if (set.contains(substr)) {
+                        duplicates++;
+                        continue;
+                    }
 
                     set.add(substr);
 
@@ -1939,13 +1964,14 @@ public class mainn {
                     String jsonString = json.toString(4);
 
                     DBObject dbObject = (DBObject) JSON.parse(jsonString);
-                    collection.insert(dbObject);
+                    //collection.insert(dbObject);
                 }
             }
         }
 
         System.out.println("Litva");
         System.out.println("\tPatenty: " + set.size());
+        System.out.println("\tDUplicates: " + duplicates);
         System.out.println("\n");
     }
 
@@ -1961,6 +1987,11 @@ public class mainn {
         MongoClient mongoClient = new MongoClient(new MongoClientURI("mongodb://localhost:27017"));
         DB database = mongoClient.getDB("patents");
         DBCollection collection = database.getCollection("patents");
+
+        long bigCount = 0;
+        int noAuthorr = 0;
+        int noId = 0;
+        int noTitle = 0;
 
         int ccount = 0;
 
@@ -1987,6 +2018,7 @@ public class mainn {
                 NodeList patentDocuments = doc.getElementsByTagName("il-patent-document");
 
                 for (int i = 0; i < patentDocuments.getLength(); i++) {
+                    bigCount += patentDocuments.getLength();
 
                     Element elPatent = (Element) patentDocuments.item(i);
                     NodeList publicationRefereceE = elPatent.getElementsByTagName("publication-reference");
@@ -2065,8 +2097,14 @@ public class mainn {
 
                                         if (title.length() > 300) title = title.substring(0, 300);
 
-                                        if (strPatentId.equals("")) continue;
-                                        if (title.equals("")) continue;
+                                        if (strPatentId.equals("")) {
+                                            noId++;
+                                            continue;
+                                        }
+                                        if (title.equals("")) {
+                                            noTitle++;
+                                            continue;
+                                        }
                                         if (date.equals("")) continue;
 
                                         // Inventors
@@ -2099,7 +2137,10 @@ public class mainn {
                                             }
                                         }
 
-                                        if (noAuthor == true) continue;
+                                        if (noAuthor == true) {
+                                            noAuthorr++;
+                                            continue;
+                                        }
 
                                         Node parentNode = publicationReference.getParentNode().getParentNode();
                                         StringWriter sw = new StringWriter();
@@ -2116,7 +2157,7 @@ public class mainn {
                                         String jsonString = json.toString(4);
 
                                         DBObject dbObject = (DBObject) JSON.parse(jsonString);
-                                        collection.insert(dbObject);
+                                        //collection.insert(dbObject);
 
                                     } catch (Exception e) {
 
@@ -2139,9 +2180,13 @@ public class mainn {
         }
 
         System.out.println("Izrael");
+        System.out.println("\tCount: " + bigCount);
         System.out.println("\tPatenty: " + ccount);
         System.out.println("\tPatenty před 2000: " + set2000.size());
-        System.out.println("\tDuplikáty: " + (duplicates / 2) + " - celková hodnota vydělena 2 - XML dokumenty obsahují číslo publikace a žádosti");
+        System.out.println("\tDuplikáty: " + (duplicates));
+        System.out.println("\tNo ID: " + (noId));
+        System.out.println("\tNo Author: " + (noAuthorr));
+        System.out.println("\tNo Title: " + (noTitle));
         System.out.println("\n");
     }
 

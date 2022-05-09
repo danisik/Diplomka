@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static java.lang.System.exit;
+
 public class mainn {
 
     private static Connection conn = null;
@@ -106,6 +108,7 @@ public class mainn {
             String jsonString = patent.toJson();
 
             String destination = destFolder + patent.getDocNumber() + ".json";
+            success++;
 
             try {
                 File myObj = new File(destination);
@@ -114,7 +117,7 @@ public class mainn {
                     FileWriter myWriter = new FileWriter(destination);
                     myWriter.write(jsonString);
                     myWriter.close();
-                    success++;
+
 
                 } else {
                     System.out.println("File already exists.");
@@ -123,8 +126,18 @@ public class mainn {
                 System.out.println("An error occurred.");
                 e.printStackTrace();
             }
+
+
         }
+        System.out.println("No ID: " + noID);
+        System.out.println("No AUTHOR: " + noAuthor);
+        System.out.println("No DATE: " + noDate);
+        System.out.println("No TITLE: " + noTitle);
+        System.out.println("SUCCESS: " + success);
+        System.out.println();
+
          */
+
 
         /*
         for (Patent patent : patents) {
@@ -212,7 +225,9 @@ public class mainn {
         System.out.println("SUCCESS: " + success);
          */
 
-        getClassifications();
+        long limit = 2000000;
+        long offset = 0;
+        getClassifications(limit, offset);
 
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -220,107 +235,132 @@ public class mainn {
         boolean startingInsertingIPCR = false;
         boolean startingInsertingPatent = false;
 
-        for (String key : ipcrs.keySet()) {
+        String section = "";
+        String sClass = "";
+        String subclass = "";
+        List<Long> ids = null;
+        Long ipcrID = 0L;
 
-            if (count % 10 == 0) System.out.println(count);
+        while (ipcrs.size() > 0) {
 
-            String[] keys = key.split(",");
-            String section = keys[0];
-            String sClass = keys[1];
-            String subclass = keys[2];
+            System.out.println("OFFSET: " + offset);
+            for (String key : ipcrs.keySet()) {
 
-            List<Long> ids = ipcrs.get(key);
+                ipcrID = 0L;
+                String[] keys = key.split(",");
+                section = keys[0];
+                sClass = keys[1];
+                subclass = keys[2];
 
-            try {
-                Long ipcrID = 0L;
+                ids = ipcrs.get(key);
 
-                section = section.toUpperCase();
-                sClass = sClass.toUpperCase();
-                subclass = subclass.toUpperCase();
+                try {
+                    section = section.toUpperCase();
+                    sClass = sClass.toUpperCase();
+                    subclass = subclass.toUpperCase();
 
-                if (sClass.length() == 1) sClass = "0" + sClass;
-
-                stmt = conn.prepareStatement("SELECT ID from classification where section = ? and class = ? and subclass = ?");
-                stmt.setString(1, section);
-                stmt.setString(2, sClass);
-                stmt.setString(3, subclass);
-                rSet = stmt.executeQuery();
-
-                while (rSet.next()) {
-
-                    ipcrID = rSet.getLong(1);
-                }
-
-                if (ipcrID == 0) {
+                    if (!section.chars().allMatch(Character::isLetter)) continue;
+                    if (!subclass.chars().allMatch(Character::isLetter)) continue;
 
 
-                    if (!startingInsertingIPCR) {
-                        System.out.println("Starting inserting ipcr");
-                        startingInsertingIPCR = true;
-                    }
+                    if (sClass.length() == 1) sClass = "0" + sClass;
 
-                    stmt = conn.prepareStatement("INSERT INTO classification(section, class, subclass) values (?, ?, ?)");
+                    stmt = conn.prepareStatement("SELECT ID from classification where section = ? and class = ? and subclass = ?");
                     stmt.setString(1, section);
                     stmt.setString(2, sClass);
                     stmt.setString(3, subclass);
-                    stmt.execute();
-
-                    stmt = conn.prepareStatement("select last_insert_id()");
                     rSet = stmt.executeQuery();
 
                     while (rSet.next()) {
 
                         ipcrID = rSet.getLong(1);
                     }
-                }
 
-                for (Long idd : ids) {
+                    if (ipcrID == 0) {
 
-                    count++;
-                    if (count < 1719979)
-                        continue;
 
-                    Long test = 0L;
-                    stmt = conn.prepareStatement("select count(*) from patent_classification where id_patent = ? and id_classification = ?");
-                    stmt.setLong(1, idd);
-                    stmt.setLong(2, ipcrID);
-                    rSet = stmt.executeQuery();
+                        if (!startingInsertingIPCR) {
+                            System.out.println("Starting inserting ipcr");
+                            startingInsertingIPCR = true;
+                        }
 
-                    while (rSet.next()) {
+                        System.out.println("Insert " + section + sClass + subclass + ": " + ids.size());
 
-                        test = rSet.getLong(1);
+                        stmt = conn.prepareStatement("INSERT INTO classification(section, class, subclass) values (?, ?, ?)");
+                        stmt.setString(1, section);
+                        stmt.setString(2, sClass);
+                        stmt.setString(3, subclass);
+                        stmt.execute();
+
+                        stmt = conn.prepareStatement("select last_insert_id()");
+                        rSet = stmt.executeQuery();
+
+                        while (rSet.next()) {
+
+                            ipcrID = rSet.getLong(1);
+                        }
+                    }
+                    else {
+
+                        System.out.println(section + sClass + subclass + ": " + ids.size());
                     }
 
-                    if (test == 1) continue;
+                    for (Long idd : ids) {
 
-                    if (!startingInsertingPatent) {
-                        System.out.println("Starting inserting patent");
-                        startingInsertingPatent = true;
+                        count++;
+                        if (count < 355897)
+                            continue;
+
+                        Long test = 0L;
+                        stmt = conn.prepareStatement("select count(*) from patent_classification where id_patent = ? and id_classification = ?");
+                        stmt.setLong(1, idd);
+                        stmt.setLong(2, ipcrID);
+                        rSet = stmt.executeQuery();
+
+                        while (rSet.next()) {
+
+                            test = rSet.getLong(1);
+                        }
+
+                        if (test == 1) continue;
+
+                        if (!startingInsertingPatent) {
+                            System.out.println("Starting inserting patent");
+                            startingInsertingPatent = true;
+                        }
+
+                        stmt = conn.prepareStatement("INSERT INTO patent_classification(id_patent, id_classification) VALUES (?, ?)");
+                        stmt.setLong(1, idd);
+                        stmt.setLong(2, ipcrID);
+                        stmt.execute();
+
                     }
 
-                    stmt = conn.prepareStatement("INSERT INTO patent_classification(id_patent, id_classification) VALUES (?, ?)");
-                    stmt.setLong(1, idd);
-                    stmt.setLong(2, ipcrID);
-                    stmt.execute();
+                } catch (Exception e) {
 
+                    e.printStackTrace();
+                    exit(1);
                 }
 
-            } catch (Exception e) {
-
-                e.printStackTrace();
-                break;
             }
+
+            offset += limit;
+            getClassifications(limit, offset);
         }
 
         closeConnection();
     }
 
-    public static void getClassifications() {
+    public static void getClassifications(long limit, long offset) {
+
+        ipcrs.clear();
 
         long count = 0;
         try {
 
-            PreparedStatement stmt = conn.prepareStatement("SELECT ID_PATENT, SECTION, CLASS, SUBCLASS FROM classification2");
+            PreparedStatement stmt = conn.prepareStatement("SELECT ID_PATENT, SECTION, CLASS, SUBCLASS FROM classification2 LIMIT ? OFFSET ?");
+            stmt.setLong(1, limit);
+            stmt.setLong(2, offset);
             ResultSet set = stmt.executeQuery();
 
             while (set.next()) {

@@ -105,24 +105,12 @@ Inicializace MySQL probíhá po vytvoření databáze v rámci docker kontejneru
 \label{fig:mysql_schema}
 \end{figure}
 
-\todo{viz koment}
-%\noindent Popsat že import data jsou / nejsou a proč (že je to velký a docker to nedoporučuje atp.)
-%
-
-% popsat proč existují jen výsledné soubory s daty, ne raw data (že pro anglii je tolik a tolik souborů, který obsahují víc jak jeden patent, blabla).
-
 \subsection{Inicializace MongoDB}
 Inicializace MongoDB probíhá po vytvoření databáze v rámci docker kontejneru \textbf{mongo-setup}, protože MongoDB nemá žádnou možnost jak vložit inicializační soubor při startu kontejneru. Pro inicializaci byly vytvořeny dva soubory:
 \begin{itemize}
 \item \textbf{create\_mongo\_database.js} - Javascriptový soubor, který obsahuje příkazy pro vytvoření kolekce v databázi pro patenty.
 \item \textbf{mongo\_init.sh} - Shell skript, který inicializuje sadu replik v databázi a následně spustí javascriptový soubor \textbf{create\_mongo\_database.js}.
 \end{itemize}
-
-\todo{viz koment}
-%\noindent Popsat že import data jsou / nejsou a proč (že je to velký a docker to nedoporučuje atp.)
-%
-
-% popsat proč existují jen výsledné soubory s daty, ne raw data.
 
 \subsection{Propojení MongoDB a Elasticsearch}
 Pro propojení MongoDB a Elasticsearch byly vyzkoušeny dva nástroje: \textbf{Mongo-connector} a \textbf{Apache Kafka}. 
@@ -151,9 +139,5 @@ Apache Kafka je distribuované úložiště událostí a platforma pro zpracová
 \label{fig:source}
 \end{figure}
 
-
-\section{Import dat}
-% nezmiňovat jak vypadají projekty, jen jak se to přiblžině dělalo a co všechno se muselo dělat. zmínit že tam byly i obrázky a další kokotiny ?
-% popsat jak se importovala data (případně i postup importu, že existuje tenhle projekt pomocí kterého se to importovalo)
-% vypsat počet hodnot v tabulkách
-\todo{todo}
+\todo{komentář}
+% říct že data se do databází importují při inicializaci / ručně, protože jsou moc velké / nejsou moc velké atp. -> rozhodnout se
