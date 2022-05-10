@@ -48,45 +48,38 @@ public class mainn {
     static final String inputFolder = "D:\\PATENTY\\2.Data\\";
     static final String outputFolder = "D:\\PATENTY\\3.DataJSON\\";
 
+    static final boolean only5k = false;
+
     public static void main(String[] args) throws IOException, ParserConfigurationException, SAXException, TransformerException {
 
         System.out.println("\n\nLitva");
-        // TODO: HOTOVO OSETRENI
         convertLitva();
 
         System.out.println("Portugal");
-        // TODO: HOTOVO OSETRENI
-        //convertPortugal();
+        convertPortugal();
 
         System.out.println("Anglie");
-        // TODO: HOTOVO OSETRENI
-        //convertAnglie();
+        convertAnglie();
 
         System.out.println("\n\nIsrael");
-        // TODO: HOTOVO OSETRENI
-        //convertIsrael();
+        convertIsrael();
 
         System.out.println("\n\nPeru");
-        // TODO: HOTOVO OSETRENI
-        //convertPeru();
+        convertPeru();
 
         System.out.println("\n\nRusko");
-        // TODO: HOTOVO OSETRENI
-        //convertRusko();
+        convertRusko();
 
         System.out.println("\n\nŠpanělsko");
-        // TODO: HOTOVO OSETRENI
-        //convertSpanelsko();
+        convertSpanelsko();
 
         System.out.println("\n\nFrancie");
-        // TODO: HOTOVO OSETRENI
-        //convertFrancie();
+        convertFrancie();
 
         System.out.println("\n\nKanada");
-        // TODO: HOTOVO OSETRENI
-        //convertCanada();
+        convertCanada();
 
-        //convertItaly();
+        convertItaly();
     }
 
 
@@ -94,6 +87,8 @@ public class mainn {
 
         String folder = "D:\\PATENTY\\3.DataJSON\\Italie";
         String actualFile = "";
+
+        long count = 0;
 
         try {
 
@@ -105,6 +100,11 @@ public class mainn {
             File[] jsons = dir.listFiles();
 
             for (File file : jsons) {
+
+                if (count == 5000 && only5k) {
+
+                    return;
+                }
 
                 BufferedReader br = new BufferedReader(new FileReader(file.getAbsolutePath()));
                 try {
@@ -120,6 +120,8 @@ public class mainn {
 
                     DBObject dbObject = (DBObject) JSON.parse(jsonString);
                     collection.insert(dbObject);
+
+                    count++;
 
                 } catch (Exception e) {
 
@@ -347,6 +349,8 @@ public class mainn {
                                     DBObject dbObject = (DBObject) JSON.parse(jsonString);
                                     collection.insert(dbObject);
                                     countt++;
+
+                                    if (countt == 5000 && only5k) return;
                                 }
                                 catch (Exception e) {
                                     System.out.println("kokot");
@@ -864,6 +868,8 @@ public class mainn {
                                 collection.insert(dbObject);
                                 counterr++;
 
+                                if (counterr == 5000 && only5k) return;
+
                             } catch (Exception e) {
 
                                 exceptions.add(e);
@@ -1028,6 +1034,8 @@ public class mainn {
                                     DBObject dbObject = (DBObject) JSON.parse(jsonString);
                                     collection.insert(dbObject);
                                     counterr++;
+
+                                    if (counterr == 5000 && only5k) return;
                                 } catch (Exception e) {
 
                                     exceptions.add(e);
@@ -1264,6 +1272,8 @@ public class mainn {
                                                 DBObject dbObject = (DBObject) JSON.parse(jsonString);
                                                 collection.insert(dbObject);
                                                 counterr++;
+
+                                                if (counterr == 5000 && only5k) return;
                                             }
                                         } catch (Exception e) {
 
@@ -1457,6 +1467,8 @@ public class mainn {
                                                                     // TODO
                                                                     collection.insert(dbObject);
                                                                     counterr++;
+
+                                                                    if (counterr == 5000 && only5k) return;
                                                                 }
                                                                 else {
                                                                     continue;
@@ -1649,6 +1661,8 @@ public class mainn {
                                                     // TODO
                                                     collection.insert(dbObject);
                                                     counterr++;
+
+                                                    if (counterr == 5000 && only5k) return;
                                                 }
 
 
@@ -1869,6 +1883,8 @@ public class mainn {
                                 collection.insert(dbObject);
                                 counterr++;
 
+                                if (counterr == 5000 && only5k) return;
+
                             } catch (Exception e) {
 
                                 exceptions.add(e);
@@ -1964,7 +1980,7 @@ public class mainn {
                     String jsonString = json.toString(4);
 
                     DBObject dbObject = (DBObject) JSON.parse(jsonString);
-                    //collection.insert(dbObject);
+                    collection.insert(dbObject);
                 }
             }
         }
@@ -2157,7 +2173,9 @@ public class mainn {
                                         String jsonString = json.toString(4);
 
                                         DBObject dbObject = (DBObject) JSON.parse(jsonString);
-                                        //collection.insert(dbObject);
+                                        collection.insert(dbObject);
+
+                                        if (ccount == 5000 && only5k) return;
 
                                     } catch (Exception e) {
 
@@ -2329,6 +2347,7 @@ public class mainn {
 
                                     DBObject dbObject = (DBObject) JSON.parse(jsonString);
                                     collection.insert(dbObject);
+                                    if (set.size() == 5000 && only5k) return;
                                 }
                                 else {
 
