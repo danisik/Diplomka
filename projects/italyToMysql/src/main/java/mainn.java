@@ -284,7 +284,7 @@ public class mainn {
                             startingInsertingIPCR = true;
                         }
 
-                        System.out.println("Insert " + section + sClass + subclass + ": " + ids.size());
+                        System.out.println("Insert: " + section + sClass + subclass + ": " + ids.size() + "    | " + count);
 
                         stmt = conn.prepareStatement("INSERT INTO classification(section, class, subclass) values (?, ?, ?)");
                         stmt.setString(1, section);
@@ -302,13 +302,13 @@ public class mainn {
                     }
                     else {
 
-                        System.out.println(section + sClass + subclass + ": " + ids.size());
+                        System.out.println(section + sClass + subclass + ": " + ids.size() + "    | " + count);
                     }
 
                     for (Long idd : ids) {
 
                         count++;
-                        if (count < 355897)
+                        if (count < 1878180)
                             continue;
 
                         Long test = 0L;
