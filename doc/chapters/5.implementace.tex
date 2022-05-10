@@ -14,7 +14,7 @@ Pro MongoDB byla použita jedna z nejnovějších verzí komunitní edice (verze
 \indent V databázovém schématu byla vytvořena databáze s názvem \textbf{patents}, která obsahuje pouze jednu kolekci s názvem \textbf{patents}. V této kolekci budou uloženy všechny vyfiltrované patenty ze všech zemí. Vzhledem k tomu, že MongoDB bude sloužit jen jako uložiště patentových dat, tak není potřeba vytvářet více kolekcí nebo databází. Jako další důvod pro zvolení pouze jedné kolekce je počet indexů v Elasticsearch, kdy byl použit pouze jeden index pro zaindexování všech dat. Důvod je takový, že chceme vždy prohledávat všechny patenty a ne jen jejich část, takže vícero indexů by akorát způsobovalo pomalejší zpracování dotazů pro vyhledávání.
 
 \subsection{MySQL} \label{subsec:mysql_impl}
-Pro MySQL byla použita aktuálně nejnovější verze komunitního serveru (verze 8.0.29). Programový systém \textbf{phpMyAdmin} (verze 5.1.3)  bude použit jako nástroj pro spravování MySQL databáze, ke kterému lze přistoupit pomocí webového prohlížeče. Lze použít i nástroj \textbf{MySQL Workbench} pro správu MySQL databáze, ale pro naše účely bohatě postačí \textbf{phpMyAdmin}.
+Pro MySQL byla použita verze komunitního serveru (verze 8.0.16). Programový systém \textbf{phpMyAdmin} (verze 5.1.3)  bude použit jako nástroj pro spravování MySQL databáze, ke kterému lze přistoupit pomocí webového prohlížeče. Lze použít i nástroj \textbf{MySQL Workbench} pro správu MySQL databáze, ale pro naše účely bohatě postačí \textbf{phpMyAdmin}.
 \newline
 \indent Schéma splňuje pouze druhou normální formu. Je to z toho důvodu, že tabulka \textbf{classification} obsahuje některé duplicitní hodnoty ve sloupcích. Duplicitu samozřejmě lze odstranit, ale zvýšilo by to složitost celého systému - \gls{SQL} dotazy by byly složitější a pomalejší v případě příkazu \textit{SELECT}, který by vyhledával data z několika tabulek, spojených příkazem \textit{JOIN}.
 \newline
@@ -92,7 +92,7 @@ Pro konektor mezi MongoDB a Elasticsearch byly nadefinovány tři aplikace a jed
 \subsubsection{Docker - MySQL}
 Pro MySQL byly nadefinovány dvě aplikace:
 \begin{itemize}
-\item \textbf{mysql} - Oficiální image databáze MySQL ve verzi 8.0.29. Při inicializaci databáze se vytvoří všechny tabulky i pohledy.
+\item \textbf{mysql} - Oficiální image databáze MySQL ve verzi 8.0.16. Při inicializaci databáze se vytvoří všechny tabulky i pohledy.
 \item \textbf{phpmyadmin} - Grafické uživatelské rozhraní pro MySQL ve verzi 5.1.3, dostupné na localhostu na portu 8082. V nastavení byl navýšen limit pro import souborů na 600 MB z původních 2 MB.
 \end{itemize}
 
@@ -108,7 +108,7 @@ Inicializace MySQL probíhá po vytvoření databáze v rámci docker kontejneru
 \subsection{Inicializace MongoDB}
 Inicializace MongoDB probíhá po vytvoření databáze v rámci docker kontejneru \textbf{mongo-setup}, protože MongoDB nemá žádnou možnost jak vložit inicializační soubor při startu kontejneru. Pro inicializaci byly vytvořeny dva soubory:
 \begin{itemize}
-\item \textbf{create\_mongo\_database.js} - Javascriptový soubor, který obsahuje příkazy pro vytvoření kolekce v databázi pro patenty.
+\item \textbf{create\_mongo\_database.js} - Javascriptový soubor,s který obsahuje příkazy pro vytvoření kolekce v databázi pro patenty.
 \item \textbf{mongo\_init.sh} - Shell skript, který inicializuje sadu replik v databázi a následně spustí javascriptový soubor \textbf{create\_mongo\_database.js}.
 \end{itemize}
 

@@ -19,9 +19,37 @@ Testovací stroj, který byl použit pro kontrolu efektivity vytěžování, má
 \section{Mongo + ElasticSearch}
 \todo{todo}
 
+\subsection{Scénář č.1}\todo{todo}
+\textbf{Textový popis}: 
+\newline
+\textbf{Dotaz}: 
+\newline
+\textbf{Rychlost vykonání dotazu}:
+\newline
+\textbf{Výsledek dotazu}:
+
+\subsection{Scénář č.2}\todo{todo}
+\textbf{Textový popis}: 
+\newline
+\textbf{Dotaz}: 
+\newline
+\textbf{Rychlost vykonání dotazu}:
+\newline
+\textbf{Výsledek dotazu}:
+
+\subsection{Scénář č.3}\todo{todo}
+\textbf{Textový popis}: 
+\newline
+\textbf{Dotaz}: 
+\newline
+\textbf{Rychlost vykonání dotazu}:
+\newline
+\textbf{Výsledek dotazu}:
+
 \section{MySQL} \label{sec:efektivni_vytezovani_sql}
 Pro MySQL bylo připraveno devět scénářů, které testují všechny vytvořené tabulky v databázi. Každý scénář obsahuje textový popis, SQL příkaz, rychlost vykonání příkazu a ukázku výsledků. Každý scénář odpovídá jednomu pohledu v databázi.
 
+\newpage
 \subsection{Scénář č.1}
 \textbf{Textový popis}: Deset nejčastěji patentujících institucí v Izraeli v roce 2015.
 \newline
@@ -29,7 +57,7 @@ Pro MySQL bylo připraveno devět scénářů, které testují všechny vytvoře
 \begin{lstlisting}[label = {lst:elements_a}]
 select count(*), count(*) * 100.0 / ((select count(*) from inventors left outer join patents on inventors.id_patent = patents.id where YEAR(patents.patent_date) = 2015 and patents.patent_id like '%IL%') * 1.0) as percentage, inventors.inventor from inventors left outer join patents on inventors.id_patent = patents.id where YEAR(patents.patent_date) = 2015 and patents.patent_id like '%IL%' group by inventors.inventor order by count(*) desc, percentage desc LIMIT 10;
 \end{lstlisting}
-\textbf{Rychlost vykonání dotazu}:  +- 1,4 sekundy
+\textbf{Rychlost vykonání dotazu}:  \textpm 1,4 sekundy
 \newline
 \textbf{Výsledek dotazu}:
 \begin{figure}[H]
@@ -39,15 +67,15 @@ select count(*), count(*) * 100.0 / ((select count(*) from inventors left outer 
 \label{fig:scenar1}
 \end{figure}
 
-
+\newpage
 \subsection{Scénář č.2}
-\textbf{Textový popis}: Tři nejméně patentované obory v Kanadě od roku 2010.
+\textbf{Textový popis}: Pět nejméně patentovaných oborů v Kanadě od roku 2010.
 \newline
 \textbf{SQL}: 
 \begin{lstlisting}[label = {lst:elements_a}]
-select count(*), count(*) * 100.0 / ((select count(*) from classification left outer join patents on patents.id = classification.id_patent where YEAR(patents.patent_date) >= 2010 and patents.patent_id like '%CA%') * 1.0) as percentage, classification.section from classification left outer join patents on patents.id = classification.id_patent where YEAR(patents.patent_date) >= 2010 and patents.patent_id like '%CA%' group by classification.section order by count(*) asc, percentage asc LIMIT 5;
+select count(*), count(*) * 100.0 / ((select count(*) from patent_classification left outer join patents on patents.id = patent_classification.id_patent where YEAR(patents.patent_date) >= 2010 and patents.patent_id like '%CA%') * 1.0) as percentage, classification.section from classification left outer join patent_classification on classification.id = patent_classification.id_classification left outer join patents on patents.id = patent_classification.id_patent where YEAR(patents.patent_date) >= 2010 and patents.patent_id like '%CA%' group by classification.section order by count(*) asc, percentage asc LIMIT 5;
 \end{lstlisting}
-\textbf{Rychlost vykonání dotazu}: +- 6,2 sekund
+\textbf{Rychlost vykonání dotazu}: \textpm 10 sekund
 \newline
 \textbf{Výsledek dotazu}:
 \begin{figure}[H]
@@ -57,14 +85,15 @@ select count(*), count(*) * 100.0 / ((select count(*) from classification left o
 \label{fig:scenar2}
 \end{figure}
 
+\newpage
 \subsection{Scénář č.3}
 \textbf{Textový popis}: Dvacet nejčastějších klasifikací patentů za rok 2008 ve Španělsku.
 \newline
 \textbf{SQL}:
 \begin{lstlisting}[label = {lst:elements_a}]
-select count(*), count(*) * 100.0 / ((select count(*) from classification left outer join patents on patents.id = classification.id_patent where YEAR(patents.patent_date) = 2008 and patents.patent_id LIKE '%ES%') * 1.0) as percentage, classification.section, classification.class, classification.subclass from classification left outer join patents on patents.id = classification.id_patent where YEAR(patents.patent_date) = 2008 and patents.patent_id LIKE '%ES%' group by classification.section, classification.class, classification.subclass order by count(*) desc, percentage desc LIMIT 20;
+select count(*), count(*) * 100.0 / ((select count(*) from patent_classification left outer join patents on patents.id = patent_classification.id_patent where YEAR(patents.patent_date) = 2008 and patents.patent_id LIKE '%ES%') * 1.0) as percentage, classification.section, classification.class, classification.subclass from classification left outer join patent_classification on classification.id = patent_classification.id_classification left outer join patents on patents.id = patent_classification.id_patent where YEAR(patents.patent_date) = 2008 and patents.patent_id LIKE '%ES%' group by classification.section, classification.class, classification.subclass order by count(*) desc, percentage desc LIMIT 20;
 \end{lstlisting}
-\textbf{Rychlost vykonání dotazu}: +- 1,3 sekundy
+\textbf{Rychlost vykonání dotazu}: \textpm 1,3 sekundy
 \newline
 \textbf{Výsledek dotazu}:
 \begin{figure}[H]
@@ -74,6 +103,7 @@ select count(*), count(*) * 100.0 / ((select count(*) from classification left o
 \label{fig:scenar3}
 \end{figure}
 
+\newpage
 \subsection{Scénář č.4} 
 \textbf{Textový popis}: Deset autorů s největším počtem patentů ze všech zemí.
 \newline
@@ -81,7 +111,7 @@ select count(*), count(*) * 100.0 / ((select count(*) from classification left o
 \begin{lstlisting}[label = {lst:elements_a}]
 select count(*), count(*) * 100.0 / ((select count(*) from inventors) * 1.0) as percentage, inventors.inventor from inventors group by inventors.inventor order by count(*) desc, percentage desc LIMIT 10;
 \end{lstlisting}
-\textbf{Rychlost vykonání dotazu}: +- 8 sekund
+\textbf{Rychlost vykonání dotazu}: \textpm 8 sekund
 \newline
 \textbf{Výsledek dotazu}:
 \begin{figure}[H]
@@ -91,6 +121,7 @@ select count(*), count(*) * 100.0 / ((select count(*) from inventors) * 1.0) as 
 \label{fig:scenar4}
 \end{figure}
 
+\newpage
 \subsection{Scénář č.5}
 \textbf{Textový popis}: Pět nejméně používaných jazyků pro patenty za rok 2003.
 \newline
@@ -98,7 +129,7 @@ select count(*), count(*) * 100.0 / ((select count(*) from inventors) * 1.0) as 
 \begin{lstlisting}[label = {lst:elements_a}]
 select count(*), count(*) * 100.0 / ((select count(*) from patents where patents.language not like '%-%') * 1.0) as percentage, patents.language from patents where patents.language not like '%-%' group by patents.language order by count(*) asc, percentage asc LIMIT 5;
 \end{lstlisting}
-\textbf{Rychlost vykonání dotazu}: +- 5,3 sekund
+\textbf{Rychlost vykonání dotazu}: \textpm 5,3 sekund
 \newline
 \textbf{Výsledek dotazu}:
 \begin{figure}[H]
@@ -108,14 +139,15 @@ select count(*), count(*) * 100.0 / ((select count(*) from patents where patents
 \label{fig:scenar5}
 \end{figure}
 
+\newpage
 \subsection{Scénář č.6}
 \textbf{Textový popis}: Deset Institucí / autorů s patenty pokrývající největší množství oborů ve Španělsku.
 \newline
 \textbf{SQL}: 
 \begin{lstlisting}[label = {lst:elements_a}]
-select count(distinct classification.section), count(*) * 100.0 / ((select count(*) from inventors left outer join classification on classification.id_patent = inventors.id_patent left outer join patents on patents.id = inventors.id_patent where section is not null and patents.country like '%ES%') * 1.0) as percentage, inventors.inventor from inventors left outer join classification on classification.id_patent = inventors.id_patent left outer join patents on patents.id = inventors.id_patent where section is not null and patents.country like '%ES%' group by inventors.inventor order by count(distinct classification.section) desc, percentage desc LIMIT 10;
+select count(distinct classification.section), count(*) * 100.0 / ((select count(*) from inventors left outer join patents on patents.id = inventors.id_patent left outer join patent_classification on patents.id = patent_classification.id_patent left outer join classification on classification.id = patent_classification.id_classification where classification.section is not null and patents.country like '%ES%') * 1.0) as percentage, inventors.inventor from inventors left outer join patents on patents.id = inventors.id_patent left outer join patent_classification on patents.id = patent_classification.id_patent left outer join classification on classification.id = patent_classification.id_classification where classification.section is not null and patents.country like '%ES%' group by inventors.inventor order by count(distinct classification.section) desc, percentage desc LIMIT 10;
 \end{lstlisting}
-\textbf{Rychlost vykonání dotazu}: +- 3 sekundy
+\textbf{Rychlost vykonání dotazu}: \textpm 2,2 sekundy
 \newline
 \textbf{Výsledek dotazu}:
 \begin{figure}[H]
@@ -125,6 +157,7 @@ select count(distinct classification.section), count(*) * 100.0 / ((select count
 \label{fig:scenar6}
 \end{figure}
 
+\newpage
 \subsection{Scénář č.7}
 \textbf{Textový popis}: Pět zemí s nejvíce patenty od roku 2018.
 \newline
@@ -132,7 +165,7 @@ select count(distinct classification.section), count(*) * 100.0 / ((select count
 \begin{lstlisting}[label = {lst:elements_a}]
 select count(*), count(*) * 100.0 / ((select count(*) from patents where YEAR(patents.patent_date) >= 2018) * 1.0) as percentage, patents.country from patents where YEAR(patents.patent_date) >= 2018 group by patents.country order by count(*) desc, percentage desc LIMIT 5;
 \end{lstlisting}
-\textbf{Rychlost vykonání dotazu}: +- 2,4 sekundy
+\textbf{Rychlost vykonání dotazu}: \textpm 2,4 sekundy
 \newline
 \textbf{Výsledek dotazu}:
 \begin{figure}[H]
@@ -149,7 +182,7 @@ select count(*), count(*) * 100.0 / ((select count(*) from patents where YEAR(pa
 \begin{lstlisting}[label = {lst:elements_a}]
 select count(*), count(*) * 100.0 / ((select count(*) from patents where patents.patent_id like '%FR%' and patents.kind not like '%-%') * 1.0) as percentage, patents.kind from patents where patents.patent_id like '%FR%' and patents.kind not like '%-%' group by patents.kind order by count(*) desc, percentage desc;
 \end{lstlisting}
-\textbf{Rychlost vykonání dotazu}: +- 5,5 sekund
+\textbf{Rychlost vykonání dotazu}: \textpm 5,5 sekund
 \newline
 \textbf{Výsledek dotazu}:
 \begin{figure}[H]
@@ -159,14 +192,15 @@ select count(*), count(*) * 100.0 / ((select count(*) from patents where patents
 \label{fig:scenar8}
 \end{figure}
 
+\newpage
 \subsection{Scénář č.9}
 \textbf{Textový popis}: Patnáct nejčastěji patentujících institucí / autorů v Anglii v textilním oboru za rok 2013.
 \newline
 \textbf{SQL}: 
 \begin{lstlisting}[label = {lst:elements_a}]
-select count(*), count(*) * 100.0 / ((select count(*) from inventors left outer join patents on patents.id = inventors.id_patent left outer join classification on classification.id_patent = patents.id where classification.section like '%D%' and patents.patent_id like '%GB%' and YEAR(patents.patent_date) = 2013) * 1.0) as percentage, inventors.inventor from inventors left outer join patents on patents.id = inventors.id_patent left outer join classification on classification.id_patent = patents.id where classification.section like '%D%' and patents.patent_id like '%GB%' and YEAR(patents.patent_date) = 2013 group by inventors.inventor order by count(*) desc, percentage desc LIMIT 15;
+select count(*), count(*) * 100.0 / ((select count(*) from inventors left outer join patents on patents.id = inventors.id_patent left outer join patent_classification on patents.id = patent_classification.id_patent left outer join classification on classification.id = patent_classification.id_classification where classification.section like '%D%' and patents.patent_id like '%GB%' and YEAR(patents.patent_date) = 2013) * 1.0) as percentage, inventors.inventor from inventors left outer join patents on patents.id = inventors.id_patent left outer join patent_classification on patents.id = patent_classification.id_patent left outer join classification on classification.id = patent_classification.id_classification where classification.section like '%D%' and patents.patent_id like '%GB%' and YEAR(patents.patent_date) = 2013 group by inventors.inventor order by count(*) desc, percentage desc LIMIT 15;
 \end{lstlisting}
-\textbf{Rychlost vykonání dotazu}: +- 1,3 sekundy
+\textbf{Rychlost vykonání dotazu}: \textpm 0,3 sekundy
 \newline
 \textbf{Výsledek dotazu}:
 \begin{figure}[H]

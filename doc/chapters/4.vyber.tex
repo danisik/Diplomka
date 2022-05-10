@@ -357,8 +357,7 @@ Francie poskytuje svá data pouze uživatelům, kteří provedli registraci na s
 \indent Celkem bylo staženo 2 729 111 souborů s patenty ve formátu \gls{XML}, ze kterých bylo 746 899 unikátních s datem přihlášení od roku 2000. Struktura patentů byla rozdílná jak v rámci typů dat (bibliografické a evropské), tak i v rámci bibliografických dat, kdy struktura patentů v roce 2017 byla jiná než v roce 2021. Bibliografická data obsahovala mnoho duplikátů a patentů, kterým chyběl vždy alespoň jeden povinný atribut (většinou titulek). Většina evropských patentů byla také odfiltrována, stejně jako u bibliografických zde chyběl hlavně titulek. Celkem bylo vyfiltrováno 474 850 patentů.
 
 \subsubsection{Itálie}
-Data pro Itálii poskytuje pouze výzkumný úřad PATIRIS, která jsou poskytována jako plný export relační databáze s tabulkama ve formátu \gls{SQL}. Databáze obsahuje celkem 9 tabulek a 21 367 patentů, ze kterých 
-\todo{todo}
+Data pro Itálii poskytuje pouze výzkumný úřad PATIRIS, která jsou poskytována jako plný export relační databáze s tabulkama ve formátu \gls{SQL}. Databáze obsahuje celkem 9 tabulek a 21 367 patentů, ze kterých pouze 7 624 obsahuje všechny povinné atributy.
 
 \subsubsection{Izrael}
 Izrael poskytuje svá data všem uživatelům v žurnálu ve formátu \gls{XML} v ročních intervalech od roku 2000. Celkem bylo staženo 19 žurnálů, kdy všechny mají stejnou strukturu dat. Žurnál obsahuje údaje jak o publikaci patentu, tak i o jeho žádosti, ale analýza probíhala pouze nad publikacema. Celkem bylo vyfiltrováno 326 patentů kvůli chybějícímu autoru a titulku z celkových 116 380 patentů.
@@ -372,21 +371,23 @@ Kanada poskytuje svá data všem uživatelům ve formátu \gls{XML} v týdenníc
 Litva poskytuje svá data všem uživatelům ve formátu \gls{XML} v dvoutýdenních intervalech od konce roku 2021. Patentový úřad v Litvě poskytuje národní i evropské patenty. Celkem bylo staženo 869 souborů s patenty, kde žádnému z nich nechyběl žádný povinný atribut.
 
 \subsubsection{Peru}
-1
-1805
-21352
+Peru poskytuje svá data všem uživatelům ve formátu XLSX. Pouze jeden soubor s daty z roku 2019 byl nalezen na webové stránce patentové instituce v Peru. Soubor obsahuje celkem 23 157 patentů, ze kterých pouze 1 805 je validních, ostatní patenty mají přihlášku před rokem 2000.
 
 \subsubsection{Portugalsko}
-Portugalsko 
+Patentová data z Portugalska jsou poskytována na webovém portálu \textit{data.europa.eu}, který spravuje Evropská Unie. Na portále existuje pouze jeden soubor ve formátu \gls{XML}, který obsahuje celkem 69 patentů.
 
 \subsubsection{Rusko}
-30
+Rusko poskytuje svá data všem uživatelům ve formátu \gls{CSV} v měsíčních intervalech (od roku 2020) a nepravidelných intervalech (od roku 2017 do roku 2019).
+\newline
+\indent Celkem bylo staženo 30 souborů, u kterých zůstala struktura dat neměnná. Ve všech souborech existuje celkem 15 920 786 záznamů o patentech, ze kterých pouze 753 970 patentů je unikátních. Celkem bylo vyfiltrováno 139 937 patentů, kde většina z nich měla datum registrace před rokem 2000.
 
 \subsubsection{Španělsko}
-458 566
+Španělsko poskytuje svá data všem uživatelům ve formátu \gls{XML} v denních a měsíčních intervalech od roku 2021, pro data před rokem 2021 existují roční reporty až do roku 1987. Data jsou poskytována ve formě full-textu.
+\newline
+\indent Celkem bylo staženo 458 566 souborů s patenty, u kterých zůstala struktura dat neměnná po všechny roky (od roku 2004). Z dat bylo odfiltrováno celkem 345 676 patentů, hlavně kvůli chybějícímu autoru.
 
 \subsubsection{Mexiko}
-2
+Mexiko poskytuje svá data všem uživatelům ve formátu \gls{XML} v měsíčních intervalech, ale ke stažení jsou pouze data z předcházejícího měsíce. Struktura souborů se za poslední měsíce nezměnila, ale data o patentech obsažená v souborech jsou nevyhovující, protože se zde nachází patentové přihlášky, které jsou zamítnuté, zrušené z důvodu nezaplacení nebo jim vypršela platnost.
 
 \subsection{Závěr průzkumu}
 Průzkum národních zdrojů zahrnoval celkem 51 národních patentujících institucí, ze kterých pouze 10 poskytovalo svá data zdarma a splňovala všechny podmínky. V tabulce č. \ref{tab:patent_rozdeleni} lze vidět souhrn výsledků.
@@ -435,11 +436,11 @@ Průzkum národních zdrojů zahrnoval celkem 51 národních patentujících ins
 	\hline
 	Rusko & CSV & 614 256 & 139 714 & 15 166 816\\
 	\hline
-	Španělsko & XML & 381 713  & 37 612 & 39 033\\
+	Španělsko & XML & 381 713  & 37 612 & 39 241\\
 	\hline
 	&&&& \\
 	\hline
-	\textbf{Souhrn} & & \textbf{2 894 111} & \textbf{525 878} & \textbf{16 865 183} \\
+	\textbf{Souhrn} & & \textbf{2 894 111} & \textbf{525 878} & \textbf{16 865 391} \\
 	\hline
 	\end{tabular}
 	\caption{Seznam všech validních národních zdrojů.}

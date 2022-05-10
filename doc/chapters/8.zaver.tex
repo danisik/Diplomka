@@ -1,4 +1,9 @@
 %CHAPTER
 \chapter{Závěr}
-\todo{todo}
-% tabulka, kde budou vypsaný všechny IPC klasifikace (jen sekce) a počet patentů mající tuhle sekci ( + procentuální hodnotu).
+V rámci této práce se autor seznámil s dostupnými národními zdroji dat o patentech. Celosvětové patentové instituce nebyly prostudovány z důvodu již existující diplomové práce, která byla zaměřená právě na tyto celosvětové instituce.
+\newline
+\indent Celkem bylo prostudováno 51 národních patentových institucí z celého světa. U institucí byla zkoumána hlavně dostupnost patentových dat (zda patentová instituce poskytuje svá data ke stažení zdarma nebo za peníze) a validita dat. Data byla vyhodnocena jako validní tehdy, když obsahovali všechny povinné atributy, kterými jsou: ID patentu, titulek patentu, datum přihlášení a existující autor. Z 51 národních patentových institucí splňovalo tyto dvě podmínky pouze 10 institucí, které poskytly necelé dva miliony validních patentových dat.
+\newline
+\indent Vzhledem k získaným datům z patentových institucí byly prozkoumány možné typy databází, které by umožňovali jejich efektivní vytěžování. Při průzkumu bylo porovnáváno pouze šest nejznámějších typů databází, které by mohli ukládat patentová data. Z šesti typů dat byly nakonec vybrány dva typy databází, každý pro jiný účel. První typ, relační databáze, poslouží k rychlému získávání statistik o patentech. Druhý typ, databáze dokumentů, poslouží k ukládání celých souborů s patentovými daty. Jako existující řešení pro relační databázi bylo vybráno MySQL, pro databázi dokumentů zase MongoDB, které se pomocí Apache Kafka propojilo s full-textovým vyhledávačem Elasticsearch.
+\newline
+\indent Zadání práce bylo splněno ve všech bodech. Zvolená databázová řešení umožňují efektivní vytěžování patentových dat pomocí full-textového vyhledávače Elasticsearch v případě MongoDB, a pomocí \gls{SQL} dotazů v MySQL pro získávání statistik. Efektivní vytěžování bylo otestováno na třech scénářích pro MongoDB, a devíti scénářích pro MySQL. Zvolená řešení lze jednoduše nainstalovat pomocí Dockeru.

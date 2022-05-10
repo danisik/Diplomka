@@ -54,7 +54,7 @@ where YEAR(patents.patent_date) = 2015 and patents.patent_id like '%IL%'
 group by inventors.inventor order by count(*) desc, percentage desc LIMIT 10;
 
 -- 2
-CREATE VIEW three_CA_sections_ge_2010 AS select count(*), 
+CREATE VIEW five_CA_sections_ge_2010 AS select count(*), 
 count(*) * 100.0 / ((select count(*) from patent_classification 
 left outer join patents on patents.id = patent_classification.id_patent 
 where YEAR(patents.patent_date) >= 2010 and patents.patent_id like '%CA%') * 1.0) as percentage, 
