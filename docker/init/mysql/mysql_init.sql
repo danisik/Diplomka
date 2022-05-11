@@ -18,7 +18,7 @@ create table if not exists classification(
 	subclass varchar(1) not null,
 	primary key(id)
 	);
-create table patent_classification(
+create table if not exists patent_classification(
 	id int not null auto_increment,
 	id_patent int not null,
 	id_classification int not null,
