@@ -14,6 +14,7 @@ Adresářová struktura je následující:
 		\item \textbf{docker-compose.yml}
 		\item \textbf{Dockerfile}
 		\end{itemize}
+	\item \textbf{projects} - Java projekty použité pro extrakci a import dat do MongoDB a MySQL.
 	\end{itemize}
 \item \textbf{Poster}
 \item \textbf{Text\_prace}
@@ -110,7 +111,6 @@ Import dat se provádí pomocí PHPMyAdmin na adrese \textbf{http://localhost:80
 
 \newpage
 \section{Import dat do MongoDB}
-\todo{Ukázku výsledků z elasticu}
 Import dat pro MongoDB se provádí pomocí oficiální aplikace od MongoDB s názvem \textbf{mongo\_restore.exe}. Postup pro import je následující:
 \begin{enumerate}
 \item Otevřít konzoli ve složce \textbf{./Aplikace\_a\_knihovny/docker/mongo\_import}.
@@ -137,4 +137,14 @@ Import dat pro MongoDB se provádí pomocí oficiální aplikace od MongoDB s n�
 		\caption{Importovaná data v Mongo-express.}
 		\label{fig:mongo_done_import}
 		\end{figure}
+\item Import dat z MongoDB do Elasticsearch nějakou chvíli trvá, kontrolu počtu importovaných a zaindexovaných patentů v Elasticsearch lze zjistil na adrese \textbf{http://localhost:8080/}.
+	\begin{itemize}
+	\item Na záložce \textbf{Indices} se nachází index \textbf{patents.patents}. Index se nerefreshuje sám o sobě, takže je nutné ho aktualizovat ručně, viz obrázek č. \ref{fig:refresh_index}.
+		\begin{figure}[H]
+		\centering
+		\includegraphics[width=15cm]{img/manual/refresh_index}
+		\caption{Aktualizace indexu v Elasticsearch.}
+		\label{fig:refresh_index}
+		\end{figure}
+	\end{itemize}
 \end{enumerate}
