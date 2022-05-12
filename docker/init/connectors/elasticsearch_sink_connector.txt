@@ -5,9 +5,13 @@
 		"key.converter": "org.apache.kafka.connect.storage.StringConverter",
 		"value.converter": "org.apache.kafka.connect.json.JsonConverter",
 		"connection.url": "http://elasticsearch:9200",
-		"max.buffered.records": "20001",
 		"schema.ignore": "true",
 		"value.converter.schemas.enable": "false",
+		"producer.buffer.memory": "200",
+		"offset.flush.interval": "500",
+		"flush.timeout.ms": "1000",
+		"flush.synchronously": "true",
+		"batch.size": "20",
 		"topics": "patents.patents"
     }
 }

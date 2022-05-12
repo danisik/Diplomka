@@ -7,7 +7,12 @@
 		"key.converter": "org.apache.kafka.connect.json.JsonConverter",
 		"value.converter": "org.apache.kafka.connect.json.JsonConverter",
 		"database":"patents",
-		"copy.existing" : true,
+		"copy.existing" : "true",
+		"poll.max.batch.size": "20",
+		"poll.await.time.ms": "2000",
+		"poll.batch.size": "20",
+		"errors.log.enable": "true",
+		"errors.log.include.message": "true",
 		"collection":"patents"
 	}
 }
