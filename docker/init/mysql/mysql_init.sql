@@ -125,6 +125,11 @@ and YEAR(patents.patent_date) = 2013) * 1.0) as percentage, inventors.inventor
 from inventors
 left outer join patents on patents.id = inventors.id_patent
 left outer join patent_classification on patents.id = patent_classification.id_patent
+<<<<<<< HEAD
 left outer join classification on classification.id = patent_classification.id_classification
 where classification.section like '%D%' and patents.patent_id like '%GB%'
+=======
+left outer join classification on classification.id = patent_classification.id_classification 
+where classification.section like '%D%' and patents.patent_id like '%GB%' 
+>>>>>>> 11a3cedefcab06af3b8e7a54c46efac2031d9ccc
 and YEAR(patents.patent_date) = 2013 group by inventors.inventor order by count(*) desc, percentage desc LIMIT 15;
