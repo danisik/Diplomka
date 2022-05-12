@@ -10,8 +10,8 @@ services:
       - 9300:9300
     environment:
       discovery.type: single-node
-      xpack.security.enabled: false
-      http.cors.enabled: true
+      xpack.security.enabled: "false"
+      http.cors.enabled: "true"
       http.cors.allow-origin: "http://localhost:8080"
       http.cors.allow-headers: X-Requested-With,Content-Type,Content-Length,Authorization
     ulimits:
