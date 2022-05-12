@@ -53,7 +53,7 @@ Celý modul našeho úložiště čítá celkem 5 nástrojů - MySQL, MongoDB, E
 \subsection{Docker}
 \textbf{Docker} je jeden z nejznámějších open-source nástrojů pro dodání aplikací v balíčkách zvaných \textit{kontejner}. \textbf{Docker} využívá virtualizaci na úrovni operačního systému, čímž je výrazně snížena režie na rozdíl od klasických virtuálních strojů. Existují i jiné alternativy než docker, ale díky velké popularitě a fanouškovské základně byl vybrán právě docker.
 \newline
-\indent Definice a instalace aplikací je zajištěna pomocí nástroje \textbf{Docker compose}. Definice probíhá pomocí souboru s názvem \textit{docker-compose.yml} (viz obrázek č. \ref{fig:compose}), který využívá \gls{YAML} formát pro serializaci strukturovaných dat. V docker-compose.aml souboru pro tento modul je definováno celkem devět aplikací a dva nastavovací moduly.
+\indent Definice a instalace aplikací je zajištěna pomocí nástroje \textbf{Docker compose}. Definice probíhá pomocí souboru s názvem \textit{docker-compose.yml} (viz obrázek č. \ref{fig:compose}), který využívá \gls{YAML} formát pro serializaci strukturovaných dat. V docker-compose.aml souboru pro tento modul je definováno celkem devět aplikací a dva nastavovací moduly. Data nejsou součástí inicializace kontejnerů, je potřeba je importovat dodatečně (dále viz kapitola \textbf{Uživatelská dokumentace}).
 \begin{figure}[H]
 \centering
 \includegraphics[width=11cm]{img/compose}
@@ -98,17 +98,11 @@ Pro MySQL byly nadefinovány dvě aplikace:
 
 \subsection{Inicializace MySQL}
 Inicializace MySQL probíhá po vytvoření databáze v rámci docker kontejneru pro MySQL. Pro inicializaci byl vytvořen soubor \textbf{mysql\_init.sql}, který obsahuje příkazy pro vytvoření všech pěti tabulek (názvy tabulek, názvy sloupců, jejich omezení a klíče) a všech devíti pohledů.
-\begin{figure}[H]
-\centering
-\includegraphics[width=12cm]{img/eer}
-\caption{Schéma pro MySQL databázi.}
-\label{fig:mysql_schema}
-\end{figure}
 
 \subsection{Inicializace MongoDB}
 Inicializace MongoDB probíhá po vytvoření databáze v rámci docker kontejneru \textbf{mongo-setup}, protože MongoDB nemá žádnou možnost jak vložit inicializační soubor při startu kontejneru. Pro inicializaci byly vytvořeny dva soubory:
 \begin{itemize}
-\item \textbf{create\_mongo\_database.js} - Javascriptový soubor,s který obsahuje příkazy pro vytvoření kolekce v databázi pro patenty.
+\item \textbf{create\_mongo\_database.js} - Javascriptový soubor, který obsahuje příkazy pro vytvoření kolekce v databázi pro patenty.
 \item \textbf{mongo\_init.sh} - Shell skript, který inicializuje sadu replik v databázi a následně spustí javascriptový soubor \textbf{create\_mongo\_database.js}.
 \end{itemize}
 
@@ -138,6 +132,3 @@ Apache Kafka je distribuované úložiště událostí a platforma pro zpracová
 \caption{Data pro vytvoření konektoru z MongoDB do Apache Kafka.}
 \label{fig:source}
 \end{figure}
-
-\todo{komentář}
-% říct že data se do databází importují při inicializaci / ručně, protože jsou moc velké / nejsou moc velké atp. -> rozhodnout se

@@ -231,7 +231,7 @@ Výhody objektově-orientované databáze jsou \cite{advantages_oo}:
 \item \textbf{Podpora vývoje schématu} - Těsné propojení mezi daty a aplikacemi činí vývoj schématu více proveditelnějším.
 \item \textbf{Podpora pro dlouhotrvající transakce} - Objektově-orientovaná databáze využívá jiný protokol pro zpracovávání dlouhotrvajících transakcí než relační databáze.
 \end{itemize}
-
+\newpage
 \subsubsection{Nevýhody}
 Nevýhody objektově-orientované databáze jsou \cite{advantages_oo}:
 \begin{itemize}
@@ -242,10 +242,10 @@ Nevýhody objektově-orientované databáze jsou \cite{advantages_oo}:
 \end{itemize}
 
 \subsection{NoSQL databáze}
-NoSQL je široká kategorie databází, které nepoužívají \gls{SQL} jako svůj primární jazyk pro přístup k datům. Tyto typy databází jsou také někdy označovány jako nerelační databáze. V NoSQL databázích se pracuje s nestrukturovanými a polostrukturovanými sadami distribuovaných dat. Jednou z výhod je, že vývojáři mohou provádět změny databáze za běhu, aniž by to ovlivnilo aplikace, které databázi používají.
+NoSQL je široká kategorie databází, které nepoužívají \gls{SQL} jako svůj primární jazyk pro přístup k datům. Tyto typy databází jsou také někdy označovány jako nerelační databáze. V NoSQL databázích se pracuje s nestrukturovanými a polostrukturovanými sadami distribuovaných dat. Jednou z výhod je, že vývojáři mohou provádět změny databáze za běhu, aniž by to ovlivnilo aplikace, které databázi používají \cite{nosqlDatabaseBook}.
 
 \subsection{Databáze Klíč-Hodnota}
-Databáze klíč-hodnota poskytuje nejjednodušší možný NoSQL datový model. Data jsou uložená jako pár klíč - hodnota ve slovníku / mapě, kdy klíč je indexem. Hodnota může být například celé číslo, řetězec, struktura \gls{JSON} nebo pole. Z vlastností databáze vyplývá, že zde není potřeba žádný dotazovací jazyk pro získávání výsledků. Typické příklady jsou: Redis, Riak, LevelDB. Ukázku databáze klíč-hodnota lze vidět na obrázku č. \ref{fig:db_img_keyvalue}.
+Databáze klíč-hodnota poskytuje nejjednodušší možný NoSQL datový model. Data jsou uložená jako pár klíč - hodnota ve slovníku / mapě, kdy klíč je indexem. Hodnota může být například celé číslo, řetězec, struktura \gls{JSON} nebo pole. Z vlastností databáze vyplývá, že zde není potřeba žádný dotazovací jazyk pro získávání výsledků \cite{nosqlDatabaseBook}. Typické příklady jsou: Redis, Riak, LevelDB. Ukázku databáze klíč-hodnota lze vidět na obrázku č. \ref{fig:db_img_keyvalue}.
 	\begin{figure}[H]
 	\centering
 	\includegraphics[width=9cm]{img/databaze/keyvalue_db}
@@ -268,7 +268,7 @@ Nevýhody této databáze jsou \cite{advantages_keyvalue}:
 \end{itemize}
 
 \subsection{Grafová databáze}
-Grafová databáze je typem NoSQL databáze, která je založená na teorii grafů. Data jsou reprezentována jako uzly, hrany zase reprezentují vztahy mezi daty. Graf lze procházet podél určitých typů hran nebo přes celý graf. Procházení spojení nebo relací je velmi rychlé, protože vztahy mezi uzly se nepočítají v době dotazu, ale jsou v databázi trvalé. Typické příklady jsou: Neo4j, OrientDB, Microsoft Azure CosmosDB. Ukázku grafové databáze lze vidět na obrázku č. \ref{fig:db_img_graph}.
+Grafová databáze je typem NoSQL databáze, která je založená na teorii grafů. Data jsou reprezentována jako uzly, hrany zase reprezentují vztahy mezi daty. Graf lze procházet podél určitých typů hran nebo přes celý graf. Procházení spojení nebo relací je velmi rychlé, protože vztahy mezi uzly se nepočítají v době dotazu, ale jsou v databázi trvalé \cite{nosqlDatabaseBook}. Typické příklady jsou: Neo4j, OrientDB, Microsoft Azure CosmosDB. Ukázku grafové databáze lze vidět na obrázku č. \ref{fig:db_img_graph}.
 	\begin{figure}[H]
 	\centering
 	\includegraphics[width=8cm]{img/databaze/graph_db}
@@ -305,7 +305,7 @@ Nevýhody grafové databáze jsou \cite{advantages_graph}:
 \item Grafy jsou nevhodné pro transakční systémy.
 \item Je těžké najít podporu, protože uživatelská základna je velice malá.
 \end{itemize}
-
+\newpage
 \subsection{Databáze dokumentů}
 Databáze dokumentů jsou typem NoSQL databáze a  jsou navržené pro ukládání, načítání a správu informací orientovaných na dokumenty. Typické příklady jsou: MongoDB, Amazon DocumentDB, Elasticsearch. Ukázku dokumentové databáze lze vidět na obrázku č. \ref{fig:db_img_document}.
 	\begin{figure}[H]
@@ -315,7 +315,7 @@ Databáze dokumentů jsou typem NoSQL databáze a  jsou navržené pro ukládán
 	\label{fig:db_img_document}
 	\end{figure}
 \subsubsection{Datový model}
-Základním prvkem dokumentové databáze je \textbf{Dokument}. Definice dokumentů se liší podle konkrétní implementace databáze, ale jedno mají společné: dokumenty kódují zapouzdřená data či informace do nějakého standardního formátu nebo kódování. Mezi typy kódování patří například \gls{JSON}, \gls{XML}. Dokument nemusí dodržovat pevně definovanou strukturu, takže v databázi mohou existovat dva dokumenty stejného formátu s rozdílnou strukturou dat \cite{data_model_document}.
+Základním prvkem dokumentové databáze je \textbf{Dokument}. Definice dokumentů se liší podle konkrétní implementace databáze, ale jedno mají společné: dokumenty kódují zapouzdřená data či informace do nějakého standardního formátu nebo kódování. Mezi typy kódování patří například \gls{JSON}, \gls{XML}. Dokument nemusí dodržovat pevně definovanou strukturu, takže v databázi mohou existovat dva dokumenty stejného formátu s rozdílnou strukturou dat \cite{nosqlDatabaseBook, data_model_document}.
 
 \subsubsection{Výhody}
 Výhody dokumentové databáze jsou \cite{advantages_document}:
