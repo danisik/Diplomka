@@ -98,8 +98,9 @@ services:
       KAFKA_TOOLS_LOG4J_LOGLEVEL: ERROR
       KAFKA_LOG4J_LOGGERS: "kafka.controller=WARN,kafka.foo.bar=DEBUG"
       KAFKA_LOG4J_ROOT_LOGLEVEL: WARN
-      KAFKA_MESSAGE_MAX_BYTES: 100000000
-      KAFKA_MAX_MESSAGE_BYTES: 100000000
+      KAFKA_MESSAGE_MAX_BYTES: 20000000
+      KAFKA_MAX_MESSAGE_BYTES: 20000000
+      KAFKA_HEAP_OPTS: "-Xmx4G"
 
   connect:
     image: 'confluentinc/cp-kafka-connect:6.1.0'
@@ -116,8 +117,8 @@ services:
             - -c
             - |
                 echo "Installing connector plugins"
-                confluent-hub install --no-prompt mongodb/kafka-connect-mongodb:1.4.0
-                confluent-hub install --no-prompt confluentinc/kafka-connect-elasticsearch:latest
+                confluent-hub install --no-prompt mongodb/kafka-connect-mongodb:1.7.0
+                confluent-hub install --no-prompt confluentinc/kafka-connect-elasticsearch:11.0.0
                 # Launch the Kafka Connect worker
                 /etc/confluent/docker/run &
                 # Don't exit
@@ -140,8 +141,8 @@ services:
       CONNECT_REST_ADVERTISED_HOST_NAME: "connect"
       CONNECT_PLUGIN_PATH: /usr/share/confluent-hub-components
       CONNECT_CONSUMER_OVERRIDE_MAX_POLL_RECORDS: 2000
-      CONNECT_PRODUCER_MAX_REQUEST_SIZE: 100000000
-      CONNECT_CONSUMER_FETCH_MAX_BYTES: 100000000
+      CONNECT_PRODUCER_MAX_REQUEST_SIZE: 20000000
+      CONNECT_CONSUMER_FETCH_MAX_BYTES: 20000000
 
 
   connect-setup:

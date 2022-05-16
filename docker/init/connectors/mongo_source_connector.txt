@@ -8,11 +8,10 @@
 		"value.converter": "org.apache.kafka.connect.json.JsonConverter",
 		"database":"patents",
 		"copy.existing" : "true",
-		"poll.max.batch.size": "20",
 		"poll.await.time.ms": "2000",
-		"poll.batch.size": "20",
-		"errors.log.enable": "true",
-		"errors.log.include.message": "true",
+		"offset.partition.name": "mongo-source-connector.1",
+		"heartbeat.interval.ms": "2000",
+		"heartbeat.topic.name": "patents",
 		"collection":"patents"
 	}
 }
