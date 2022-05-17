@@ -2,66 +2,100 @@
 
 %CHAPTER
 \chapter{Ověření efektivního vytěžování}
-K ověření efektivního vytěžování bylo připraveno několik scénářů jak pro SQL, tak i pro Mongo s využitím vyhledávače Elasticsearch.Z výsledků scénářů můžeme poté usoudit, jak moc efektivní vytěžování je vzhledem k technickým parametrům stroje a použitým technologiím.
+K ověření efektivního vytěžování bylo připraveno několik scénářů jak pro SQL, tak i pro Mongo s využitím vyhledávače Elasticsearch. Z výsledků scénářů můžeme poté usoudit, jak moc efektivní vytěžování je vzhledem k technickým parametrům stroje a použitým technologiím.
 
 \subsubsection{Testovací stroj - technické parametry}
 Testovací stroj, který byl použit pro kontrolu efektivity vytěžování, má tyto technické parametry:
 \begin{itemize}
-\item \textbf{Procesor} - Intel(R) Core(TM) i5-8250U CPU @ 1.60GHz (8 CPUs).
-\item \textbf{RAM} - 8192 MB
-\item \textbf{Disk} - SSD 256 GB
-\item \textbf{Grafická karta 1} - Intel(R) UHD Graphics 620
-\item \textbf{Grafická karta 2} - NVIDIA GeForce 940MX
-\item \textbf{Operační systém} - Windows 10 Home 64bit (10.0, build 19044).
+\item \textbf{Procesor} - Intel(R) Core(TM) i5-6300HQ CPU @ 2.30GHz
+\item \textbf{RAM} - 16 GB
+\item \textbf{Disk} - SSD 512 GB
+\item \textbf{Grafická karta 1} - Intel(R) HD Graphics 539
+\item \textbf{Grafická karta 2} - NVIDIA GeForce GTX 960M
+\item \textbf{Operační systém} - Linux Manjaro 21.2.6
 
 \end{itemize}
 
-\section{Mongo + ElasticSearch}
-\todo{todo}
+\section{MongoDB + Elasticsearch}
+Pro MongoDB a Elasticsearch byly připraveny tři jednoduché scénáře, u kterých byla testována hlavně rychlost odpovědi na zadaný dotaz. Pro dotazování byly použity dotazy typu \textit{query\_string}, které využívají syntaxi k analýze a rozdělení řetězce dotazu na základě operátorů, jako je například AND nebo NOT \cite{elastic_query}.
 
-\subsection{Scénář č.1}\todo{todo}
-\textbf{Textový popis}: 
+\newpage
+\subsection{Scénář č.1}
+\textbf{Textový popis}: Najdi dokumenty, které obsahují jméno \textbf{Porras Vila FCO. Javier} nebo \textbf{Porras Vila F. Javier}.
 \newline
 \textbf{Dotaz}: 
+\begin{lstlisting}[label = {lst:elements_a}]
+{
+  "query": 
+   {
+    "query_string": 
+      {
+       "query": " "PORRAS" AND "VILA" AND "JAVIER" AND ("FCO." OR "F.") "
+      }
+   }
+}
+\end{lstlisting}
+\textbf{Rychlost vykonání dotazu}: \textpm 0,15 sekund
 \newline
-\textbf{Rychlost vykonání dotazu}: \textpm X sekund
-\newline
-\textbf{Výsledek dotazu}:
+\textbf{Výsledek dotazu}: Dotaz vrátil celkem 129 dokumentů obsahující zadané jméno. Ukázku výskytu jména v nalezeném dokumentu lze vidět na obrázku č. \ref{fig:scenar_1_mongo}.
 \begin{figure}[H]
 \centering
-\includegraphics[width=5cm]{img/scenare/scenar_2}
-\caption{Ukázka výsledku dotazu pro scénář č.2}
-\label{fig:scenar2}
+\includegraphics[width=14cm]{img/scenare/scenar_1_mongo}
+\caption{Ukázka výsledku dotazu pro scénář č.1}
+\label{fig:scenar_1_mongo}
 \end{figure}
 
-\subsection{Scénář č.2}\todo{todo}
-\textbf{Textový popis}: 
+\newpage
+\subsection{Scénář č.2}
+\textbf{Textový popis}: Vyhledej dokumenty, které jsou z \textbf{Velké Británie} a klasifikační řetězec je \textbf{E02D}.
 \newline
 \textbf{Dotaz}: 
+\begin{lstlisting}[label = {lst:elements_a}]
+{
+   "query": 
+   {
+      "query_string": 
+      {
+         "query": "\"country: GB\" AND \"subclass: E02D\" "
+      }
+   }
+}
+\end{lstlisting}
+\textbf{Rychlost vykonání dotazu}: \textpm 0,1 sekund
 \newline
-\textbf{Rychlost vykonání dotazu}: \textpm X sekund
-\newline
-\textbf{Výsledek dotazu}:
+\textbf{Výsledek dotazu}: Celkem bylo nalezeno 257 dokumentů (v případě Velké Británie žurnálů). Ukázku výskytu klasifikačního řetězce lze vidět na obrázku č. \ref{fig:scenar_2_mongo}.
 \begin{figure}[H]
 \centering
-\includegraphics[width=5cm]{img/scenare/scenar_2}
+\includegraphics[width=14cm]{img/scenare/scenar_2_mongo}
 \caption{Ukázka výsledku dotazu pro scénář č.2}
-\label{fig:scenar2}
+\label{fig:scenar_2_mongo}
 \end{figure}
 
-\subsection{Scénář č.3}\todo{todo}
-\textbf{Textový popis}: 
+\newpage
+\subsection{Scénář č.3}
+\textbf{Textový popis}: Vyhledej dokumenty, který obsahují řetězce s prefixem \textbf{bio} (s posílením 4) a řetězec \textbf{qualcomm} (s posílením 2), nebo obsahují řetězce podobné řetězci \textbf{SANOFI} (neboli \textit{fuzziness}).
 \newline
 \textbf{Dotaz}: 
+\begin{lstlisting}[label = {lst:elements_a}]
+{
+   "query": 
+   {
+      "query_string": 
+      {
+         "query": "((bio*)^4 AND \"qualcomm\"^2) OR (SANOFI~)",
+         "analyze_wildcard": true
+      }
+   }
+}
+\end{lstlisting}
+\textbf{Rychlost vykonání dotazu}: \textpm 3 sekundy
 \newline
-\textbf{Rychlost vykonání dotazu}: \textpm X sekund
-\newline
-\textbf{Výsledek dotazu}:
+\textbf{Výsledek dotazu}: Celkem bylo nalezeno 9080 dokumentů, které odpovídají zadanému dotazu. Ukázku výsledku lze vidět na obrázku č. \ref{fig:scenar_3_mongo}.
 \begin{figure}[H]
 \centering
-\includegraphics[width=5cm]{img/scenare/scenar_2}
-\caption{Ukázka výsledku dotazu pro scénář č.2}
-\label{fig:scenar2}
+\includegraphics[width=14cm]{img/scenare/scenar_3_mongo}
+\caption{Ukázka výsledku dotazu pro scénář č.3}
+\label{fig:scenar_3_mongo}
 \end{figure}
 
 \newpage
@@ -69,7 +103,7 @@ Testovací stroj, který byl použit pro kontrolu efektivity vytěžování, má
 Pro MySQL bylo připraveno devět scénářů, které testují všechny vytvořené tabulky v databázi. Každý scénář obsahuje textový popis, název pohledu, pod kterým je scénář uložen, SQL příkaz, rychlost vykonání příkazu a ukázku výsledků. Každý scénář odpovídá jednomu pohledu v databázi.
 
 \subsection{Scénář č.1}
-\textbf{Textový popis}: Deset nejčastěji patentujících institucí v Izraeli v roce 2015.
+\textbf{Textový popis}: Deset nejčastěji patentujících institucí / autorů v Izraeli v~roce 2015.
 \newline
 \textbf{Název pohledu}: ten\_IL\_institutes\_2015
 \newline
@@ -79,7 +113,7 @@ select count(*), count(*) * 100.0 / ((select count(*) from inventors left outer 
 \end{lstlisting}
 \textbf{Rychlost vykonání dotazu}:  \textpm 1,4 sekundy
 \newline
-\textbf{Výsledek dotazu}:
+\textbf{Výsledek dotazu}: Na obrázku č. \ref{fig:scenar1} lze vidět výsledek scénáře. Většina firem vyskytujících se ve výsledku se pohybují ve farmaceutickém, biotechnologickém nebo zbrojním oboru.
 \begin{figure}[H]
 \centering
 \includegraphics[width=9cm]{img/scenare/scenar_1}
@@ -99,7 +133,7 @@ select count(*), count(*) * 100.0 / ((select count(*) from patent_classification
 \end{lstlisting}
 \textbf{Rychlost vykonání dotazu}: \textpm 10 sekund
 \newline
-\textbf{Výsledek dotazu}:
+\textbf{Výsledek dotazu}: Na obrázku č. \ref{fig:scenar2} lze vidět výsledek scénáře. Mezi nejméně patentované obory v Kanadě se nachází \textit{textílie} (D), \textit{pevné konstrukce} (E), \textit{strojírenství} (F), \textit{elektřina} (H) a \textit{fyzika} (G).
 \begin{figure}[H]
 \centering
 \includegraphics[width=5cm]{img/scenare/scenar_2}
@@ -119,7 +153,7 @@ select count(*), count(*) * 100.0 / ((select count(*) from patent_classification
 \end{lstlisting}
 \textbf{Rychlost vykonání dotazu}: \textpm 1,3 sekundy
 \newline
-\textbf{Výsledek dotazu}:
+\textbf{Výsledek dotazu}: Na obrázku č. \ref{fig:scenar3} lze vidět výsledek scénáře. Nejčastější klasifikace patentů je: \textit{kontejnery pro skladování nebo přepravu předmětů nebo materiálů} (B65D). Většina patentů spadá pod obory \textit{pevné konstrukce} (E) a \textit{lidské potřeby} (A).
 \begin{figure}[H]
 \centering
 \includegraphics[width=7cm]{img/scenare/scenar_3}
@@ -129,7 +163,7 @@ select count(*), count(*) * 100.0 / ((select count(*) from patent_classification
 
 \newpage
 \subsection{Scénář č.4} 
-\textbf{Textový popis}: Deset autorů s největším počtem patentů ze všech zemí.
+\textbf{Textový popis}: Deset autorů / institucí s největším počtem patentů ze všech zemí.
 \newline
 \textbf{Název pohledu}: ten\_most\_authors
 \newline
@@ -137,9 +171,9 @@ select count(*), count(*) * 100.0 / ((select count(*) from patent_classification
 \begin{lstlisting}[label = {lst:elements_a}]
 select count(*), count(*) * 100.0 / ((select count(*) from inventors) * 1.0) as percentage, inventors.inventor from inventors group by inventors.inventor order by count(*) desc, percentage desc LIMIT 10;
 \end{lstlisting}
-\textbf{Rychlost vykonání dotazu}: \textpm 8 sekund
+\textbf{Rychlost vykonání dotazu}: \textpm 1,5 sekundy
 \newline
-\textbf{Výsledek dotazu}:
+\textbf{Výsledek dotazu}: Na obrázku č. \ref{fig:scenar4} lze vidět výsledek scénáře. Z výsledků vyplývá, že nejvíce aktivních autorů / institucí je z ruska (celkem čtyři z~deseti). 
 \begin{figure}[H]
 \centering
 \includegraphics[width=8cm]{img/scenare/scenar_4}
@@ -157,9 +191,9 @@ select count(*), count(*) * 100.0 / ((select count(*) from inventors) * 1.0) as 
 \begin{lstlisting}[label = {lst:elements_a}]
 select count(*), count(*) * 100.0 / ((select count(*) from patents where patents.language not like '%-%') * 1.0) as percentage, patents.language from patents where patents.language not like '%-%' group by patents.language order by count(*) asc, percentage asc LIMIT 5;
 \end{lstlisting}
-\textbf{Rychlost vykonání dotazu}: \textpm 5,3 sekund
+\textbf{Rychlost vykonání dotazu}: \textpm 3,3 sekundy
 \newline
-\textbf{Výsledek dotazu}:
+\textbf{Výsledek dotazu}: Na obrázku č. \ref{fig:scenar5} lze vidět výsledek scénáře. Z výsledků vyplývá, že nejméně používaný jazyk u patentů je \textit{Portugalština}, \textit{Litevština} a \textit{Španělština}. \textit{Francouzština} a \textit{Ruština} mají už celkem velké procento zastoupení.
 \begin{figure}[H]
 \centering
 \includegraphics[width=5cm]{img/scenare/scenar_5}
@@ -177,9 +211,9 @@ select count(*), count(*) * 100.0 / ((select count(*) from patents where patents
 \begin{lstlisting}[label = {lst:elements_a}]
 select count(distinct classification.section), count(*) * 100.0 / ((select count(*) from inventors left outer join patents on patents.id = inventors.id_patent left outer join patent_classification on patents.id = patent_classification.id_patent left outer join classification on classification.id = patent_classification.id_classification where classification.section is not null and patents.country like '%ES%') * 1.0) as percentage, inventors.inventor from inventors left outer join patents on patents.id = inventors.id_patent left outer join patent_classification on patents.id = patent_classification.id_patent left outer join classification on classification.id = patent_classification.id_classification where classification.section is not null and patents.country like '%ES%' group by inventors.inventor order by count(distinct classification.section) desc, percentage desc LIMIT 10;
 \end{lstlisting}
-\textbf{Rychlost vykonání dotazu}: \textpm 2,2 sekundy
+\textbf{Rychlost vykonání dotazu}: \textpm 1,8 sekundy
 \newline
-\textbf{Výsledek dotazu}:
+\textbf{Výsledek dotazu}: Na obrázku č. \ref{fig:scenar6} lze vidět výsledek scénáře. Na prvním a druhém místě si lze povšimnout, že jméno vynálezce je totožné, pouze jinak zapsané.
 \begin{figure}[H]
 \centering
 \includegraphics[width=10cm]{img/scenare/scenar_6}
@@ -197,9 +231,9 @@ select count(distinct classification.section), count(*) * 100.0 / ((select count
 \begin{lstlisting}[label = {lst:elements_a}]
 select count(*), count(*) * 100.0 / ((select count(*) from patents where YEAR(patents.patent_date) >= 2018) * 1.0) as percentage, patents.country from patents where YEAR(patents.patent_date) >= 2018 group by patents.country order by count(*) desc, percentage desc LIMIT 5;
 \end{lstlisting}
-\textbf{Rychlost vykonání dotazu}: \textpm 2,4 sekundy
+\textbf{Rychlost vykonání dotazu}: \textpm 1,3 sekundy
 \newline
-\textbf{Výsledek dotazu}:
+\textbf{Výsledek dotazu}: Na obrázku č. \ref{fig:scenar7} lze vidět výsledek scénáře. Mezi nejčastěji patentující země od roku 2018 lze zařadit hlavně \textit{Rusko}, \textit{Kanadu} a \textit{Francii}, které dohromady pokrývají přibližně 94\% všech patentů.
 \begin{figure}[H]
 \centering
 \includegraphics[width=5cm]{img/scenare/scenar_7}
@@ -207,6 +241,7 @@ select count(*), count(*) * 100.0 / ((select count(*) from patents where YEAR(pa
 \label{fig:scenar7}
 \end{figure}
 
+\newpage
 \subsection{Scénář č.8}
 \textbf{Textový popis}: Nejvíce používaný typ patentu ve Francii.
 \newline
@@ -216,9 +251,9 @@ select count(*), count(*) * 100.0 / ((select count(*) from patents where YEAR(pa
 \begin{lstlisting}[label = {lst:elements_a}]
 select count(*), count(*) * 100.0 / ((select count(*) from patents where patents.patent_id like '%FR%' and patents.kind not like '%-%') * 1.0) as percentage, patents.kind from patents where patents.patent_id like '%FR%' and patents.kind not like '%-%' group by patents.kind order by count(*) desc, percentage desc;
 \end{lstlisting}
-\textbf{Rychlost vykonání dotazu}: \textpm 5,5 sekund
+\textbf{Rychlost vykonání dotazu}: \textpm 3,1 sekundy
 \newline
-\textbf{Výsledek dotazu}:
+\textbf{Výsledek dotazu}: Na obrázku č. \ref{fig:scenar8} lze vidět výsledek scénáře. Přibližně 98\% všechn patentů ve Francii má typ: \textit{patent na vynález}.
 \begin{figure}[H]
 \centering
 \includegraphics[width=5cm]{img/scenare/scenar_8}
@@ -228,7 +263,7 @@ select count(*), count(*) * 100.0 / ((select count(*) from patents where patents
 
 \newpage
 \subsection{Scénář č.9}
-\textbf{Textový popis}: Patnáct nejčastěji patentujících institucí / autorů v Anglii v textilním oboru za rok 2013.
+\textbf{Textový popis}: Patnáct nejčastěji patentujících institucí / autorů ve Velké Británii v textilním oboru za rok 2013.
 \newline
 \textbf{Název pohledu}: fifteen\_UK\_author\_textile\_2013
 \newline
@@ -238,7 +273,7 @@ select count(*), count(*) * 100.0 / ((select count(*) from inventors left outer 
 \end{lstlisting}
 \textbf{Rychlost vykonání dotazu}: \textpm 0,3 sekundy
 \newline
-\textbf{Výsledek dotazu}:
+\textbf{Výsledek dotazu}: Na obrázku č. \ref{fig:scenar9} lze vidět výsledek scénáře. Ve Velké Británii v roce 2013 patentují vynálezy v textilním oboru hlavně lidé (ne instituce a firmy, ty mohou být registrováni například jako žadatelé). 
 \begin{figure}[H]
 \centering
 \includegraphics[width=9cm]{img/scenare/scenar_9}

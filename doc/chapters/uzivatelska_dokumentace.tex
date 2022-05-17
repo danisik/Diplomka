@@ -1,6 +1,6 @@
 %CHAPTER
 \chapter{Uživatelská dokumentace}  \label{chap:uziv_doc}
-Pro instalaci celého úložiště je potřeba mít nainstalovanou aplikaci \textbf{Docker}.
+Pro instalaci celého úložiště je potřeba mít nainstalovanou aplikaci \textbf{Docker Desktop}\footnote{https://docs.docker.com/desktop/}, případně \textbf{Docker Engine}\footnote{https://docs.docker.com/engine/} s \textbf{Docker Compose}\footnote{https://docs.docker.com/compose/}.
 
 \section{Adresářová struktura}
 Adresářová struktura je následující:
@@ -121,15 +121,6 @@ Import dat pro MongoDB se provádí pomocí oficiální aplikace od MongoDB s n�
 	\caption{Import dat do MongoDB.}
 	\label{fig:mongo_import}
 	\end{figure}
-	\begin{itemize}
-	\item Zároveň bude probíhat i import dat do Elasticsearch. Import dat do elasticu lze pozorovat v konzoli kde jsou spuštěné naše docker kontejnery (viz obrázek č. \ref{fig:elastic_import}). Apache Kafka vypisuje warning hlášky že se nepodařilo vykonat bulk request kvůli \newline\textit{java.lang.NullPointerException}. Toho se není potřeba obávat, protože to je pouze bug v rámci Apache Kafka Connect, který pouze vypisuje tyto hlášky, ale samotný import do Elasticsearch funguje.
-		\begin{figure}[H]
-		\centering
-		\includegraphics[width=14cm]{img/manual/mongo_import_console}
-		\caption{Import dat do Elasticsearch.}
-		\label{fig:elastic_import}
-		\end{figure}
-	\end{itemize}
 \item Data do MongoDB jsou importována, lze provést kontrolu na adrese \textbf{http://localhost:8081/} v databázi \textbf{patents} a kolekci \textbf{patents} (viz obrázek č. \ref{fig:mongo_done_import}).
 		\begin{figure}[H]
 		\centering

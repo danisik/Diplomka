@@ -12,7 +12,8 @@
 
 % Možné jazyky práce: czech, english
 % Možné typy práce: BP (bakalářská), DP (diplomová)
-\documentclass[czech,DP]{thesiskiv}
+%\documentclass[czech,DP]{thesiskiv}
+\documentclass[czech,DP]{thesiskiv2}
 
 % Definujte údaje pro vstupní strany
 %
@@ -27,10 +28,10 @@
 % 
 % Texty abstraktů (anglicky, česky)
 %
-\abstracttexten{Creation of large-scale patent data repositories. The aim of the diploma thesis is to get acquainted with the available sources of patent data and to create extensive local repositories of patent data enabling their effective searching and mining. The first part of the thesis thoroughly describes the types of patents, existing data sources and file formats in which patents are stored. Subsequently, the applicable technologies for searching and mining are described. The second part of the thesis is devoted to the selection of usable data and the implementation of selected technologies. Several queries and scenarios have been created to test efficient mining. The results of the testing are part of this work.
+\abstracttexten{Creation of large-scale repositories of patent data. The aim of the thesis is to learn about the available patent data sources and to create large-scale local repositories of patent data to enable their efficient searching and mining. The first part of the thesis thoroughly describes the types of patents, the existing data sources and the file formats in which patents are stored. Then, the applicable technologies for searching and mining are described. The second part of the thesis deals with the selection of usable data and the implementation of the selected technologies. Multiple queries and scenarios were created to test efficient mining. The results of the testing are included in this thesis.
 }
 
-\abstracttextcz{Cílem diplomové práce je seznámit se s dostupnými zdroji dat o patentech a vytvořit rozsáhlá lokální úložiště patentových dat umožňující jejich efektivní prohledávání a vytěžování. První část práce důkladně popisuje typy patentů, existující zdroje dat a formáty souborů, ve kterých se patenty ukládají. Následně jsou popsány použitelné technologie pro prohledávání a vytěžování. Druhá část práce se věnuje výběru použitelných dat a implementaci vybraných technologií. Pro otestování efektivního vytěžování  bylo vytvořeno několik dotazů a scénářů. Výsledky testování jsou součástí této práce.
+\abstracttextcz{Cílem diplomové práce je seznámit se s dostupnými zdroji dat o patentech a vytvořit rozsáhlá lokální úložiště patentových dat umožňující jejich efektivní prohledávání a vytěžování. První část práce důkladně popisuje typy patentů, existující zdroje dat a formáty souborů, ve kterých se patenty ukládají. Následně jsou popsány použitelné technologie pro prohledávání a vytěžování. Druhá část práce se věnuje výběru použitelných dat a implementaci vybraných technologií. Pro otestování efektivního vytěžování  bylo vytvořeno vícero dotazů a scénářů. Výsledky testování jsou součástí této práce.
 }
 
 % Na titulní stranu a do textu prohlášení se automaticky vkládá 
@@ -72,6 +73,8 @@
   urlcolor=black,
   bookmarksopen=true}
 
+\newcommand{\MYhref}[3][blue]{\href{#2}{\color{#1}{#3}}}%
+
 % Při používání citačního stylu csplainnatkiv
 % (odvozen z csplainnat, http://repo.or.cz/w/csplainnat.git)
 % lze snadno modifikovat vzhled citací v textu
@@ -85,6 +88,7 @@
 \usepackage{verbatim}
 \usepackage{fancyhdr}
 \usepackage{forest}
+\usepackage[final]{pdfpages}
 
 % Acronyms
 \usepackage[nomain, abbreviations, automake]{glossaries-extra}
@@ -115,7 +119,6 @@
 \input{chapters/1.uvod.tex}
 \input{chapters/2.teorie.tex}
 \input{chapters/4.vyber.tex}
-%\input{chapters/3.navrh_struktury.tex}
 \input{chapters/5.implementace.tex}
 \input{chapters/6.rozsiritelnost.tex}
 \input{chapters/7.overeni_vytezovani.tex}
@@ -149,7 +152,7 @@
 \renewcommand{\thechapter}{\Alph{chapter}}
 
 \input{chapters/uzivatelska_dokumentace.tex}
-%\input{chapters/vysledny_vzhled.tex}
+\input{chapters/prilohy.tex}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %

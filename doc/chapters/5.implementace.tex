@@ -51,7 +51,7 @@ Pohled je databázový objekt, který uživateli poskytuje data ve stejné podob
 Celý modul našeho úložiště čítá celkem 5 nástrojů - MySQL, MongoDB, Elasticsearch, phpMyAdmin a Mongo-express. Zároveň bude potřeba nastavit připojení mezi MongoDB a Elasticsearch tak, aby při přidání nového patentu do databáze byl následně zaindexován ve full-textovém vyhledávači. Pokud bychom měli po každém uživateli chtít instalaci všech těchto nástrojů a k tomu stahovat další nástroje pro vytvoření připojení mezi MongoDB a Elasticsearch, tak to zabere mnoho času a existuje zde velká pravděpodobnost že některé nástroje nebudou kompatibilní s aktuální verzí operačního systému. Z těchto důvodů byl zvolen software \textbf{Docker}, pomocí kterého se provede veškerá instalace a nastavení automaticky.
 
 \subsection{Docker}
-\textbf{Docker} je jeden z nejznámějších open-source nástrojů pro dodání aplikací v balíčkách zvaných \textit{kontejner}. \textbf{Docker} využívá virtualizaci na úrovni operačního systému, čímž je výrazně snížena režie na rozdíl od klasických virtuálních strojů. Existují i jiné alternativy než docker, ale díky velké popularitě a fanouškovské základně byl vybrán právě docker.
+\textbf{Docker} je jeden z nejznámějších open-source nástrojů pro dodání aplikací v~balíčkách zvaných \textit{kontejner}. \textbf{Docker} využívá virtualizaci na úrovni operačního systému, čímž je výrazně snížena režie na rozdíl od klasických virtuálních strojů. Existují i jiné alternativy než docker, ale díky velké popularitě a fanouškovské základně byl vybrán právě docker.
 \newline
 \indent Definice a instalace aplikací je zajištěna pomocí nástroje \textbf{Docker compose}. Definice probíhá pomocí souboru s názvem \textit{docker-compose.yml} (viz obrázek č. \ref{fig:compose}), který využívá \gls{YAML} formát pro serializaci strukturovaných dat. V docker-compose.aml souboru pro tento modul je definováno celkem devět aplikací a dva nastavovací moduly. Data nejsou součástí inicializace kontejnerů, je potřeba je importovat dodatečně (dále viz kapitola \textbf{Uživatelská dokumentace}).
 \begin{figure}[H]
@@ -107,14 +107,14 @@ Inicializace MongoDB probíhá po vytvoření databáze v rámci docker kontejne
 \end{itemize}
 
 \subsection{Propojení MongoDB a Elasticsearch}
-Pro propojení MongoDB a Elasticsearch byly vyzkoušeny dva nástroje: \textbf{Mongo-connector} a \textbf{Apache Kafka}. 
+Pro vytvoření spojení mezi MongoDB a Elasticsearch byly vyzkoušeny dva nástroje: \textbf{Mongo-connector} a \textbf{Apache Kafka}. 
 
 \subsubsection{Mongo-connector}
 Mongo-connector je obecný připojovací systém vyvinutý firmou MongoDB Inc. v roce 2012, který slouží pro integraci databáze MongoDB s jiným systémem, který podporuje \gls{CRUD} operace. Mongo-connector byl následně udržován pouze komunitně přibližně do roku 2018, kdy byla vydána poslední verze tohoto nástroje (verze 3.1.1).
 \newline
 \indent V původní verzi úložiště byl mongo-connector použit k propojení MongoDB ve verzi 5.0.6 a Elasticsearch ve verzi 7.17.0. Konektor pracoval rychle a bez problémů do té doby, než bylo potřeba použít novější verzi Elasticsearch (verze 8.x.x), kdy konektor nedokázal navázat žádné spojení a tím pádem nebylo možné využívat vyhledávač.
 \newline
-\indent Přechod na novější verzi Elasticsearch bylo potřeba z důvodu různých struktur patentů. Národní patentové úřady poskytují svá patentová data v různých strukturách, které se mohou měnit v průběhu let, což byl i jeden z důvodů pro výběr databáze MongoDB. V případě Elasticsearch je ale nutné, aby data měla stále stejnou strukturu, alespoň v rámci MongoDB kolekcí, protože Elasticsearch si data z kolekcí musí nejdříve zaindexovat pomocí mapperu a pak až v nich lze vyhledávat. V nejnovější verzi Elasticsearche (verze 8.x.x) je použit jiný způsob indexování souborů, takže data mohou mít libovolné struktury. Z tohoto důvodu byl mongo-connector zamítnut a musel být použit nový nástroj Apache Kafka.
+\indent Přechod na novější verzi Elasticsearch bylo potřeba z důvodu různých struktur patentů. Národní patentové úřady poskytují svá patentová data v~různých strukturách, které se mohou měnit v průběhu let, což byl i jeden z~důvodů pro výběr databáze MongoDB. V případě Elasticsearch je ale nutné, aby data měla stále stejnou strukturu, alespoň v rámci MongoDB kolekcí, protože Elasticsearch si data z kolekcí musí nejdříve zaindexovat pomocí mapperu a pak až v nich lze vyhledávat. V nejnovější verzi Elasticsearche (verze 8.x.x) je použit jiný způsob indexování souborů, takže data mohou mít libovolné struktury. Z tohoto důvodu byl mongo-connector zamítnut a musel být použit nový nástroj Apache Kafka.
 
 \subsubsection{Apache Kafka}
 Apache Kafka je distribuované úložiště událostí a platforma pro zpracování datových proudů (streamů). V diplomové práci byla použita Apache Kafka od firmy Confluent, která obsahuje dodatečné komunitní a komerční funkce navržené tak, aby vylepšily streamování operátorů i vývojářů v produkčním prostředí.
@@ -122,13 +122,13 @@ Apache Kafka je distribuované úložiště událostí a platforma pro zpracová
 \indent Inicializace konektorů pro Apache Kafka probíhá v nastavovacím modulu \textbf{connect-setup}, ve kterém je stažen a nainstalován program \textbf{CURL}, který je využit shellovým skriptem \textbf{connect.sh}. Tento skript posílá dvě \gls{HTTP} POST metody na brokera (Apache Kafka), pomocí kterých se vytváří nové konektory. Na obrázku č. \ref{fig:sink} lze vidět data ve formátu JSON pro POST metodu, která vytvoří spojení z Apache Kafka do Elasticsearch, a na obrázku č. \ref{fig:source} lze vidět data pro vytvoření spojení z MongoDB do Apache Kafka.
 \begin{figure}[H]
 \centering
-\includegraphics[width=12cm]{img/sink}
+\includegraphics[width=15cm]{img/sink}
 \caption{Data pro vytvoření konektoru z Apache Kafka do Elasticsearch.}
 \label{fig:sink}
 \end{figure}
 \begin{figure}[H]
 \centering
-\includegraphics[width=11cm]{img/source}
+\includegraphics[width=14cm]{img/source}
 \caption{Data pro vytvoření konektoru z MongoDB do Apache Kafka.}
 \label{fig:source}
 \end{figure}
